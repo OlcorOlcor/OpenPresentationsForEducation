@@ -1,1 +1,1 @@
-# OpenSlidesEditor
+# OpenPresentationsForEducation
