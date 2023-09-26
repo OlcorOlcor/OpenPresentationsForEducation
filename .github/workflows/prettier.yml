@@ -22,7 +22,7 @@ jobs:
       - name: Commit Changes
         run: |
           git config --global user.email "celovskyhonza@gmail.com"
-          git config --global user.name "Jan Čelovský"
+          git config --global user.name "OlcorOlcor"
           git add .
           git commit -m "Format code using Prettier"
           git push
