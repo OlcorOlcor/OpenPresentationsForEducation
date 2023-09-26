@@ -1,0 +1,23 @@
+name: Prettier Check
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Prettier
+        run: npx prettier --check .  # Add any Prettier flags/options you need
+
+      - name: Check for Changes
+        run: git diff --exit-code || (echo "Prettier check failed! Please run 'npm run format' to fix formatting issues" && exit 1)
