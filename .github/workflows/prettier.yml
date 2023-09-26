@@ -3,7 +3,7 @@ name: Prettier Check
 on:
   push:
     branches:
-      - main  # Adjust the branch name as needed
+      - main 
 
 jobs:
   prettier:
@@ -17,7 +17,13 @@ jobs:
         run: npm ci
 
       - name: Run Prettier
-        run: npx prettier --check .  # Add any Prettier flags/options you need
+        run: npx prettier --check .
 
-      - name: Check for Changes
-        run: git diff --exit-code || (echo "Prettier check failed! Please run 'npm run format' to fix formatting issues" && exit 1)
+      - name: Format Code
+        run: npx prettier --write .
+
+      - name: Commit Changes
+        run: |
+          git add .
+          git commit -m "Format code using Prettier"
+          git push
