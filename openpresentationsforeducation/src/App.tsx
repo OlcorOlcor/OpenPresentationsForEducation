@@ -1,14 +1,14 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Editor from './Editor';
+import EditorContainer from './EditorContainer';
 import Preview from './Preview';
 
 function App() {
   return (
     <div className="container">
       <div className="half">
-        <Editor />
+        <EditorContainer />
       </div>
       <div className="half">
         <Preview />
