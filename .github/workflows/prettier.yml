@@ -18,6 +18,8 @@ jobs:
 
       - name: Commit Changes
         run: |
+          git config user.name "Jan Čelovský"
+          git config user.email "celovskyhonza@gmail.com"
           git add .
           git commit -m "Format code using Prettier"
           git push
