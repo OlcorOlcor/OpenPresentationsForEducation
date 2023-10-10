@@ -20,7 +20,6 @@ function App() {
         {generatedData}
       </div>
     </div>
-    
   );
 }
 

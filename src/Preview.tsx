@@ -6,6 +6,7 @@ function Preview(data: any) {
            { data }
         </div>
     )
+
 }
 
 export default Preview;
