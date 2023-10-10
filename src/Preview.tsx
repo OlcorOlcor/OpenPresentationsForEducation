@@ -1,7 +1,7 @@
 import react from "react";
 
-function Preview() {
-  return <div>Here your presentation will be displayed.</div>;
+function Preview(data: any) {
+  return <div>{data}</div>;
 }
 
 export default Preview;
