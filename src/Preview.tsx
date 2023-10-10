@@ -1,9 +1,9 @@
 import react from 'react'
  
-function Preview() {
+function Preview(data: any) {
     return (
         <div>
-            Here your presentation will be displayed.
+           { data }
         </div>
     )
 }

@@ -3,9 +3,11 @@ import Editor from '@monaco-editor/react';
 import monaco from 'monaco-editor';
 import { marked } from 'marked';
 
+interface FuncProps {
+    onDataChange(newData: string): void;
+}
 
-
-function EditorContainer() {
+const EditorContainer: React.FC<FuncProps> = (props) => {
 
     const editorRef = useRef(null);
 
@@ -13,7 +15,7 @@ function EditorContainer() {
         if (editorRef.current != null) {
             const editor = editorRef.current as monaco.editor.IStandaloneCodeEditor;
             const html = marked.parse(editor.getValue());
-            console.log(html);
+            props.onDataChange(html);
         }
     }
 
