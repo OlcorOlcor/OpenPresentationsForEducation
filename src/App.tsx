@@ -4,10 +4,12 @@ import "./App.css";
 import EditorContainer from "./EditorContainer";
 import Preview from "./Preview";
 import { text } from "stream/consumers";
+import "Preprocess.ts";
 
 function App() {
   const [generatedData, setGeneratedData] = useState(
     "Here your presentation will be displayed",
+    
   );
 
   const handleDataChange = (newData: string) => {
