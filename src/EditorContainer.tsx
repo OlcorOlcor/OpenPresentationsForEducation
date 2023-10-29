@@ -10,16 +10,16 @@ interface FuncProps {
 
 interface CustomMarkedExtension extends marked.MarkedExtension {
   lexer?: {
-      inline: (text: string, tokens: marked.Token[]) => void;
-      inlineTokens: (text: string) => marked.Token[];
-    };
+    inline: (text: string, tokens: marked.Token[]) => void;
+    inlineTokens: (text: string) => marked.Token[];
+  };
 }
 
 const Slide: CustomMarkedExtension = {
   name: "Slide",
   level: "block",
-  start(src: string) { 
-    return src.match(/^#Slide/)?.index; 
+  start(src: string) {
+    return src.match(/^#Slide/)?.index;
   },
   tokenizer(src: string, tokens: marked.Token[]): marked.Token | null {
     const rule = /^#Slide/;
@@ -29,17 +29,17 @@ const Slide: CustomMarkedExtension = {
         type: "Slide",
         raw: match[0],
         text: match[0].trim(),
-        tokens: []
-      }
+        tokens: [],
+      };
       this.lexer?.inline(token.text, token.tokens as marked.Token[]);
       return token;
     }
     return null;
   },
   renderer(token) {
-    return ""
-  }
-}
+    return "";
+  },
+};
 
 const EditorContainer: React.FC<FuncProps> = (props) => {
   const editorRef = useRef(null);

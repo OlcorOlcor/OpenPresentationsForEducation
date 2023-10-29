@@ -9,7 +9,6 @@ import "Preprocess.ts";
 function App() {
   const [generatedData, setGeneratedData] = useState(
     "Here your presentation will be displayed",
-    
   );
 
   const handleDataChange = (newData: string) => {
