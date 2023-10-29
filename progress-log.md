@@ -11,5 +11,6 @@ The idea of this file is to keep track of my learning and thought process when d
 ## 29.10.2023
 
 - Added mui to the project
+- Added a grid layout to App.tsx
 - Tried to get a custom extension for marked working, so far without any luck
 - To do so I followed marked [official documentation](https://marked.js.org/using_pro)
