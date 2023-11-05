@@ -18,6 +18,6 @@ The idea of this file is to keep track of my learning and thought process when d
 ## 5.11.2023
 
 - Created custom tokenizer that matches user defined areas in markdown
-    - Areas currently can't overlap
-        - possible solution: regex lookahead
+  - Areas currently can't overlap
+    - possible solution: regex lookahead
 - Said tokenizer is currently not compatible with the marked library.

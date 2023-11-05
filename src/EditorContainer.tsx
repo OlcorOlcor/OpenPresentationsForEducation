@@ -9,7 +9,7 @@ interface FuncProps {
 }
 
 interface AreaToken {
-  type: 'area';
+  type: "area";
   id: string;
   content: string;
 }
@@ -25,15 +25,15 @@ function AreaTokenizer(src: string): AreaToken[] {
     const id = match[2];
 
     const customToken: AreaToken = {
-      type: 'area',
+      type: "area",
       id: id,
-      content: content
+      content: content,
     };
     tokens.push(customToken);
   }
 
   return tokens;
-};
+}
 
 const EditorContainer: React.FC<FuncProps> = (props) => {
   const editorRef = useRef(null);
