@@ -14,3 +14,10 @@ The idea of this file is to keep track of my learning and thought process when d
 - Added a grid layout to App.tsx
 - Tried to get a custom extension for marked working, so far without any luck
 - To do so I followed marked [official documentation](https://marked.js.org/using_pro)
+
+## 5.11.2023
+
+- Created custom tokenizer that matches user defined areas in markdown
+    - Areas currently can't overlap
+        - possible solution: regex lookahead
+- Said tokenizer is currently not compatible with the marked library.
