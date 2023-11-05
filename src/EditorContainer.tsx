@@ -16,14 +16,13 @@ interface AreaToken {
 
 function AreaTokenizer(src: string): AreaToken[] {
   const tokens: AreaToken[] = [];
-  const customAreaRegex = /<[A-Za-z]+: (.+?)>([\s\S]*?)<\/[A-Za-z]+>/g;
+  const customAreaRegex = /<([A-Za-z]+): (.+?)>([\s\S]*?)<\/\1>/g;
 
   let match;
   while ((match = customAreaRegex.exec(src)) !== null) {
     const content = match[2];
     const id = match[1];
 
-    // Push custom token
     const customToken: AreaToken = {
       type: 'area',
       id: id,
