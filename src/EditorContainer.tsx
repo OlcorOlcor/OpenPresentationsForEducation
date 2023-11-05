@@ -16,8 +16,10 @@ interface AreaToken {
 
 function AreaTokenizer(src: string): AreaToken[] {
   const tokens: AreaToken[] = [];
-  const customAreaRegex = /<([\s\S]+): (.+?)>([\s\S]*?)<\/\1>/g;
+  // Matches <foo: 1> lorem </foo>
+  const customAreaRegex = /<([\s\S]+): (.+)>([\s\S]*)<\/\1>/g;
   let match;
+  // Iterates the matches and creates tokens
   while ((match = customAreaRegex.exec(src)) !== null) {
     const content = match[3];
     const id = match[2];
