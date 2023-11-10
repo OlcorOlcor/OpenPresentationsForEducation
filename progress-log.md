@@ -21,3 +21,10 @@ The idea of this file is to keep track of my learning and thought process when d
   - On desktop the wsl image took up physical memory everytime docker was run.
   - On laptop there were issues with npm packages.
   - For now I will continue developing on windows where everything seems to work without any issues.
+- Made a new class `CustomArea` to represent a user defined area.
+  - The area has its own `metadata` for cusomising text inside it.
+  - The class `CustomAreaProcessor` has a list of all defined areas and provides crud style functions for them.
+- Editor container now creates CustomAreas from AreaTokens.
+  - It also removes user defined tags from markdown before it gets parsed.
+- As it stands instead of changing an id, an entirely new area replaces the old one, meaning the metadata gets reset.
+  - Possible solution: don't parse text after every change, but on a button press.
