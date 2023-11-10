@@ -3,38 +3,12 @@ import Editor from "@monaco-editor/react";
 import monaco from "monaco-editor";
 import * as marked from "marked";
 //import "Preprocessor.ts";
+import { AreaTokenizer } from "./AreaTokenizer";
 
 interface FuncProps {
   onDataChange(newData: string): void;
 }
 
-interface AreaToken {
-  type: 'area';
-  id: string;
-  content: string;
-}
-
-function AreaTokenizer(src: string): AreaToken[] {
-  const tokens: AreaToken[] = [];
-  // Matches <foo: 1> lorem </foo>
-  //TODO: Doesn't match overlapping areas
-  const customAreaRegex = /<([\s\S]+): (.+)>([\s\S]*)<\/\1>/g;
-  let match;
-  // Iterates the matches and creates tokens
-  while ((match = customAreaRegex.exec(src)) !== null) {
-    const content = match[3];
-    const id = match[2];
-
-    const customToken: AreaToken = {
-      type: 'area',
-      id: id,
-      content: content
-    };
-    tokens.push(customToken);
-  }
-
-  return tokens;
-};
 
 const EditorContainer: React.FC<FuncProps> = (props) => {
   const editorRef = useRef(null);
