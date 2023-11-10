@@ -8,36 +8,6 @@ interface FuncProps {
   onDataChange(newData: string): void;
 }
 
-<<<<<<< HEAD
-=======
-interface AreaToken {
-  type: "area";
-  id: string;
-  content: string;
-}
-
-function AreaTokenizer(src: string): AreaToken[] {
-  const tokens: AreaToken[] = [];
-  // Matches <foo: 1> lorem </foo>
-  const customAreaRegex = /<([\s\S]+): (.+)>([\s\S]*)<\/\1>/g;
-  let match;
-  // Iterates the matches and creates tokens
-  while ((match = customAreaRegex.exec(src)) !== null) {
-    const content = match[3];
-    const id = match[2];
-
-    const customToken: AreaToken = {
-      type: "area",
-      id: id,
-      content: content,
-    };
-    tokens.push(customToken);
-  }
-
-  return tokens;
-}
->>>>>>> 97fba45250f035db665f01a4e909f5e5801c9c23
-
 const EditorContainer: React.FC<FuncProps> = (props) => {
   const editorRef = useRef(null);
 
