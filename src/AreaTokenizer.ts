@@ -2,7 +2,7 @@ export interface AreaToken {
     type: 'area';
     id: string;
     content: string;
-  }
+}
   
 export function AreaTokenizer(src: string): AreaToken[] {
   const tokens: AreaToken[] = [];

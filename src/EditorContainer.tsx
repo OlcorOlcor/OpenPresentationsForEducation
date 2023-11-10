@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
 import monaco from "monaco-editor";
 import * as marked from "marked";
-//import "Preprocessor.ts";
 import { AreaTokenizer } from "./AreaTokenizer";
 
 interface FuncProps {
