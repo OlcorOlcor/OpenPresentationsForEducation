@@ -5,11 +5,13 @@ class Metadata {
     public underlined: boolean = false;
 }
 
-class CustomArea {
+export class CustomArea {
     public metadata: Metadata = new Metadata();
     public id: string;
-    constructor(id: string) {
+    public text: string;
+    constructor(id: string, text: string) {
         this.id = id;
+        this.text = text;
     }
 }
 
@@ -20,7 +22,12 @@ export class CustomAreaProcessor {
         this.areas = [];
     }
 
-    addArea(area: CustomArea): void {
+    setAreas(areas: CustomArea[]) {
+        this.areas = areas;
+    }
+
+    addArea(id: string, text: string): void {
+        let area: CustomArea = new CustomArea(id, text);
         this.areas.push(area);
     }
 
@@ -36,7 +43,7 @@ export class CustomAreaProcessor {
     }
 
     getArea(id: string): CustomArea | null {
-        let area = this.areas.find(a => a.id == id);
+        let area = this.areas.find(a => a.id === id);
         return area !== undefined ? area : null;
     }
 }

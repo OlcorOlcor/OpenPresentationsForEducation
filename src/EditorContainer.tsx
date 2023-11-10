@@ -3,18 +3,42 @@ import Editor from "@monaco-editor/react";
 import monaco from "monaco-editor";
 import * as marked from "marked";
 import { areaTokenizer } from "./AreaTokenizer";
-
+import { CustomAreaProcessor, CustomArea } from "./CustomAreaProcessor";
 interface FuncProps {
   onDataChange(newData: string): void;
 }
 
 const EditorContainer: React.FC<FuncProps> = (props) => {
   const editorRef = useRef(null);
-
+  const areaProcessor: CustomAreaProcessor = new CustomAreaProcessor();
   function handleChange() {
-    if (editorRef.current != null) {
+    if (editorRef.current !== null) {
       const editor = editorRef.current as monaco.editor.IStandaloneCodeEditor;
-      console.log(areaTokenizer(editor.getValue()));
+      let tokens = areaTokenizer(editor.getValue());
+      
+      // TODO: What if an id gets changed?
+        // This applies to deletion as well
+      // Updates and or creates new areas
+      let currentAreas: CustomArea[] = [];
+      tokens.forEach(token => {
+        let area = areaProcessor.getArea(token.id);
+        if (area !== null) {
+          area.text = token.content;
+        } else {
+          areaProcessor.addArea(token.id, token.content);
+          area = areaProcessor.getArea(token.id);
+        }
+        // Area should never be null here, it just silences the compiler
+        if (area !== null) {
+          currentAreas.push(area); 
+        }
+      });
+
+      // Deletes areas that are no longer used
+      areaProcessor.setAreas(currentAreas);
+      
+      // Remove tags from html and parse it using marked
+      console.log(areaProcessor.getAreas());
       const html = marked.parse(editor.getValue());
       props.onDataChange(html);
     }
