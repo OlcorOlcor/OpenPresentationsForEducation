@@ -17,6 +17,7 @@ interface AreaToken {
 function AreaTokenizer(src: string): AreaToken[] {
   const tokens: AreaToken[] = [];
   // Matches <foo: 1> lorem </foo>
+  //TODO: Doesn't match overlapping areas
   const customAreaRegex = /<([\s\S]+): (.+)>([\s\S]*)<\/\1>/g;
   let match;
   // Iterates the matches and creates tokens
