@@ -35,11 +35,15 @@ const EditorContainer: React.FC<FuncProps> = (props) => {
       });
 
       // Deletes areas that are no longer used
+      let html = editor.getValue();
       areaProcessor.setAreas(currentAreas);
-      
+      let regexStart = /<[\s\S]+: .+>/g
+      let regexEnd = /<\/[\s\S]+>/g
+      html = html.replace(regexStart, "");
+      html = html.replace(regexEnd, "");
       // Remove tags from html and parse it using marked
       console.log(areaProcessor.getAreas());
-      const html = marked.parse(editor.getValue());
+      marked.parse(html);
       props.onDataChange(html);
     }
   }
