@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer from "./EditorContainer";
-import Preview from "./Preview";
+import preview from "./Preview";
 import { text } from "stream/consumers";
 
 function App() {

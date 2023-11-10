@@ -4,7 +4,7 @@ export interface AreaToken {
   content: string;
 }
 
-export function AreaTokenizer(src: string): AreaToken[] {
+export function areaTokenizer(src: string): AreaToken[] {
   const tokens: AreaToken[] = [];
   // Matches <foo: 1> lorem </foo>
   //TODO: Doesn't match overlapping areas

@@ -1,7 +1,7 @@
 import react from "react";
 
-function Preview(data: any) {
+function preview(data: any) {
   return <div>{data}</div>;
 }
 
-export default Preview;
+export default preview;
