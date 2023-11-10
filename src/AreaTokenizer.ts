@@ -1,9 +1,9 @@
 export interface AreaToken {
-    type: 'area';
-    id: string;
-    content: string;
+  type: "area";
+  id: string;
+  content: string;
 }
-  
+
 export function AreaTokenizer(src: string): AreaToken[] {
   const tokens: AreaToken[] = [];
   // Matches <foo: 1> lorem </foo>
@@ -16,12 +16,12 @@ export function AreaTokenizer(src: string): AreaToken[] {
     const id = match[2];
 
     const customToken: AreaToken = {
-      type: 'area',
+      type: "area",
       id: id,
-      content: content
+      content: content,
     };
     tokens.push(customToken);
   }
 
   return tokens;
-};
+}
