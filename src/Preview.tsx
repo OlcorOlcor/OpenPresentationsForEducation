@@ -1,6 +1,6 @@
 import react from "react";
 
-function preview(data: any) {
+function Preview(data: any) {
   return <div>{data}</div>;
 }
 

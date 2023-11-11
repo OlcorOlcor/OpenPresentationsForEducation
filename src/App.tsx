@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer from "./EditorContainer";
-import preview from "./Preview";
+import Preview from "./Preview";
+import MetadataContainer from "./MetadataContainer";
 import { text } from "stream/consumers";
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
               <EditorContainer onDataChange={handleDataChange} />
             </Grid>
             <Grid item xs={4}>
-              <div>Here the metadata will reside</div>
+              <MetadataContainer />
             </Grid>
           </Grid>
         </Grid>
