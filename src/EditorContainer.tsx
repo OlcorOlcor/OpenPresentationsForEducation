@@ -15,12 +15,12 @@ const EditorContainer: React.FC<FuncProps> = (props) => {
     if (editorRef.current !== null) {
       const editor = editorRef.current as monaco.editor.IStandaloneCodeEditor;
       let tokens = areaTokenizer(editor.getValue());
-      
+
       // TODO: What if an id gets changed?
-        // This applies to deletion as well
+      // This applies to deletion as well
       // Updates and or creates new areas
       let currentAreas: CustomArea[] = [];
-      tokens.forEach(token => {
+      tokens.forEach((token) => {
         let area = areaProcessor.getArea(token.id);
         if (area !== null) {
           area.text = token.content;
@@ -30,15 +30,15 @@ const EditorContainer: React.FC<FuncProps> = (props) => {
         }
         // Area should never be null here, it just silences the compiler
         if (area !== null) {
-          currentAreas.push(area); 
+          currentAreas.push(area);
         }
       });
 
       // Deletes areas that are no longer used
       let html = editor.getValue();
       areaProcessor.setAreas(currentAreas);
-      let regexStart = /<[\s\S]+: .+>/g
-      let regexEnd = /<\/[\s\S]+>/g
+      let regexStart = /<[\s\S]+: .+>/g;
+      let regexEnd = /<\/[\s\S]+>/g;
       html = html.replace(regexStart, "");
       html = html.replace(regexEnd, "");
       // Remove tags from html and parse it using marked
