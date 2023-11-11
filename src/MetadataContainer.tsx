@@ -1,9 +1,7 @@
 import React, { useRef } from "react";
 
 function MetadataContainer() {
-    return (
-        <div>METADATA</div>
-    )
+  return <div>METADATA</div>;
 }
 
 export default MetadataContainer;
