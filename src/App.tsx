@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer from "./EditorContainer";
 import Preview from "./Preview";
 import MetadataContainer from "./MetadataContainer";
-import { text } from "stream/consumers";
+import {CustomArea, CustomAreaProcessor} from "./CustomAreaProcessor";
 
 function App() {
+  const areaProcessor: CustomAreaProcessor = new CustomAreaProcessor();
+  const MetadataComponentRef = useRef();
   const [generatedData, setGeneratedData] = useState(
     "Here your presentation will be displayed",
   );
 
   const handleDataChange = (newData: string) => {
     setGeneratedData(newData);
+
   };
 
   return (
@@ -26,10 +29,10 @@ function App() {
             style={{ height: "100%" }}
           >
             <Grid item xs={8}>
-              <EditorContainer onDataChange={handleDataChange} />
+              <EditorContainer onDataChange={handleDataChange} areaProcessor={areaProcessor} />
             </Grid>
             <Grid item xs={4}>
-              <MetadataContainer />
+              <MetadataContainer areaProcessor={areaProcessor} />
             </Grid>
           </Grid>
         </Grid>

@@ -4,4 +4,4 @@ function Preview(data: any) {
   return <div>{data}</div>;
 }
 
-export default preview;
+export default Preview;

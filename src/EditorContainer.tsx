@@ -6,11 +6,12 @@ import { areaTokenizer } from "./AreaTokenizer";
 import { CustomAreaProcessor, CustomArea } from "./CustomAreaProcessor";
 interface FuncProps {
   onDataChange(newData: string): void;
+  areaProcessor: CustomAreaProcessor;
 }
 
 const EditorContainer: React.FC<FuncProps> = (props) => {
   const editorRef = useRef(null);
-  const areaProcessor: CustomAreaProcessor = new CustomAreaProcessor();
+  const areaProcessor: CustomAreaProcessor = props.areaProcessor;
   function handleChange() {
     if (editorRef.current !== null) {
       const editor = editorRef.current as monaco.editor.IStandaloneCodeEditor;
