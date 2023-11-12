@@ -4,7 +4,7 @@ import "./App.css";
 import EditorContainer from "./EditorContainer";
 import Preview from "./Preview";
 import MetadataContainer from "./MetadataContainer";
-import {CustomArea, CustomAreaProcessor} from "./CustomAreaProcessor";
+import { CustomArea, CustomAreaProcessor } from "./CustomAreaProcessor";
 
 function App() {
   const areaProcessor: CustomAreaProcessor = new CustomAreaProcessor();
@@ -15,7 +15,6 @@ function App() {
 
   const handleDataChange = (newData: string) => {
     setGeneratedData(newData);
-
   };
 
   return (
@@ -29,7 +28,10 @@ function App() {
             style={{ height: "100%" }}
           >
             <Grid item xs={8}>
-              <EditorContainer onDataChange={handleDataChange} areaProcessor={areaProcessor} />
+              <EditorContainer
+                onDataChange={handleDataChange}
+                areaProcessor={areaProcessor}
+              />
             </Grid>
             <Grid item xs={4}>
               <MetadataContainer areaProcessor={areaProcessor} />
