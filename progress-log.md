@@ -35,3 +35,10 @@ The idea of this file is to keep track of my learning and thought process when d
   - It also removes user defined tags from markdown before it gets parsed.
 - As it stands instead of changing an id, an entirely new area replaces the old one, meaning the metadata gets reset.
   - Possible solution: don't parse text after every change, but on a button press.
+## 12.11.2023
+
+- Worked on linking EditorContainer with MetadataContainer
+  - Learned about useEffect and useImperativeHandle
+- Right now it doesn't work quite right
+- I also sketched out roughly how the MetadataContainer should look like.
+  - My main inspiration is the Properties window in Visual Studio 2022.
