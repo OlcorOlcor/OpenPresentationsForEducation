@@ -3,7 +3,9 @@ import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer from "./EditorContainer";
 import Preview from "./Preview";
-import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
+import MetadataContainer, {
+  MetadataContainerMethods,
+} from "./MetadataContainer";
 import { CustomArea, CustomAreaProcessor } from "./CustomAreaProcessor";
 
 function App() {
@@ -14,7 +16,10 @@ function App() {
   );
 
   const handleDataChange = (newData: string) => {
-    if (metadataComponentRef.current !== undefined && metadataComponentRef.current !== null) {
+    if (
+      metadataComponentRef.current !== undefined &&
+      metadataComponentRef.current !== null
+    ) {
       metadataComponentRef.current.updateAreas(areaProcessor.getAreas());
     }
     setGeneratedData(newData);
