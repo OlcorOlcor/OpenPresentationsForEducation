@@ -16,7 +16,6 @@ const MetadataContainer = forwardRef<MetadataContainerMethods, {}>((_, ref) => {
     }
   }));
   
-  //TODO: The select doesn't get updated on change.
   return (
     <div>
       <select>
