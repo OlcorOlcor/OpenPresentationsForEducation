@@ -3,17 +3,20 @@ import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer from "./EditorContainer";
 import Preview from "./Preview";
-import MetadataContainer from "./MetadataContainer";
+import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { CustomArea, CustomAreaProcessor } from "./CustomAreaProcessor";
 
 function App() {
   const areaProcessor: CustomAreaProcessor = new CustomAreaProcessor();
-  const MetadataComponentRef = useRef();
+  const metadataComponentRef = useRef<MetadataContainerMethods>(null);
   const [generatedData, setGeneratedData] = useState(
     "Here your presentation will be displayed",
   );
 
   const handleDataChange = (newData: string) => {
+    if (metadataComponentRef.current !== undefined && metadataComponentRef.current !== null) {
+      metadataComponentRef.current.updateAreas(areaProcessor.getAreas());
+    }
     setGeneratedData(newData);
   };
 
@@ -34,7 +37,7 @@ function App() {
               />
             </Grid>
             <Grid item xs={4}>
-              <MetadataContainer areaProcessor={areaProcessor} />
+              <MetadataContainer ref={metadataComponentRef} />
             </Grid>
           </Grid>
         </Grid>

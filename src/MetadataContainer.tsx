@@ -1,18 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import { CustomArea, CustomAreaProcessor } from "./CustomAreaProcessor";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
+import { CustomArea } from "./CustomAreaProcessor";
 
-interface MetadataProps {
-  areaProcessor: CustomAreaProcessor;
+
+export type MetadataContainerMethods = {
+  updateAreas(newAreas: CustomArea[]) : void;
 }
 
-const MetadataContainer: React.FC<MetadataProps> = (props) => {
+const MetadataContainer = forwardRef<MetadataContainerMethods, {}>((_, ref) => {
   const [areas, setAreas] = useState<CustomArea[]>([]);
-  useEffect(() => {
-    const handleChange = () => {
-      setAreas(props.areaProcessor.getAreas());
-    };
-  });
 
+  useImperativeHandle(ref, () => ({
+    updateAreas(newAreas: CustomArea[]) {
+      console.log(newAreas);
+      setAreas(newAreas);
+    }
+  }));
+  
   //TODO: The select doesn't get updated on change.
   return (
     <div>
@@ -25,6 +28,6 @@ const MetadataContainer: React.FC<MetadataProps> = (props) => {
       </select>
     </div>
   );
-};
+});
 
 export default MetadataContainer;
