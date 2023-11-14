@@ -43,3 +43,9 @@ The idea of this file is to keep track of my learning and thought process when d
 - Right now it doesn't work quite right
 - I also sketched out roughly how the MetadataContainer should look like.
   - My main inspiration is the Properties window in Visual Studio 2022.
+
+## 14.11.2023
+
+- After some trial and error I fixed assignment to areas in MetadataContainer using `useImperativeHandle`
+  - https://dev.to/collegewap/how-to-call-the-child-component-function-from-the-parent-component-in-react-3559
+  - https://stackoverflow.com/questions/62210286/declare-type-with-react-useimperativehandle
