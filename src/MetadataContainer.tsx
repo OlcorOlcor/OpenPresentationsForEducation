@@ -10,7 +10,6 @@ const MetadataContainer = forwardRef<MetadataContainerMethods, {}>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     updateAreas(newAreas: CustomArea[]) {
-      console.log(newAreas);
       setAreas(newAreas);
     },
   }));
