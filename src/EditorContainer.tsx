@@ -26,7 +26,7 @@ const EditorContainer: React.FC<FuncProps> = (props) => {
         if (area !== null) {
           area.text = token.content;
         } else {
-          areaProcessor.addArea(token.id, token.content);
+          areaProcessor.addArea(token.id, token.name, token.content);
           area = areaProcessor.getArea(token.id);
         }
         // Area should never be null here, it just silences the compiler
