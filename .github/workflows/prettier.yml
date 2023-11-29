@@ -1,9 +1,9 @@
 name: Prettier Check
 
-on: [push]
-
-permissions:
-  contents: write
+on: 
+  push:
+    branches:
+      - "*"
 
 jobs:
   prettier:
@@ -16,15 +16,5 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Format Code
-        run: npx prettier --write .
-
-      - name: Commit Changes
-        run: |
-          git config user.name "Jan Čelovský"
-          git config user.email "celovskyhonza@gmail.com"
-          git add .
-          git commit -m "Format code using Prettier"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check formatting
+        run: npx prettier --check "**/*.{js,ts,tsx}"        
