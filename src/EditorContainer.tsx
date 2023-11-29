@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
 import monaco from "monaco-editor";
-import * as marked from "marked";
 import { areaTokenizer } from "./AreaTokenizer";
 import { CustomAreaProcessor, CustomArea } from "./CustomAreaProcessor";
 interface FuncProps {
@@ -43,7 +42,6 @@ const EditorContainer: React.FC<FuncProps> = (props) => {
       let regexEnd = /<\/[\s\S]+>/g;
       html = html.replace(regexStart, "");
       html = html.replace(regexEnd, "");
-      marked.parse(html);
       props.onDataChange(html);
     }
   }
