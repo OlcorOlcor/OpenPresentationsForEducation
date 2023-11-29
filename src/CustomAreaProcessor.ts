@@ -8,9 +8,11 @@ class Metadata {
 export class CustomArea {
   public metadata: Metadata = new Metadata();
   public id: string;
+  public name: string;
   public text: string;
-  constructor(id: string, text: string) {
+  constructor(id: string, name: string, text: string) {
     this.id = id;
+    this.name = name;
     this.text = text;
   }
 }
@@ -26,8 +28,8 @@ export class CustomAreaProcessor {
     this.areas = areas;
   }
 
-  addArea(id: string, text: string): void {
-    let area: CustomArea = new CustomArea(id, text);
+  addArea(id: string, name: string, text: string): void {
+    let area: CustomArea = new CustomArea(id, name, text);
     this.areas.push(area);
   }
 

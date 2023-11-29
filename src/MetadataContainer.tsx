@@ -10,7 +10,6 @@ const MetadataContainer = forwardRef<MetadataContainerMethods, {}>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     updateAreas(newAreas: CustomArea[]) {
-      console.log(newAreas);
       setAreas(newAreas);
     },
   }));
@@ -19,8 +18,8 @@ const MetadataContainer = forwardRef<MetadataContainerMethods, {}>((_, ref) => {
     <div>
       <select>
         {areas.map((area) => (
-          <option key={area.id} value={area.text}>
-            {area.text}
+          <option key={area.id} value={area.id}>
+            {area.name}
           </option>
         ))}
       </select>
