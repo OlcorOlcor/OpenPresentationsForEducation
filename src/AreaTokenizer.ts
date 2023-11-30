@@ -124,10 +124,12 @@ function processText(text: string): (string | OpenTagToken | CloseTagToken)[] {
     if (char === '<') {
       let token = getToken(text, index);
       if (token !== null) {
-        array.push(current);
+        if (current != "") {
+          array.push(current);
+          current = "";
+        }
         array.push(token.token);
         index += token.length;
-        current = "";
         continue;
       }
     }
@@ -136,7 +138,6 @@ function processText(text: string): (string | OpenTagToken | CloseTagToken)[] {
   if (current !== "") {
     array.push(current);
   }
-  console.log(array);
   return array;
 }
 
