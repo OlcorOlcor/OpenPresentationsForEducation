@@ -124,12 +124,12 @@ function processText(text: string): (string | OpenTagToken | CloseTagToken)[] {
     if (char === "<") {
       let token = getToken(text, index);
       if (token !== null) {
-        if (current != "") {
+        if (current !== "") {
           array.push(current);
           current = "";
         }
         array.push(token.token);
-        index += token.length;
+        index += token.length - 1;
         continue;
       }
     }
