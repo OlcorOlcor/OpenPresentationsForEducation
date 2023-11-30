@@ -44,10 +44,10 @@ export interface CloseTagToken {
 function getTokenString(text: string, index: number): string | null {
   let endIndex: number = -1;
   for (let i = index + 1; i < text.length; ++i) {
-    if (text[i] === '>') {
+    if (text[i] === ">") {
       endIndex = i + 1;
       break;
-    } 
+    }
   }
   if (endIndex !== -1) {
     return text.substring(index, endIndex);
@@ -67,13 +67,13 @@ function createOpenTagToken(token: string): OpenTagToken {
   let id: string = "";
   // We can parse the token like this, because we know its in the correct format.
   for (let char of token) {
-    if (char === '<') {
+    if (char === "<") {
       continue;
-    } else if (char === ':') {
+    } else if (char === ":") {
       gettingName = false;
     } else if (gettingName) {
       name += char;
-    } else if (!gettingName && !gettingId && char === '"' ) {
+    } else if (!gettingName && !gettingId && char === '"') {
       gettingId = true;
     } else if (gettingId && char !== '"') {
       id += char;
@@ -121,7 +121,7 @@ function processText(text: string): (string | OpenTagToken | CloseTagToken)[] {
   let current: string = "";
   for (let index = 0; index < text.length; ++index) {
     let char = text[index];
-    if (char === '<') {
+    if (char === "<") {
       let token = getToken(text, index);
       if (token !== null) {
         if (current != "") {
@@ -141,7 +141,9 @@ function processText(text: string): (string | OpenTagToken | CloseTagToken)[] {
   return array;
 }
 
-export function tokenizeText(text: string): (string | OpenTagToken | CloseTagToken)[] {
+export function tokenizeText(
+  text: string,
+): (string | OpenTagToken | CloseTagToken)[] {
   let array: (string | OpenTagToken | CloseTagToken)[] = [];
   array = processText(text);
   return array;

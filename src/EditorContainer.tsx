@@ -27,7 +27,7 @@ const EditorContainer = forwardRef<EditorMethods>((props, ref) => {
   }));
 
   return (
-      <Editor height="100%" defaultLanguage="Markdown" onMount={handleMount} />
+    <Editor height="100%" defaultLanguage="Markdown" onMount={handleMount} />
   );
 });
 
