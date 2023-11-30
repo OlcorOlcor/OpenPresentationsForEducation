@@ -49,3 +49,9 @@ The idea of this file is to keep track of my learning and thought process when d
 - After some trial and error I fixed assignment to areas in MetadataContainer using `useImperativeHandle`
   - https://dev.to/collegewap/how-to-call-the-child-component-function-from-the-parent-component-in-react-3559
   - https://stackoverflow.com/questions/62210286/declare-type-with-react-useimperativehandle
+
+## 30.11.2023
+
+- Reworked tokenizer
+  - Text is now parsed by hand, removed marked from the project
+- Added jest to the project and wrote unit tests for tokenizing process
