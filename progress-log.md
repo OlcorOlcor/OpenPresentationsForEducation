@@ -55,3 +55,10 @@ The idea of this file is to keep track of my learning and thought process when d
 - Reworked tokenizer
   - Text is now parsed by hand, removed marked from the project
 - Added jest to the project and wrote unit tests for tokenizing process
+
+## 06.12.2023
+
+- Began work on annotizer
+  - Annotizer takes the array created by the tokeziner and transpills it into an annotized text (text with tags around it)
+ - Added comments to code that gets exported in annotizer and tokenizer
+   - I followed the tsdoc standard - https://tsdoc.org/
