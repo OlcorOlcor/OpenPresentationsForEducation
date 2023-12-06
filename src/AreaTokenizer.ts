@@ -1,3 +1,5 @@
+export type Token = (string | OpenTagToken | CloseTagToken);
+
 export interface AreaToken {
   type: "area";
   id: string;
@@ -116,7 +118,7 @@ function getToken(text: string, index: number): TokenParsingContainer | null {
   return null;
 }
 
-function processText(text: string): (string | OpenTagToken | CloseTagToken)[] {
+function processText(text: string): Token[] {
   let array: (string | OpenTagToken | CloseTagToken)[] = [];
   let current: string = "";
   for (let index = 0; index < text.length; ++index) {
@@ -143,8 +145,8 @@ function processText(text: string): (string | OpenTagToken | CloseTagToken)[] {
 
 export function tokenizeText(
   text: string,
-): (string | OpenTagToken | CloseTagToken)[] {
-  let array: (string | OpenTagToken | CloseTagToken)[] = [];
+): Token[] {
+  let array: Token[] = [];
   array = processText(text);
   return array;
 }
