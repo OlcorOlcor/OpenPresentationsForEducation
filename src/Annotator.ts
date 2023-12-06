@@ -1,5 +1,10 @@
 import { OpenTagToken, CloseTagToken, Token } from "./AreaTokenizer";
 
+/**
+ * Gets thrown when user defined custom areas are not correctly paired
+ * 
+ * `areaName`: contains name of the incorrectly paired area
+ */
 export class AreaParenthesizationError extends Error {
     public static IMPROPER_PARENTHESIZATION = "ONE OF THE CUSTOM AREAS HAS NOT BEEN PROPERLY CLOSED.";
     public areaName: string;
@@ -41,9 +46,19 @@ function handleCloseTagToken(annotatedText: string, token: CloseTagToken, tagSta
 
     return annotatedText;
 }
+
+/**
+ * Parses an array of Tokens created by the AreaTokenizer.
+ * Checks if the custom area tokens are correctly paired.
+ * 
+ * @param tokenArray Array of tokens that will get parsed into an annotated text.
+ * @returns annotated text.
+ * @throws `AreaParenthesizationError` when custom areas are not correctly paired.
+ */
 export function annotateText(tokenArray: Token[]): string {
     let annotatedText: string = "";
     let tagStack: (OpenTagToken | CloseTagToken)[] = [];
+
     // Check proper parenthesization of custom areas
     // Transform markdown tags into annotation
 
@@ -61,7 +76,7 @@ export function annotateText(tokenArray: Token[]): string {
 
     if (tagStack.length !== 0) {
         let token = tagStack.pop();
-        // token should never underfined, the if statement just silenced the compiler
+        // token should never be undefined, the if statement just silenced the compiler
         if (token !== undefined) {
             throw new AreaParenthesizationError(AreaParenthesizationError.IMPROPER_PARENTHESIZATION, token.name);
         }
