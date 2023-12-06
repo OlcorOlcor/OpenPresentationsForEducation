@@ -3,11 +3,17 @@ interface TokenParsingContainer {
   token: OpenTagToken | CloseTagToken;
   length: number;
 }
+
+/**
+ * Represents the beginning of a custom user made area
+ */
 export interface OpenTagToken {
   id: string;
   name: string;
 }
-
+/**
+ * Represents the end of a custom user made area
+ */
 export interface CloseTagToken {
   name: string;
 }
@@ -112,9 +118,13 @@ function processText(text: string): Token[] {
   return array;
 }
 
-export function tokenizeText(
-  text: string,
-): Token[] {
+/**
+ * Creates an array of tokens and remaining text.
+ * 
+ * @param text Text to be tokenized
+ * @returns Array consisting of `OpenTagToken`, `CloseTagToken` and `text` in between 
+ */
+export function tokenizeText(text: string): Token[] {
   let array: Token[] = [];
   array = processText(text);
   return array;
