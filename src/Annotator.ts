@@ -2,7 +2,7 @@ import { OpenTagToken, CloseTagToken, Token } from "./AreaTokenizer";
 
 /**
  * Gets thrown when user defined custom areas are not correctly paired
- * 
+ *
  * `areaName`: contains name of the incorrectly paired area
  */
 export class AreaParenthesizationError extends Error {
@@ -16,7 +16,7 @@ export class AreaParenthesizationError extends Error {
 
 function isOpenTagToken(token: Token): token is OpenTagToken {
     return (token as OpenTagToken).id !== undefined && (token as OpenTagToken).name !== undefined;
-} 
+}
 
 function isCloseTagToken(token: Token): token is CloseTagToken {
     return (token as OpenTagToken).id === undefined && (token as CloseTagToken).name !== undefined;
@@ -27,7 +27,7 @@ function handleOpenTagToken(annotatedText: string, token: OpenTagToken, tagStack
 
     // TODO: make more unique
     annotatedText += "<";
-    annotatedText += token.name; 
+    annotatedText += token.name;
     annotatedText += ">";
 
     return annotatedText;
@@ -50,7 +50,7 @@ function handleCloseTagToken(annotatedText: string, token: CloseTagToken, tagSta
 /**
  * Parses an array of Tokens created by the AreaTokenizer.
  * Checks if the custom area tokens are correctly paired.
- * 
+ *
  * @param tokenArray Array of tokens that will get parsed into an annotated text.
  * @returns annotated text.
  * @throws `AreaParenthesizationError` when custom areas are not correctly paired.
