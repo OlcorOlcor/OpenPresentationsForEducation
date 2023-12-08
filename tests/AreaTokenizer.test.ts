@@ -1,4 +1,3 @@
-import { DiffieHellmanGroup } from "crypto";
 import { tokenizeText } from "../src/AreaTokenizer";
 
 test("Empty text", () => {
