@@ -73,6 +73,7 @@ function getHeadingLevel(line: string): number | null {
         index++;
     }
 
+    // 6 is the smallest heading
     return index <= 6 ? index : null;
 }
 
@@ -81,14 +82,11 @@ function processLine(line: string): string {
 
     let whiteChars = getLeadingWhiteChars(line);
     let whiteSpaceLen = whiteChars.length;
-
-    console.log("WhiteSpaceLen: " + whiteSpaceLen);
     // # counts as a heading only at the beginning of the line (excluding white characters)
     let headingLevel: number | null = null;
     if (line[whiteSpaceLen] === '#') {
         headingLevel = getHeadingLevel(line.substring(annotateText.length));
     }
-    console.log("HeadingLevel: " + headingLevel);
     
     annotatedLine += (headingLevel !== null) ? "<heading" + headingLevel + ">" : whiteChars;
 
@@ -98,7 +96,7 @@ function processLine(line: string): string {
     for (let i = normalTextStart; i < line.length; i++) {
         let char = line[i];
 
-        // TODO
+        // TODO detect inline annotation (bolded text, underlines,...)
 
         annotatedLine += char;
     }
