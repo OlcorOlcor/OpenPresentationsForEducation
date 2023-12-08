@@ -68,7 +68,7 @@ function getLeadingWhiteChars(line: string): string {
 function getHeadingLevel(line: string): number | null {
     let currentChar = line[0];
     let index = 1;
-    while (currentChar == '#') {
+    while (currentChar === '#') {
         currentChar = line[index];
         index++;
     }
@@ -85,7 +85,7 @@ function processLine(line: string): string {
     // # counts as a heading only at the beginning of the line (excluding white characters)
     let headingLevel: number | null = null;
     if (line[whiteSpaceLen] === '#') {
-        headingLevel = getHeadingLevel(line.substring(annotateText.length));
+        headingLevel = getHeadingLevel(line.substring(whiteSpaceLen + 1));
     }
     
     annotatedLine += (headingLevel !== null) ? "<heading" + headingLevel + ">" : whiteChars;
