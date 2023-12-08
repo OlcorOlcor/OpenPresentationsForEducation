@@ -112,9 +112,13 @@ function handleMarkdownText(text: string): string {
     let lines: string[] = getLines(text);
     let annotatedText: string = "";
     
+    let lineCount = 0;
     lines.forEach((line) => {
         annotatedText += processLine(line);
-        annotatedText += '\n';
+        if (lineCount != lines.length - 1) {
+            annotatedText += '\n';
+        }
+        lineCount++;
     });
 
     return annotatedText;
