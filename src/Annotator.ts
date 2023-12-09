@@ -25,7 +25,7 @@ function isCloseTagToken(token: Token): token is CloseTagToken {
 
 function handleOpenTagToken(token: OpenTagToken, tagStack: (OpenTagToken | CloseTagToken)[]): string {
     tagStack.push(token);
-    let annotatedTag: string = ""
+    let annotatedTag: string = "";
     // TODO: make more unique
     annotatedTag += "<";
     annotatedTag += token.name;
@@ -41,7 +41,7 @@ function handleCloseTagToken(token: CloseTagToken, tagStack: (OpenTagToken | Clo
         throw new AreaParenthesizationError(AreaParenthesizationError.IMPROPER_PARENTHESIZATION, token.name);
     }
     let annotatedTag: string = "";
-    
+
     annotatedTag += "</";
     annotatedTag += token.name;
     annotatedTag += ">";
@@ -50,14 +50,14 @@ function handleCloseTagToken(token: CloseTagToken, tagStack: (OpenTagToken | Clo
 }
 
 function getLines(text: string): string[] {
-    return text.split('\n');
+    return text.split("\n");
 }
 
 function getLeadingWhiteChars(line: string): string {
     let currentChar = line[0];
     let index: number = 1;
     let whole: string = "";
-    while ((currentChar === ' ' || currentChar === '\t') && index !== line.length) {
+    while ((currentChar === " " || currentChar === "\t") && index !== line.length) {
         whole += currentChar;
         currentChar = line[index];
         index++;
@@ -68,7 +68,7 @@ function getLeadingWhiteChars(line: string): string {
 function getHeadingLevel(line: string): number | null {
     let currentChar = line[0];
     let index = 1;
-    while (currentChar === '#') {
+    while (currentChar === "#") {
         currentChar = line[index];
         index++;
     }
@@ -84,19 +84,19 @@ function processLine(line: string): string {
     let whiteSpaceLen = whiteChars.length;
     // # counts as a heading only at the beginning of the line (excluding white characters)
     let headingLevel: number | null = null;
-    if (line[whiteSpaceLen] === '#') {
+    if (line[whiteSpaceLen] === "#") {
         headingLevel = getHeadingLevel(line.substring(whiteSpaceLen + 1));
     }
-    
-    annotatedLine += (headingLevel !== null) ? "<heading" + headingLevel + ">" : whiteChars;
+
+    annotatedLine += headingLevel !== null ? "<heading" + headingLevel + ">" : whiteChars;
 
     // TODO: variable number of white spaces after #
 
-    let normalTextStart = (headingLevel !== null) ? whiteSpaceLen + headingLevel + 1 : whiteSpaceLen;
+    let normalTextStart = headingLevel !== null ? whiteSpaceLen + headingLevel + 1 : whiteSpaceLen;
     for (let i = normalTextStart; i < line.length; i++) {
         let char = line[i];
 
-        // TODO detect inline annotation (bolded text, underlines,...)
+        // TODO: detect inline annotation (bolded text, underlines,...)
 
         annotatedLine += char;
     }
@@ -111,12 +111,12 @@ function processLine(line: string): string {
 function handleMarkdownText(text: string): string {
     let lines: string[] = getLines(text);
     let annotatedText: string = "";
-    
+
     let lineCount = 0;
     lines.forEach((line) => {
         annotatedText += processLine(line);
         if (lineCount != lines.length - 1) {
-            annotatedText += '\n';
+            annotatedText += "\n";
         }
         lineCount++;
     });

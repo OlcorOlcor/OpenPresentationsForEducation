@@ -5,6 +5,6 @@
   "useTabs": false,
   "trailingComma": "none",
   "bracketSpacing": true,
-  "editor.formatOnSave": true,
-  "printWidth": 200
+  "printWidth": 200,
+  "arrowParens": "always"
 }

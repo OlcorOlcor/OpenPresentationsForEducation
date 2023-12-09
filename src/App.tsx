@@ -4,19 +4,14 @@ import "./App.css";
 import EditorContainer, { EditorMethods } from "./EditorContainer";
 import Preview from "./Preview";
 import { tokenizeText, OpenTagToken, CloseTagToken } from "./AreaTokenizer";
-import MetadataContainer, {
-    MetadataContainerMethods,
-} from "./MetadataContainer";
+import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { CustomArea, CustomAreaProcessor } from "./CustomAreaProcessor";
 import { annotateText, AreaParenthesizationError } from "./Annotator";
-
 
 function App() {
     const editorContainerRef = useRef<EditorMethods>(null);
     const metadataComponentRef = useRef<MetadataContainerMethods>(null);
-    const [generatedData, setGeneratedData] = useState(
-        "Here your presentation will be displayed",
-    );
+    const [generatedData, setGeneratedData] = useState("Here your presentation will be displayed");
     function compile() {
         if (editorContainerRef.current === null) {
             return;
@@ -41,12 +36,7 @@ function App() {
         <div className="container">
             <Grid container spacing={2} className="gridContainer">
                 <Grid item xs={6}>
-                    <Grid
-                        container
-                        direction="column"
-                        spacing={2}
-                        style={{ height: "100%" }}
-                    >
+                    <Grid container direction="column" spacing={2} style={{ height: "100%" }}>
                         <Grid item xs={1}>
                             <button onClick={compile}>Compile</button>
                         </Grid>
