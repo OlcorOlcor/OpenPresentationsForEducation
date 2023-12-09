@@ -1,4 +1,4 @@
-import { annotateText } from "../src/Annotator";
+import { AreaParenthesizationError, annotateText } from "../src/Annotator";
 
 test("Regular text", () => {
     let text = "Hello World!";
@@ -41,4 +41,44 @@ test("Hashtag in text", () => {
 test("Hashtag in heading", () => {
     let text = "# with #";
     expect(annotateText([text])).toEqual("<heading1>with #</heading1>");
+});
+
+test("Simple area", () => {
+    let arr = [{ name: "Open", id: "1" }, { name: "Open" }];
+    expect(annotateText(arr)).toEqual("<Open></Open>");
+});
+
+test("Many areas", () => {
+    let arr = [{ name: "First", id: "1" }, { name: "Second", id: "2" }, { name: "Third", id: "3" }, { name: "Third" }, { name: "Second" }, { name: "First" } ];
+    expect(annotateText(arr)).toEqual("<First><Second><Third></Third></Second></First>");
+});
+
+test("Overlapping area", () => {
+    let arr = [{ name: "First", id: "1" }, { name: "Second", id: "2" }, { name: "First" }, { name: "Second" }]
+    expect(annotateText(arr)).toEqual("<First><Second></First></Second>");
+});
+
+test("Text in area", () => {
+    let arr = [{ name: "First", id: "1"}, "Hello World!", { name: "First" }];
+    expect(annotateText(arr)).toEqual("<First>Hello World!</First>");
+});
+
+test("Text around area", () => {
+    let arr = ["Hello", { name: "First", id: "1" }, "World", { name: "First" }, "!"];
+    expect(annotateText(arr)).toEqual("Hello<First>World</First>!");
+})
+
+test("Multiline area", () => {
+    let arr = [{ name: "First", id: "1" }, "\nText\n", { name: "First" }];
+    expect(annotateText(arr)).toEqual("<First>\nText\n</First>");
+})
+
+test("Unclosed area", () => {
+    let arr = [{ name: "Open", id: "1" }];
+    expect(() => annotateText(arr)).toThrow(AreaParenthesizationError);
+});
+
+test("Unopened area", () => {
+    let arr = [{ name: "Close" }];
+    expect(() => annotateText(arr)).toThrow(AreaParenthesizationError);
 });
