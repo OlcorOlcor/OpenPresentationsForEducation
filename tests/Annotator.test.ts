@@ -49,29 +49,29 @@ test("Simple area", () => {
 });
 
 test("Many areas", () => {
-    let arr = [{ name: "First", id: "1" }, { name: "Second", id: "2" }, { name: "Third", id: "3" }, { name: "Third" }, { name: "Second" }, { name: "First" } ];
+    let arr = [{ name: "First", id: "1" }, { name: "Second", id: "2" }, { name: "Third", id: "3" }, { name: "Third" }, { name: "Second" }, { name: "First" }];
     expect(annotateText(arr)).toEqual("<First><Second><Third></Third></Second></First>");
 });
 
 test("Overlapping area", () => {
-    let arr = [{ name: "First", id: "1" }, { name: "Second", id: "2" }, { name: "First" }, { name: "Second" }]
+    let arr = [{ name: "First", id: "1" }, { name: "Second", id: "2" }, { name: "First" }, { name: "Second" }];
     expect(annotateText(arr)).toEqual("<First><Second></First></Second>");
 });
 
 test("Text in area", () => {
-    let arr = [{ name: "First", id: "1"}, "Hello World!", { name: "First" }];
+    let arr = [{ name: "First", id: "1" }, "Hello World!", { name: "First" }];
     expect(annotateText(arr)).toEqual("<First>Hello World!</First>");
 });
 
 test("Text around area", () => {
     let arr = ["Hello", { name: "First", id: "1" }, "World", { name: "First" }, "!"];
     expect(annotateText(arr)).toEqual("Hello<First>World</First>!");
-})
+});
 
 test("Multiline area", () => {
     let arr = [{ name: "First", id: "1" }, "\nText\n", { name: "First" }];
     expect(annotateText(arr)).toEqual("<First>\nText\n</First>");
-})
+});
 
 test("Unclosed area", () => {
     let arr = [{ name: "Open", id: "1" }];
