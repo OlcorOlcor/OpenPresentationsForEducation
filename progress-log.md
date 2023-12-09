@@ -62,3 +62,10 @@ The idea of this file is to keep track of my learning and thought process when d
   - Annotizer takes the array created by the tokeziner and transpills it into an annotized text (text with tags around it)
  - Added comments to code that gets exported in annotizer and tokenizer
    - I followed the tsdoc standard - https://tsdoc.org/
+  
+## 08.12.2023
+- Added annotation of markdown headings
+- Added unit tests for annotation of headings and custom areas
+
+## 09.12.2023
+- Added more unit tests for annotation
