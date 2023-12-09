@@ -37,7 +37,7 @@ function handleOpenTagToken(token: OpenTagToken, tagStack: (OpenTagToken | Close
 function handleCloseTagToken(token: CloseTagToken, tagStack: (OpenTagToken | CloseTagToken)[]): string {
     let openToken = tagStack.pop();
 
-    if (openToken === undefined || openToken.name !== token.name) {
+    if (openToken === undefined) {
         throw new AreaParenthesizationError(AreaParenthesizationError.IMPROPER_PARENTHESIZATION, token.name);
     }
     let annotatedTag: string = "";
