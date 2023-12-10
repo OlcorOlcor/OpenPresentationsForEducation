@@ -1,4 +1,3 @@
-import { isConstructorDeclaration } from "typescript";
 import { OpenTagToken, CloseTagToken, Token } from "./AreaTokenizer";
 
 /**
@@ -13,6 +12,11 @@ export class AreaParenthesizationError extends Error {
         super(message);
         this.areaName = areaName;
     }
+}
+
+class AnnotatationState {
+    inParagraph: boolean = false;
+    inHeading: boolean = false;
 }
 
 function isOpenTagToken(token: Token): token is OpenTagToken {
@@ -77,7 +81,12 @@ function getHeadingLevel(line: string): number | null {
     return index <= 6 ? index : null;
 }
 
-function processLine(line: string): string {
+function startParagraph(state: AnnotatationState): string {
+    state.inParagraph = true;
+    return "<paragraph>";
+}
+
+function processLine(line: string, state: AnnotatationState): string {
     let annotatedLine: string = "";
 
     let whiteChars = getLeadingWhiteChars(line);
@@ -85,7 +94,12 @@ function processLine(line: string): string {
     // # counts as a heading only at the beginning of the line (excluding white characters)
     let headingLevel: number | null = null;
     if (line[whiteSpaceLen] === "#") {
+        state.inHeading = true;
         headingLevel = getHeadingLevel(line.substring(whiteSpaceLen + 1));
+    }
+
+    if (!state.inParagraph && headingLevel === null) {
+        annotatedLine += startParagraph(state);
     }
 
     annotatedLine += headingLevel !== null ? "<heading" + headingLevel + ">" : whiteChars;
@@ -95,7 +109,6 @@ function processLine(line: string): string {
         let trailingWhiteChars = getLeadingWhiteChars(line.substring(whiteSpaceLen + headingLevel));
         trailingWhiteCharsLen = trailingWhiteChars.length;
     }
-
     let normalTextStart = headingLevel !== null ? whiteSpaceLen + headingLevel + trailingWhiteCharsLen : whiteSpaceLen;
     for (let i = normalTextStart; i < line.length; i++) {
         let char = line[i];
@@ -112,16 +125,23 @@ function processLine(line: string): string {
     return annotatedLine;
 }
 
-function handleMarkdownText(text: string): string {
+function handleMarkdownText(text: string, state: AnnotatationState): string {
     let lines: string[] = getLines(text);
     let annotatedText: string = "";
 
     let lineCount = 0;
     lines.forEach((line) => {
-        annotatedText += processLine(line);
-        if (lineCount != lines.length - 1) {
+        if (line === "\n" && state.inParagraph) {
+            annotatedText += "</paragraph>";
+            lineCount++;
+            state.inParagraph = false;
+            return;
+        }
+        annotatedText += processLine(line, state);
+        if (lineCount !== lines.length - 1) {
             annotatedText += "\n";
         }
+        state.inHeading = false;
         lineCount++;
     });
 
@@ -139,7 +159,7 @@ function handleMarkdownText(text: string): string {
 export function annotateText(tokenArray: Token[]): string {
     let annotatedText: string = "";
     let tagStack: (OpenTagToken | CloseTagToken)[] = [];
-
+    let state = new AnnotatationState();
     // Check proper parenthesization of custom areas
     // Transform markdown tags into annotation
 
@@ -151,8 +171,12 @@ export function annotateText(tokenArray: Token[]): string {
             annotatedText += handleCloseTagToken(token, tagStack);
             return; //continue
         }
-        annotatedText += handleMarkdownText(token);
+        annotatedText += handleMarkdownText(token, state);
     });
+
+    if (state.inParagraph) {
+        annotatedText += "</paragraph>";
+    }
 
     if (tagStack.length !== 0) {
         let token = tagStack.pop();
@@ -162,6 +186,5 @@ export function annotateText(tokenArray: Token[]): string {
         }
         throw new AreaParenthesizationError(AreaParenthesizationError.IMPROPER_PARENTHESIZATION, "");
     }
-    console.log(annotatedText);
     return annotatedText;
 }

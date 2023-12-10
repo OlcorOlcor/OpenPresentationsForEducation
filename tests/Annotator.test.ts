@@ -1,9 +1,8 @@
 import { AreaParenthesizationError, annotateText } from "../src/Annotator";
 
-test("Regular text", () => {
-    let text = "Hello World!";
-    expect(annotateText([text])).toEqual(text);
-});
+//
+// Heading tests
+//
 
 test("Single heading 1", () => {
     expect(annotateText(["# Hello World!"])).toEqual("<heading1>Hello World!</heading1>");
@@ -21,7 +20,7 @@ test("Heading levels", () => {
 
 test("Too many hashtags", () => {
     let text = "######## Hello World";
-    expect(annotateText([text])).toEqual(text);
+    expect(annotateText([text])).toEqual("<paragraph>" + text + "</paragraph>");
 });
 
 test("Leading white characters", () => {
@@ -45,18 +44,22 @@ test("Leading and trailing white characters", () => {
 
 test("Trailing white characters behind text", () => {
     let text = "Hello World!   ";
-    expect(annotateText([text])).toEqual("Hello World!   ");
+    expect(annotateText([text])).toEqual("<paragraph>Hello World!   </paragraph>");
 });
 
 test("Hashtag in text", () => {
     let text = "text # text";
-    expect(annotateText([text])).toEqual(text);
+    expect(annotateText([text])).toEqual("<paragraph>" + text + "</paragraph>");
 });
 
 test("Hashtag in heading", () => {
     let text = "# with #";
     expect(annotateText([text])).toEqual("<heading1>with #</heading1>");
 });
+
+//
+// Area tests
+//
 
 test("Simple area", () => {
     let arr = [{ name: "Open", id: "1" }, { name: "Open" }];
@@ -80,7 +83,7 @@ test("Text in area", () => {
 
 test("Text around area", () => {
     let arr = ["Hello", { name: "First", id: "1" }, "World", { name: "First" }, "!"];
-    expect(annotateText(arr)).toEqual("Hello<First>World</First>!");
+    expect(annotateText(arr)).toEqual("<paragraph>Hello<First>World</First>!</paragraph>");
 });
 
 test("Multiline area", () => {
@@ -96,4 +99,13 @@ test("Unclosed area", () => {
 test("Unopened area", () => {
     let arr = [{ name: "Close" }];
     expect(() => annotateText(arr)).toThrow(AreaParenthesizationError);
+});
+
+//
+// Paragraph tests
+//
+
+test("Regular paragraph", () => {
+    let text = "Hello World!";
+    expect(annotateText([text])).toEqual("<paragraph>Hello World!</paragraph>");
 });
