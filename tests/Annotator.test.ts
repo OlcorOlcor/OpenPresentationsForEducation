@@ -33,6 +33,21 @@ test("Leading white characters with normal text", () => {
     expect(annotateText([text])).toEqual(text);
 });
 
+test("Trailing white characters", () => {
+    let text = "#             Hello World!";
+    expect(annotateText([text])).toEqual("<heading1>Hello World!</heading1>");
+});
+
+test("Leading and trailing white characters", () => {
+    let text = "       #       Hello World!";
+    expect(annotateText([text])).toEqual("<heading1>Hello World!</heading1>");
+});
+
+test("Trailing white characters behind text", () => {
+    let text = "Hello World!   ";
+    expect(annotateText([text])).toEqual("Hello World!   ");
+});
+
 test("Hashtag in text", () => {
     let text = "text # text";
     expect(annotateText([text])).toEqual(text);
