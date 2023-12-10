@@ -89,11 +89,11 @@ function processLine(line: string): string {
     }
 
     annotatedLine += headingLevel !== null ? "<heading" + headingLevel + ">" : whiteChars;
-    
+
     let trailingWhiteCharsLen = 1;
     if (headingLevel !== null) {
-       let trailingWhiteChars = getLeadingWhiteChars(line.substring(whiteSpaceLen + headingLevel));
-       trailingWhiteCharsLen = trailingWhiteChars.length;
+        let trailingWhiteChars = getLeadingWhiteChars(line.substring(whiteSpaceLen + headingLevel));
+        trailingWhiteCharsLen = trailingWhiteChars.length;
     }
 
     let normalTextStart = headingLevel !== null ? whiteSpaceLen + headingLevel + trailingWhiteCharsLen : whiteSpaceLen;
