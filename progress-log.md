@@ -69,3 +69,11 @@ The idea of this file is to keep track of my learning and thought process when d
 
 ## 09.12.2023
 - Added more unit tests for annotation
+
+## 11.12.2023
+- Sketched out a possible redesign of annotator.
+  - The current implementation is clunky when it comes to detecting paragraphs.
+  - It also doesn't support inline custom user areas.
+- The new approach will use a State class for keeping track of where the annotator currently is in the markdown code.
+- It will also ditch the line by line parsing in favor of char by char.
+  - It will also be more flexible for detecting inline markdown code like bolded text or underlined text
