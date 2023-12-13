@@ -77,3 +77,7 @@ The idea of this file is to keep track of my learning and thought process when d
 - The new approach will use a State class for keeping track of where the annotator currently is in the markdown code.
 - It will also ditch the line by line parsing in favor of char by char.
   - It will also be more flexible for detecting inline markdown code like bolded text or underlined text
+
+## 12.12.2023 (meeting with the thesis supervisor)
+- We agreed on focusing more on a OOP/tree DOM-like structure for the annotated text
+  - The text annotation I was currently working on will be constructed from the DOM-like structure instead.
