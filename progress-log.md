@@ -81,3 +81,6 @@ The idea of this file is to keep track of my learning and thought process when d
 ## 12.12.2023 (meeting with the thesis supervisor)
 - We agreed on focusing more on a OOP/tree DOM-like structure for the annotated text
   - The text annotation I was currently working on will be constructed from the DOM-like structure instead.
+ 
+## 11.1.2024
+- Began learning how to work with tree-sitter
