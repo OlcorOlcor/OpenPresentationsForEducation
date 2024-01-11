@@ -15,6 +15,7 @@
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "monaco-editor": "^0.43.0",
+    "nan": "^2.18.0",
     "node": "^21.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -49,6 +50,7 @@
   "devDependencies": {
     "@babel/preset-flow": "^7.23.3",
     "prettier": "^3.0.3",
+    "tree-sitter-cli": "^0.20.8",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1"
   }
