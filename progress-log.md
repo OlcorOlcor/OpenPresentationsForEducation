@@ -84,3 +84,7 @@ The idea of this file is to keep track of my learning and thought process when d
  
 ## 11.1.2024
 - Began learning how to work with tree-sitter
+
+## 12.1.2024
+- Began writing my own grammar for my markdown extension.
+- Currently the grammar detects headings and inline elements like bolded text.
