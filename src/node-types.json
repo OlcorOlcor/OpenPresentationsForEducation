@@ -4,9 +4,13 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "bold_italic_marker",
+          "named": true
+        },
         {
           "type": "text",
           "named": true
@@ -19,9 +23,13 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "bold_marker",
+          "named": true
+        },
         {
           "type": "text",
           "named": true
@@ -42,7 +50,7 @@
           "named": true
         },
         {
-          "type": "text_line",
+          "type": "paragraphs",
           "named": true
         },
         {
@@ -205,15 +213,63 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "italic_marker",
+          "named": true
+        },
         {
           "type": "text",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "line_end",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "paragraph",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "text_line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "paragraphs",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "line_end",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "text",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "text_line",
@@ -269,6 +325,18 @@
     }
   },
   {
+    "type": "\n",
+    "named": false
+  },
+  {
+    "type": "\n\r",
+    "named": false
+  },
+  {
+    "type": "\r",
+    "named": false
+  },
+  {
     "type": "# ",
     "named": false
   },
@@ -293,27 +361,19 @@
     "named": false
   },
   {
-    "type": "*",
-    "named": false
-  },
-  {
-    "type": "**",
-    "named": false
-  },
-  {
-    "type": "***",
-    "named": false
-  },
-  {
     "type": "- ",
     "named": false
   },
   {
-    "type": "line_end",
+    "type": "bold_italic_marker",
     "named": true
   },
   {
-    "type": "text",
+    "type": "bold_marker",
+    "named": true
+  },
+  {
+    "type": "italic_marker",
     "named": true
   }
 ]
