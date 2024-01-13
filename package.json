@@ -53,5 +53,6 @@
     "tree-sitter-cli": "^0.20.8",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1"
-  }
+  },
+  "main": "bindings/node"
 }
