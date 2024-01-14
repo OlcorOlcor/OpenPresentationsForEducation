@@ -94,3 +94,7 @@ The idea of this file is to keep track of my learning and thought process when d
 - Tried detecting paragraphs, but there are some issues with detecting end of lines.
   - Tree splitter seems to 'combine' multiple eol into one character.
   - Possible solution: writing an external scanner in C to detect these tokens.
+
+## 14.1.2024
+- Added a lexer in c++ that should detect new line and end of file characters.
+  - Lexer is not yet done
