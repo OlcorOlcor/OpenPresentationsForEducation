@@ -228,11 +228,6 @@
     }
   },
   {
-    "type": "line_end",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "paragraph",
     "named": true,
     "fields": {},
@@ -325,18 +320,6 @@
     }
   },
   {
-    "type": "\n",
-    "named": false
-  },
-  {
-    "type": "\n\r",
-    "named": false
-  },
-  {
-    "type": "\r",
-    "named": false
-  },
-  {
     "type": "# ",
     "named": false
   },
@@ -374,6 +357,10 @@
   },
   {
     "type": "italic_marker",
+    "named": true
+  },
+  {
+    "type": "line_end",
     "named": true
   }
 ]

@@ -1,5 +1,11 @@
 module.exports = grammar({
     name: 'markdown_slides',
+
+    externals: $ => [
+      $.line_end,
+      $.file_end
+    ],
+
     rules: {
       document: $ => prec(1000, repeat(choice($.heading, $.unordered_list, $.paragraphs))),
 
@@ -16,7 +22,6 @@ module.exports = grammar({
       heading4: $ => seq('#### ', $.text_line),
       heading5: $ => seq('##### ', $.text_line),
       heading6: $ => seq('###### ', $.text_line),
-
 
       // Unordered list
       unordered_list: $ => prec.right(seq(repeat1($.unordered_list_item))),
@@ -36,6 +41,5 @@ module.exports = grammar({
 
       text: $ => prec(10, /[^\n]+/),
       line_ends: $ => seq($.line_end, repeat1($.line_end)),
-      line_end: $ => choice('\n', '\r', '\n\r'),
     }
   });

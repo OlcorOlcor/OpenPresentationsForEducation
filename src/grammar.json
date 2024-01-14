@@ -354,23 +354,6 @@
           }
         }
       ]
-    },
-    "line_end": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "\n"
-        },
-        {
-          "type": "STRING",
-          "value": "\r"
-        },
-        {
-          "type": "STRING",
-          "value": "\n\r"
-        }
-      ]
     }
   },
   "extras": [
@@ -381,7 +364,16 @@
   ],
   "conflicts": [],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "line_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "file_end"
+    }
+  ],
   "inline": [],
   "supertypes": []
 }
