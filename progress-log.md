@@ -98,3 +98,8 @@ The idea of this file is to keep track of my learning and thought process when d
 ## 14.1.2024
 - Added a lexer in c++ that should detect new line and end of file characters.
   - Lexer is not yet done
+
+## 15.1.2024 (meeting with the thesis supervisor)
+- We agreed on shifting the currect focus away from parsing.
+- From now on I will focus on how the presentation will be displayed.
+  - The 'displaying algorithm' will take the tree structure returned from the parsing process and turn it into the presentation itself.
