@@ -1,0 +1,58 @@
+[
+    {
+        "type": "slide",
+        "content": [
+            {
+                "type": "paragraph",
+                "content": [
+                    {
+                        "type": "text",
+                        "content": "This is a paragraph"
+                    }, 
+                    {
+                        "type": "bold",
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": "with inline element"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "content": "\nand multiple lines\n"
+                    }
+                ]
+            }, 
+            {
+                "type": "heading",
+                "level": 1,
+                "content": [
+                    {
+                        "type": "text",
+                        "content": "Heading"
+                    }
+                ]
+            }, 
+            {
+                "type": "heading",
+                "level": 2,
+                "content": [
+                    {
+                        "type": "text",
+                        "content": "Subheading "
+                    },
+                    {
+                        "type": "italic",
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": "with inline element"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
