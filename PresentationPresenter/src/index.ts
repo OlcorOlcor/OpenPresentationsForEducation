@@ -118,7 +118,7 @@ function HandleSlide(slide: Slide): string {
     return res;
 }
 
-function ToHtmlFromJson(json: Slide[]): string {
+export function ToHtmlFromJson(json: Slide[]): string {
     let res = "";
     json.forEach(slide => {
         res += HandleSlide(slide);

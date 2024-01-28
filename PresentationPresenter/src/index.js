@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ToHtmlFromFile = void 0;
+exports.ToHtmlFromJson = exports.ToHtmlFromFile = void 0;
 var readFileSync = require('fs').readFileSync;
 function ToHtmlFromFile(fileName) {
     var stringJson = readFileSync(fileName, 'utf8');
@@ -59,7 +59,6 @@ function HandleText(text) {
 function HandleParagraph(paragraph) {
     var res = "";
     res += "<p>";
-    var content = paragraph.content;
     res += HandleContent(paragraph);
     res += "</p>";
     return res;
@@ -67,7 +66,6 @@ function HandleParagraph(paragraph) {
 function HandleHeading(heading) {
     var res = "";
     res += "<h" + heading.level + ">";
-    var content = heading.content;
     res += HandleContent(heading);
     res += "</h" + heading.level + ">";
     return res;
@@ -94,3 +92,4 @@ function ToHtmlFromJson(json) {
     });
     return res;
 }
+exports.ToHtmlFromJson = ToHtmlFromJson;
