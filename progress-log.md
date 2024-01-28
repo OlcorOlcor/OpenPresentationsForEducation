@@ -103,3 +103,8 @@ The idea of this file is to keep track of my learning and thought process when d
 - We agreed on shifting the currect focus away from parsing.
 - From now on I will focus on how the presentation will be displayed.
   - The 'displaying algorithm' will take the tree structure returned from the parsing process and turn it into the presentation itself.
+
+## 28.1.2024 && 29.1.2024
+- Worked on 'Presenter'
+- Presenter takes in a json file (that will be created by the Annotator class) and outputs a valid html
+  - Currently paragraphs, headings and inline text elements are working and unit tested
