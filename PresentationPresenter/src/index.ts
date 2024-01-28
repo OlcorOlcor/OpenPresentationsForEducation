@@ -1,6 +1,5 @@
-import { connect } from "http2";
-
 const { readFileSync } = require('fs');
+
 type Element = InlineElement | Paragraph | HeadingElement;
 
 type Text = {
@@ -30,10 +29,8 @@ type Slide = {
 }
 
 export function ToHtmlFromFile(fileName: string): string {
-
     let stringJson = readFileSync(fileName, 'utf8');
     let data = JSON.parse(stringJson);
-
     return ToHtmlFromJson(data);
 }
 
