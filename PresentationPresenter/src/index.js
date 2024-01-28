@@ -8,23 +8,9 @@ function ToHtmlFromFile(fileName) {
     return ToHtmlFromJson(data);
 }
 exports.ToHtmlFromFile = ToHtmlFromFile;
-function HandleInlineElement(element) {
+function HandleContent(element) {
     var res = "";
     var content = element.content;
-    switch (element.type) {
-        case "bold":
-            res += HandleBold(element);
-            break;
-        case "italic":
-            res += HandleItalic(element);
-            break;
-        case "boldItalic":
-            res += HandleBoldItalic(element);
-            break;
-        default:
-            console.log("Unrecognised element");
-            break;
-    }
     content.forEach(function (c) {
         switch (c.type) {
             case "bold":
@@ -36,6 +22,9 @@ function HandleInlineElement(element) {
             case "boldItalic":
                 res += HandleBoldItalic(c);
                 break;
+            case "text":
+                res += HandleText(c);
+                break;
             default:
                 console.log("Unrecognised element");
                 break;
@@ -46,21 +35,21 @@ function HandleInlineElement(element) {
 function HandleBold(element) {
     var res = "";
     res += "<strong>";
-    res += HandleInlineElement(element);
+    res += HandleContent(element);
     res += "</strong>";
     return res;
 }
 function HandleItalic(element) {
     var res = "";
     res += "<em>";
-    res += HandleInlineElement(element);
+    res += HandleContent(element);
     res += "</em>";
     return res;
 }
 function HandleBoldItalic(element) {
     var res = "";
     res += "<em><strong>";
-    res += HandleInlineElement(element);
+    res += HandleContent(element);
     res += "</em></strong>";
     return res;
 }
@@ -71,9 +60,7 @@ function HandleParagraph(paragraph) {
     var res = "";
     res += "<p>";
     var content = paragraph.content;
-    content.forEach(function (c) {
-        res += (c.type == "text") ? HandleText(c) : HandleInlineElement(c);
-    });
+    res += HandleContent(paragraph);
     res += "</p>";
     return res;
 }
@@ -81,9 +68,7 @@ function HandleHeading(heading) {
     var res = "";
     res += "<h" + heading.level + ">";
     var content = heading.content;
-    content.forEach(function (c) {
-        res += (c.type == "text") ? HandleText(c) : HandleInlineElement(c);
-    });
+    res += HandleContent(heading);
     res += "</h" + heading.level + ">";
     return res;
 }

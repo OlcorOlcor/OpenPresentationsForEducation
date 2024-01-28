@@ -1,6 +1,8 @@
 import { connect } from "http2";
 
 const { readFileSync } = require('fs');
+type Element = InlineElement | Paragraph | HeadingElement;
+
 type Text = {
     type: string,
     content: string
@@ -35,7 +37,7 @@ export function ToHtmlFromFile(fileName: string): string {
     return ToHtmlFromJson(data);
 }
 
-function HandleInlineElement(element: InlineElement): string {
+function HandleContent(element: Element): string {
     let res: string = "";
     let content = element.content;
     content.forEach(c => {
@@ -49,6 +51,9 @@ function HandleInlineElement(element: InlineElement): string {
             case "boldItalic":
                 res += HandleBoldItalic(c as InlineElement);
             break;
+            case "text": 
+                res += HandleText(c as Text);
+            break;
             default:
                 console.log("Unrecognised element");
             break;
@@ -60,7 +65,7 @@ function HandleInlineElement(element: InlineElement): string {
 function HandleBold(element: InlineElement): string {
     let res: string = "";
     res += "<strong>";
-    res += HandleInlineElement(element);
+    res += HandleContent(element);
     res += "</strong>";
     return res;
 }
@@ -68,7 +73,7 @@ function HandleBold(element: InlineElement): string {
 function HandleItalic(element: InlineElement): string {
     let res: string = "";
     res += "<em>";
-    res += HandleInlineElement(element);
+    res += HandleContent(element);
     res += "</em>";
     return res;
 }
@@ -76,7 +81,7 @@ function HandleItalic(element: InlineElement): string {
 function HandleBoldItalic(element: InlineElement): string {
     let res: string = "";
     res += "<em><strong>";
-    res += HandleInlineElement(element);
+    res += HandleContent(element);
     res += "</em></strong>";
     return res;
 }
@@ -87,10 +92,7 @@ function HandleText(text: Text): string {
 function HandleParagraph(paragraph: Paragraph): string {
     let res: string = "";
     res += "<p>";
-    let content = paragraph.content;
-    content.forEach(c => {
-        res += (c.type == "text") ? HandleText(c as Text) : HandleInlineElement(c as InlineElement);
-    });
+    res += HandleContent(paragraph);
     res += "</p>";
     return res;
 }
@@ -98,10 +100,7 @@ function HandleParagraph(paragraph: Paragraph): string {
 function HandleHeading(heading: HeadingElement): string {
     let res: string = "";
     res += "<h" + heading.level + ">";
-    let content = heading.content;
-    content.forEach(c => {
-        res += (c.type == "text") ? HandleText(c as Text) : HandleInlineElement(c as InlineElement);
-    });
+    res += HandleContent(heading);
     res += "</h" + heading.level + ">";
     return res;
 }
