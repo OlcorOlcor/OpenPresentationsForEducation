@@ -50,7 +50,7 @@ function HandleBoldItalic(element) {
     var res = "";
     res += "<em><strong>";
     res += HandleContent(element);
-    res += "</em></strong>";
+    res += "</strong></em>";
     return res;
 }
 function HandleText(text) {

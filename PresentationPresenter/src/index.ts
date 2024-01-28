@@ -79,7 +79,7 @@ function HandleBoldItalic(element: InlineElement): string {
     let res: string = "";
     res += "<em><strong>";
     res += HandleContent(element);
-    res += "</em></strong>";
+    res += "</strong></em>";
     return res;
 }
 function HandleText(text: Text): string {
