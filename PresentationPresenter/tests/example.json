@@ -52,6 +52,69 @@
                         ]
                     }
                 ]
+            },
+            {
+                "type": "list",
+                "listType": "unordered",
+                
+                "items": [
+                    {
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": "Top "
+                            },
+                            {
+                                "type": "italic",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "content": "level 1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "items": [
+                            {
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "content": "Second level 11"
+                                    }
+                                ],
+                                "items": []
+                            },
+                            {
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "content": "Second level 12"
+                                    }
+                                ],
+                                "items": [
+                                    {
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "content": "Third level 121"
+                                            }
+                                        ],
+                                        "items": []
+                                    }
+                                ]
+                            }        
+                        ]
+                    },
+                    {
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": "Top level 2"
+                            }
+                        ],
+                        "items": []
+                    }
+                ]
             }
         ]
     }
