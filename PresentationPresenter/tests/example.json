@@ -56,14 +56,14 @@
             {
                 "type": "list",
                 "listType": "unordered",
-                
                 "items": [
                     {
+                        "type": "listItem",
                         "content": [
                             {
                                 "type": "text",
                                 "content": "Top "
-                            },
+                            }, 
                             {
                                 "type": "italic",
                                 "content": [
@@ -73,46 +73,54 @@
                                     }
                                 ]
                             }
-                        ],
+                        ]
+                    }, 
+                    {
+                        "type": "list",
+                        "listType": "unordered",
                         "items": [
                             {
+                                "type": "listItem",
                                 "content": [
                                     {
                                         "type": "text",
                                         "content": "Second level 11"
-                                    }
-                                ],
-                                "items": []
-                            },
-                            {
-                                "content": [
+                                    },
                                     {
                                         "type": "text",
-                                        "content": "Second level 12"
-                                    }
-                                ],
-                                "items": [
+                                        "content": "Second level 12"  
+                                    },
                                     {
-                                        "content": [
+                                        "type": "list",
+                                        "listType": "ordered",
+                                        "items": [
                                             {
-                                                "type": "text",
-                                                "content": "Third level 121"
+                                                "type": "listItem",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "content": "Third level 121"
+                                                    },
+                                                    {
+                                                        "type": "text",
+                                                        "content": "Third level 122"
+                                                    }
+                                                ]
                                             }
-                                        ],
-                                        "items": []
+                                        ]
                                     }
                                 ]
-                            }        
+                            }
                         ]
                     },
                     {
+                        "type": "listItem",
                         "content": [
                             {
                                 "type": "text",
                                 "content": "Top level 2"
                             }
-                        ],
-                        "items": []
+                        ]
                     }
                 ]
             }

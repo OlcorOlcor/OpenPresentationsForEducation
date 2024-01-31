@@ -7,5 +7,6 @@ and multiple lines
 - Top *level 1*
     - Second level 11
     - Second level 12
-        - Third level 121
+        1. Third level 121
+        2. Third level 122
 - Top level 2
