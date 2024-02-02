@@ -1,6 +1,8 @@
+import { listenerCount } from "process";
+
 const { readFileSync } = require('fs');
 
-type Element = InlineElement | Paragraph | HeadingElement;
+type Element = InlineElement | Paragraph | HeadingElement | ListItem;
 
 type Text = {
     type: string,
@@ -10,6 +12,17 @@ type Text = {
 type InlineElement = {
     "type": string,
     "content": [Text | InlineElement]
+}
+
+type ListItem = {
+    "type": string,
+    "content": [Text | InlineElement],
+}
+
+type List = {
+    "type": string,
+    "listType": string,
+    "items": [List | ListItem]
 }
 
 type Paragraph = {
@@ -25,7 +38,7 @@ type HeadingElement = {
 
 type Slide = {
     "type": string,
-    "content": [Paragraph, HeadingElement]
+    "content": [Paragraph, HeadingElement, List]
 }
 
 export function ToHtmlFromFile(fileName: string): string {
@@ -102,6 +115,40 @@ function HandleHeading(heading: HeadingElement): string {
     return res;
 }
 
+function HandleListItem(item: ListItem) {
+    let res: string = "";
+    res += HandleContent(item);
+    return res;
+}
+
+function HandleListItems(list: List): string {
+    let res: string = "";
+    list.items.forEach(item => {
+        res += "<li>";
+        switch (item.type) {
+            case "list":
+                res += HandleList(item as List);
+            break;
+            case "listItem":
+                res += HandleListItem(item as ListItem);
+            break;
+            default:
+                console.log("Unrecognised list element");
+            break;
+        }
+        res += "</li>";
+    });
+    return res;
+}
+
+function HandleList(list: List): string {
+    let res: string = "";
+    res += (list.listType === "unordered") ? "<ul>" : "<ol>";
+    res += HandleListItems(list);
+    res += (list.listType === "unordered") ? "</ul>" : "</ol>";
+    return res;
+}
+
 function HandleSlide(slide: Slide): string {
     let res: string = "";
     let content = slide.content;
@@ -112,6 +159,12 @@ function HandleSlide(slide: Slide): string {
             break;
             case "heading":
                 res += HandleHeading(c as HeadingElement);
+            break;
+            case "list":
+                res += HandleList(c as List);
+            break;
+            default:
+                console.log("Unrecognised slide element");
             break;
         }
     });

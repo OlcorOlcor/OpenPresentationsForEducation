@@ -85,31 +85,38 @@
                                     {
                                         "type": "text",
                                         "content": "Second level 11"
-                                    },
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "listItem",
+                                "content": [
                                     {
                                         "type": "text",
                                         "content": "Second level 12"  
-                                    },
+                                    }   
+                                ]    
+                            },
+                            {
+                                "type": "list",
+                                "listType": "ordered",
+                                "items": [
                                     {
-                                        "type": "list",
-                                        "listType": "ordered",
-                                        "items": [
+                                        "type": "listItem",
+                                        "content": [
                                             {
-                                                "type": "listItem",
-                                                "content": [
-                                                    {
-                                                        "type": "text",
-                                                        "content": "Third level 121"
-                                                    },
-                                                    {
-                                                        "type": "text",
-                                                        "content": "Third level 122"
-                                                    }
-                                                ]
+                                                "type": "text",
+                                                "content": "Third level 121"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "content": "Third level 122"
                                             }
                                         ]
                                     }
                                 ]
+                            }
+                        ]
                             }
                         ]
                     },
