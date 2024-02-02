@@ -61,6 +61,9 @@ function HandleContent(element: Element): string {
             case "boldItalic":
                 res += HandleBoldItalic(c as InlineElement);
             break;
+            case "code":
+                res += HandleInlineCode(c as InlineElement);
+            break;
             case "text": 
                 res += HandleText(c as Text);
             break;
@@ -69,6 +72,14 @@ function HandleContent(element: Element): string {
             break;
         }
     });
+    return res;
+}
+
+function HandleInlineCode(element: InlineElement) {
+    let res: string = "";
+    res += "<code>";
+    res += HandleContent(element);
+    res += "</code>";
     return res;
 }
 
