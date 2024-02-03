@@ -108,5 +108,9 @@ The idea of this file is to keep track of my learning and thought process when d
 - Worked on 'Presenter'
 - Presenter takes in a json file (that will be created by the Annotator class) and outputs a valid html
   - Currently paragraphs, headings and inline text elements are working and unit tested
+
 ## 02.2.2024
 - Presenter now supports lists and code blocks
+
+## 03.2.2024
+- Presenter now supports blockquotes, images and links
