@@ -141,3 +141,102 @@ test('Nested list', () => {
     ]}]}])).toBe("<ul><li><ol><li>First</li><li>Second</li></ol></li></ul>")
 })
 
+test('Simple blockquote', () => {
+    expect(ToHtmlFromJson([{"type": "slide", "content": [
+        {
+            "type": "blockquote",
+            "content": [
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "content": "Paragraph content"
+                        }
+                    ]
+                },
+                {
+                    "type": "list",
+                    "listType": "unordered",
+                    "items": [
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "content": "First"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "content": "Second"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]}])).toBe("<blockquote><p>Paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote>");
+})
+
+test('Nested blockquotes', () => {
+    expect(ToHtmlFromJson([{"type": "slide", "content": [
+        {
+            "type": "blockquote",
+            "content": [
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "content": "Paragraph content"
+                        }
+                    ]
+                },
+                {
+                    "type": "blockquote",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "content": "Inner paragraph content"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "list",
+                            "listType": "unordered",
+                            "items": [
+                                {
+                                    "type": "listItem",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "content": "First"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "listItem",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "content": "Second"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+            ]
+        }
+    ]}])).toBe("<blockquote><p>Paragraph content</p><blockquote><p>Inner paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote></blockquote>");
+})

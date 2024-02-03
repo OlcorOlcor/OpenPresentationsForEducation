@@ -4,6 +4,8 @@ const { readFileSync } = require('fs');
 
 type Element = InlineElement | Paragraph | HeadingElement | ListItem;
 
+type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
+
 type Text = {
     type: string,
     content: string
@@ -36,9 +38,14 @@ type HeadingElement = {
     "content": [Text | InlineElement]
 }
 
+type BlockQuote = {
+    "type": string,
+    "content": [OuterElement]
+}
+
 type Slide = {
     "type": string,
-    "content": [Paragraph, HeadingElement, List]
+    "content": [OuterElement]
 }
 
 export function ToHtmlFromFile(fileName: string): string {
@@ -160,24 +167,43 @@ function HandleList(list: List): string {
     return res;
 }
 
+function HandleBlockQuote(blockquote: BlockQuote): string {
+    let res: string = "";
+    res += "<blockquote>";
+    blockquote.content.forEach(c => {
+        res += HandleOuterElement(c);
+    });
+    res += "</blockquote>";
+    return res;
+}
+
+function HandleOuterElement(element: OuterElement): string {
+    let res: string = "";
+    switch(element.type) {
+        case "paragraph":
+            res += HandleParagraph(element as Paragraph);
+        break;
+        case "heading":
+            res += HandleHeading(element as HeadingElement);
+        break;
+        case "list":
+            res += HandleList(element as List);
+        break;
+        case "blockquote":
+            res += HandleBlockQuote(element as BlockQuote);
+        break;
+        default:
+            console.log("Unrecognised slide element");
+        break;
+    }
+    return res;
+} 
+
 function HandleSlide(slide: Slide): string {
     let res: string = "";
     let content = slide.content;
     content.forEach(c => {
-        switch(c.type) {
-            case "paragraph":
-                res += HandleParagraph(c as Paragraph);
-            break;
-            case "heading":
-                res += HandleHeading(c as HeadingElement);
-            break;
-            case "list":
-                res += HandleList(c as List);
-            break;
-            default:
-                console.log("Unrecognised slide element");
-            break;
-        }
+       res += HandleOuterElement(c);
     });
     return res;
 }

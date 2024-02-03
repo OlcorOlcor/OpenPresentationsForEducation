@@ -22,6 +22,9 @@ function HandleContent(element) {
             case "boldItalic":
                 res += HandleBoldItalic(c);
                 break;
+            case "code":
+                res += HandleInlineCode(c);
+                break;
             case "text":
                 res += HandleText(c);
                 break;
@@ -30,6 +33,13 @@ function HandleContent(element) {
                 break;
         }
     });
+    return res;
+}
+function HandleInlineCode(element) {
+    var res = "";
+    res += "<code>";
+    res += HandleContent(element);
+    res += "</code>";
     return res;
 }
 function HandleBold(element) {
@@ -101,24 +111,41 @@ function HandleList(list) {
     res += (list.listType === "unordered") ? "</ul>" : "</ol>";
     return res;
 }
+function HandleBlockQuote(blockquote) {
+    var res = "";
+    res += "<blockquote>";
+    blockquote.content.forEach(function (c) {
+        res += HandleOuterElement(c);
+    });
+    res += "</blockquote>";
+    return res;
+}
+function HandleOuterElement(element) {
+    var res = "";
+    switch (element.type) {
+        case "paragraph":
+            res += HandleParagraph(element);
+            break;
+        case "heading":
+            res += HandleHeading(element);
+            break;
+        case "list":
+            res += HandleList(element);
+            break;
+        case "blockquote":
+            res += HandleBlockQuote(element);
+            break;
+        default:
+            console.log("Unrecognised slide element");
+            break;
+    }
+    return res;
+}
 function HandleSlide(slide) {
     var res = "";
     var content = slide.content;
     content.forEach(function (c) {
-        switch (c.type) {
-            case "paragraph":
-                res += HandleParagraph(c);
-                break;
-            case "heading":
-                res += HandleHeading(c);
-                break;
-            case "list":
-                res += HandleList(c);
-                break;
-            default:
-                console.log("Unrecognised slide element");
-                break;
-        }
+        res += HandleOuterElement(c);
     });
     return res;
 }
