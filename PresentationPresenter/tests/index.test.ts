@@ -4,8 +4,8 @@ const path = require('path');
 
 const testFileName = path.join(__dirname, "./", "./example.json");
 
-const inlineElementArray = [{ "type": "text", "content": "Text, "}, {"type": "bold", "content": [{"type": "text", "content": "bolded text, "}]}, {"type": "italic", "content": [{"type": "text", "content": "italic text, "}]}, {"type": "boldItalic", "content": [{"type": "text", "content": "bolded italic text, "}]}, {"type": "code", "content": [{"type": "text", "content": "inline code."}]}, {"type": "link", "address": "https://www.google.com", "content": "Google"}];
-const inlineElementArrayResult = "Text, <strong>bolded text, </strong><em>italic text, </em><em><strong>bolded italic text, </strong></em><code>inline code.</code><a href=\"https://www.google.com\">Google</a>";
+const inlineElementArray = [{ "type": "text", "content": "Text, "}, {"type": "bold", "content": [{"type": "text", "content": "bolded text, "}]}, {"type": "italic", "content": [{"type": "text", "content": "italic text, "}]}, {"type": "boldItalic", "content": [{"type": "text", "content": "bolded italic text, "}]}, {"type": "code", "content": [{"type": "text", "content": "inline code."}]}, {"type": "link", "address": "https://www.google.com", "content": "Google"}, {"type": "image", "address": "img.jpg", "alias": "image"}];
+const inlineElementArrayResult = "Text, <strong>bolded text, </strong><em>italic text, </em><em><strong>bolded italic text, </strong></em><code>inline code.</code><a href=\"https://www.google.com\">Google</a><img src=\"img.jpg\" alt=\"image\">";
 
 test('Empty Json', () => {
     expect(ToHtmlFromJson([])).toBe("");

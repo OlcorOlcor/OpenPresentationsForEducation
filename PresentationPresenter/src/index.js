@@ -31,6 +31,9 @@ function HandleContent(element) {
             case "link":
                 res += HandleLink(c);
                 break;
+            case "image":
+                res += HandleImage(c);
+                break;
             default:
                 console.log("Unrecognised element");
                 break;
@@ -43,6 +46,11 @@ function HandleLink(link) {
     res += "<a href=\"" + link.address + "\">";
     res += (link.content !== "") ? link.content : link.address;
     res += "</a>";
+    return res;
+}
+function HandleImage(image) {
+    var res = "";
+    res += "<img src=\"" + image.address + "\" alt=\"" + image.alias + "\">";
     return res;
 }
 function HandleInlineCode(element) {

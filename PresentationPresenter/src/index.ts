@@ -6,7 +6,7 @@ type Element = TextAnnotation | Paragraph | HeadingElement | ListItem;
 
 type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
 
-type InlineElement = TextAnnotation | Link;
+type InlineElement = TextAnnotation | Link | Image;
 
 type Text = {
     type: string,
@@ -24,6 +24,12 @@ type Link = {
     "content": string
 }
 
+type Image = {
+    "type": string,
+    "address": string,
+    "alias": string
+}
+
 type ListItem = {
     "type": string,
     "content": [Text | TextAnnotation],
@@ -37,13 +43,13 @@ type List = {
 
 type Paragraph = {
     "type": string,
-    "content": [Text | InlineElement | Link]
+    "content": [Text | InlineElement]
 }
 
 type HeadingElement = {
     "type": string,
     "level": number,
-    "content": [Text | InlineElement | Link]
+    "content": [Text | InlineElement]
 }
 
 type BlockQuote = {
@@ -85,6 +91,9 @@ function HandleContent(element: Element): string {
             case "link":
                 res += HandleLink(c as Link);
             break;
+            case "image":
+                res += HandleImage(c as Image);
+            break;
             default:
                 console.log("Unrecognised element");
             break;
@@ -98,6 +107,12 @@ function HandleLink(link: Link): string {
     res += "<a href=\"" + link.address + "\">";
     res += (link.content !== "") ? link.content : link.address;
     res += "</a>";
+    return res;
+}
+
+function HandleImage(image: Image): string {
+    let res: string = "";
+    res += "<img src=\"" + image.address + "\" alt=\"" + image.alias + "\">";
     return res;
 }
 
