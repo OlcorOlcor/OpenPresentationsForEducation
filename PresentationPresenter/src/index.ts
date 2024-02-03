@@ -2,23 +2,31 @@ import { listenerCount } from "process";
 
 const { readFileSync } = require('fs');
 
-type Element = InlineElement | Paragraph | HeadingElement | ListItem;
+type Element = TextAnnotation | Paragraph | HeadingElement | ListItem;
 
 type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
+
+type InlineElement = TextAnnotation | Link;
 
 type Text = {
     type: string,
     content: string
 }
 
-type InlineElement = {
+type TextAnnotation = {
     "type": string,
-    "content": [Text | InlineElement]
+    "content": [Text | TextAnnotation]
+}
+
+type Link = {
+    "type": string,
+    "address": string,
+    "content": string
 }
 
 type ListItem = {
     "type": string,
-    "content": [Text | InlineElement],
+    "content": [Text | TextAnnotation],
 }
 
 type List = {
@@ -29,13 +37,13 @@ type List = {
 
 type Paragraph = {
     "type": string,
-    "content": [Text | InlineElement]
+    "content": [Text | InlineElement | Link]
 }
 
 type HeadingElement = {
     "type": string,
     "level": number,
-    "content": [Text | InlineElement]
+    "content": [Text | InlineElement | Link]
 }
 
 type BlockQuote = {
@@ -60,19 +68,22 @@ function HandleContent(element: Element): string {
     content.forEach(c => {
         switch (c.type) {
             case "bold":
-                res += HandleBold(c as InlineElement);
+                res += HandleBold(c as TextAnnotation);
             break;
             case "italic":
-                res += HandleItalic(c as InlineElement);
+                res += HandleItalic(c as TextAnnotation);
             break;
             case "boldItalic":
-                res += HandleBoldItalic(c as InlineElement);
+                res += HandleBoldItalic(c as TextAnnotation);
             break;
             case "code":
-                res += HandleInlineCode(c as InlineElement);
+                res += HandleInlineCode(c as TextAnnotation);
             break;
             case "text": 
                 res += HandleText(c as Text);
+            break;
+            case "link":
+                res += HandleLink(c as Link);
             break;
             default:
                 console.log("Unrecognised element");
@@ -82,7 +93,15 @@ function HandleContent(element: Element): string {
     return res;
 }
 
-function HandleInlineCode(element: InlineElement) {
+function HandleLink(link: Link): string {
+    let res: string = "";
+    res += "<a href=\"" + link.address + "\">";
+    res += (link.content !== "") ? link.content : link.address;
+    res += "</a>";
+    return res;
+}
+
+function HandleInlineCode(element: TextAnnotation) {
     let res: string = "";
     res += "<code>";
     res += HandleContent(element);
@@ -90,7 +109,7 @@ function HandleInlineCode(element: InlineElement) {
     return res;
 }
 
-function HandleBold(element: InlineElement): string {
+function HandleBold(element: TextAnnotation): string {
     let res: string = "";
     res += "<strong>";
     res += HandleContent(element);
@@ -98,7 +117,7 @@ function HandleBold(element: InlineElement): string {
     return res;
 }
 
-function HandleItalic(element: InlineElement): string {
+function HandleItalic(element: TextAnnotation): string {
     let res: string = "";
     res += "<em>";
     res += HandleContent(element);
@@ -106,7 +125,7 @@ function HandleItalic(element: InlineElement): string {
     return res;
 }
 
-function HandleBoldItalic(element: InlineElement): string {
+function HandleBoldItalic(element: TextAnnotation): string {
     let res: string = "";
     res += "<em><strong>";
     res += HandleContent(element);

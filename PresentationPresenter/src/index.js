@@ -28,11 +28,21 @@ function HandleContent(element) {
             case "text":
                 res += HandleText(c);
                 break;
+            case "link":
+                res += HandleLink(c);
+                break;
             default:
                 console.log("Unrecognised element");
                 break;
         }
     });
+    return res;
+}
+function HandleLink(link) {
+    var res = "";
+    res += "<a href=\"" + link.address + "\">";
+    res += (link.content !== "") ? link.content : link.address;
+    res += "</a>";
     return res;
 }
 function HandleInlineCode(element) {
