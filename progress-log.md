@@ -114,3 +114,9 @@ The idea of this file is to keep track of my learning and thought process when d
 
 ## 03.2.2024
 - Presenter now supports blockquotes, images and links
+
+## 04.2.2024
+- Added more unit tests
+- Html output now gets formatted
+  - For this prettier is used, currently only synchronously
+  - Making asynchronous options for the library is something to consider
