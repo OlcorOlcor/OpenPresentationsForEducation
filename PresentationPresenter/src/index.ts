@@ -1,6 +1,4 @@
-import { listenerCount } from "process";
-
-const { readFileSync } = require('fs');
+const { readFileSync } = require("fs");
 
 type Element = TextAnnotation | Paragraph | HeadingElement | ListItem;
 
@@ -9,61 +7,61 @@ type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
 type InlineElement = TextAnnotation | Link | Image;
 
 type Text = {
-    type: string,
-    content: string
-}
+    type: string;
+    content: string;
+};
 
 type TextAnnotation = {
-    "type": string,
-    "content": [Text | TextAnnotation]
-}
+    type: string;
+    content: [Text | TextAnnotation];
+};
 
 type Link = {
-    "type": string,
-    "address": string,
-    "content": string
-}
+    type: string;
+    address: string;
+    content: string;
+};
 
 type Image = {
-    "type": string,
-    "address": string,
-    "alias": string
-}
+    type: string;
+    address: string;
+    alias: string;
+};
 
 type ListItem = {
-    "type": string,
-    "content": [Text | TextAnnotation],
-}
+    type: string;
+    content: [Text | TextAnnotation];
+};
 
 type List = {
-    "type": string,
-    "listType": string,
-    "items": [List | ListItem]
-}
+    type: string;
+    listType: string;
+    items: [List | ListItem];
+};
 
 type Paragraph = {
-    "type": string,
-    "content": [Text | InlineElement]
-}
+    type: string;
+    content: [Text | InlineElement];
+};
 
 type HeadingElement = {
-    "type": string,
-    "level": number,
-    "content": [Text | InlineElement]
-}
+    type: string;
+    level: number;
+    content: [Text | InlineElement];
+};
 
 type BlockQuote = {
-    "type": string,
-    "content": [OuterElement]
-}
+    type: string;
+    content: [OuterElement];
+};
 
 type Slide = {
-    "type": string,
-    "content": [OuterElement]
-}
+    type: string;
+    content: [OuterElement];
+};
 
 export function ToHtmlFromFile(fileName: string): string {
-    let stringJson = readFileSync(fileName, 'utf8');
+    let stringJson = readFileSync(fileName, "utf8");
     let data = JSON.parse(stringJson);
     return ToHtmlFromJson(data);
 }
@@ -71,32 +69,32 @@ export function ToHtmlFromFile(fileName: string): string {
 function HandleContent(element: Element): string {
     let res: string = "";
     let content = element.content;
-    content.forEach(c => {
+    content.forEach((c) => {
         switch (c.type) {
             case "bold":
                 res += HandleBold(c as TextAnnotation);
-            break;
+                break;
             case "italic":
                 res += HandleItalic(c as TextAnnotation);
-            break;
+                break;
             case "boldItalic":
                 res += HandleBoldItalic(c as TextAnnotation);
-            break;
+                break;
             case "code":
                 res += HandleInlineCode(c as TextAnnotation);
-            break;
-            case "text": 
+                break;
+            case "text":
                 res += HandleText(c as Text);
-            break;
+                break;
             case "link":
                 res += HandleLink(c as Link);
-            break;
+                break;
             case "image":
                 res += HandleImage(c as Image);
-            break;
+                break;
             default:
                 console.log("Unrecognised element");
-            break;
+                break;
         }
     });
     return res;
@@ -104,15 +102,15 @@ function HandleContent(element: Element): string {
 
 function HandleLink(link: Link): string {
     let res: string = "";
-    res += "<a href=\"" + link.address + "\">";
-    res += (link.content !== "") ? link.content : link.address;
+    res += '<a href="' + link.address + '">';
+    res += link.content !== "" ? link.content : link.address;
     res += "</a>";
     return res;
 }
 
 function HandleImage(image: Image): string {
     let res: string = "";
-    res += "<img src=\"" + image.address + "\" alt=\"" + image.alias + "\">";
+    res += '<img src="' + image.address + '" alt="' + image.alias + '">';
     return res;
 }
 
@@ -175,18 +173,18 @@ function HandleListItem(item: ListItem) {
 
 function HandleListItems(list: List): string {
     let res: string = "";
-    list.items.forEach(item => {
+    list.items.forEach((item) => {
         res += "<li>";
         switch (item.type) {
             case "list":
                 res += HandleList(item as List);
-            break;
+                break;
             case "listItem":
                 res += HandleListItem(item as ListItem);
-            break;
+                break;
             default:
                 console.log("Unrecognised list element");
-            break;
+                break;
         }
         res += "</li>";
     });
@@ -195,16 +193,16 @@ function HandleListItems(list: List): string {
 
 function HandleList(list: List): string {
     let res: string = "";
-    res += (list.listType === "unordered") ? "<ul>" : "<ol>";
+    res += list.listType === "unordered" ? "<ul>" : "<ol>";
     res += HandleListItems(list);
-    res += (list.listType === "unordered") ? "</ul>" : "</ol>";
+    res += list.listType === "unordered" ? "</ul>" : "</ol>";
     return res;
 }
 
 function HandleBlockQuote(blockquote: BlockQuote): string {
     let res: string = "";
     res += "<blockquote>";
-    blockquote.content.forEach(c => {
+    blockquote.content.forEach((c) => {
         res += HandleOuterElement(c);
     });
     res += "</blockquote>";
@@ -213,38 +211,38 @@ function HandleBlockQuote(blockquote: BlockQuote): string {
 
 function HandleOuterElement(element: OuterElement): string {
     let res: string = "";
-    switch(element.type) {
+    switch (element.type) {
         case "paragraph":
             res += HandleParagraph(element as Paragraph);
-        break;
+            break;
         case "heading":
             res += HandleHeading(element as HeadingElement);
-        break;
+            break;
         case "list":
             res += HandleList(element as List);
-        break;
+            break;
         case "blockquote":
             res += HandleBlockQuote(element as BlockQuote);
-        break;
+            break;
         default:
             console.log("Unrecognised slide element");
-        break;
+            break;
     }
     return res;
-} 
+}
 
 function HandleSlide(slide: Slide): string {
     let res: string = "";
     let content = slide.content;
-    content.forEach(c => {
-       res += HandleOuterElement(c);
+    content.forEach((c) => {
+        res += HandleOuterElement(c);
     });
     return res;
 }
 
 export function ToHtmlFromJson(json: Slide[]): string {
     let res = "";
-    json.forEach(slide => {
+    json.forEach((slide) => {
         res += HandleSlide(slide);
     });
     return res;
