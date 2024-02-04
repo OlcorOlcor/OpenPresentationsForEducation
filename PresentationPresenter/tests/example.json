@@ -7,7 +7,7 @@
                 "content": [
                     {
                         "type": "text",
-                        "content": "This is a paragraph"
+                        "content": "This is a paragraph "
                     }, 
                     {
                         "type": "bold",
@@ -107,16 +107,19 @@
                                             {
                                                 "type": "text",
                                                 "content": "Third level 121"
-                                            },
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "listItem",
+                                        "content": [
                                             {
                                                 "type": "text",
                                                 "content": "Third level 122"
                                             }
                                         ]
-                                    }
+                                    }            
                                 ]
-                            }
-                        ]
                             }
                         ]
                     },
