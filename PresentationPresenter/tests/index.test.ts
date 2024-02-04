@@ -2,6 +2,11 @@ const { expect, test } = require("@jest/globals");
 const { ToHtmlFromFile, ToHtmlFromJson } = require("../src/index");
 const path = require("path");
 const fs = require("fs");
+const prettier = require("@prettier/sync");
+
+function formatHtml(html) {
+    return prettier.format(html, { parser: 'html' });
+}
 
 const testJsonFile = path.join(__dirname, "./example.json");
 const testHtmlFile = path.join(__dirname, "./example.html");
@@ -38,7 +43,7 @@ test("Simple paragraph", () => {
                 ],
             },
         ]),
-    ).toBe("<p>Text</p>");
+    ).toBe(formatHtml("<p>Text</p>"));
 });
 
 test("Paragraph with Inline elements", () => {
@@ -49,7 +54,7 @@ test("Paragraph with Inline elements", () => {
                 content: [{ type: "paragraph", content: inlineElementArray }],
             },
         ]),
-    ).toBe("<p>" + inlineElementArrayResult + "</p>");
+    ).toBe(formatHtml("<p>" + inlineElementArrayResult + "</p>"));
 });
 
 test("Nested  Inline Elements", () => {
@@ -81,7 +86,7 @@ test("Nested  Inline Elements", () => {
                 ],
             },
         ]),
-    ).toBe("<p><strong>Bold text<em> also italic</em></strong></p>");
+    ).toBe(formatHtml("<p><strong>Bold text<em> also italic</em></strong></p>"));
 });
 
 test("Simple heading", () => {
@@ -98,7 +103,7 @@ test("Simple heading", () => {
                 ],
             },
         ]),
-    ).toBe("<h1>Text</h1>");
+    ).toBe(formatHtml("<h1>Text</h1>"));
 });
 
 test("Heading with Inline elements", () => {
@@ -111,7 +116,7 @@ test("Heading with Inline elements", () => {
                 ],
             },
         ]),
-    ).toBe("<h1>" + inlineElementArrayResult + "</h1>");
+    ).toBe(formatHtml("<h1>" + inlineElementArrayResult + "</h1>"));
 });
 
 test("Simple unordered list", () => {
@@ -147,7 +152,7 @@ test("Simple unordered list", () => {
                 ],
             },
         ]),
-    ).toBe("<ul><li>First</li><li>Second</li></ul>");
+    ).toBe(formatHtml("<ul><li>First</li><li>Second</li></ul>"));
 });
 
 test("Simple ordered list", () => {
@@ -183,7 +188,7 @@ test("Simple ordered list", () => {
                 ],
             },
         ]),
-    ).toBe("<ol><li>First</li><li>Second</li></ol>");
+    ).toBe(formatHtml("<ol><li>First</li><li>Second</li></ol>"));
 });
 
 test("List with inline elements", () => {
@@ -214,7 +219,7 @@ test("List with inline elements", () => {
                 ],
             },
         ]),
-    ).toBe("<ul><li>" + inlineElementArrayResult + "</li><li>Second</li></ul>");
+    ).toBe(formatHtml("<ul><li>" + inlineElementArrayResult + "</li><li>Second</li></ul>"));
 });
 
 test("Nested list", () => {
@@ -256,7 +261,7 @@ test("Nested list", () => {
                 ],
             },
         ]),
-    ).toBe("<ul><li><ol><li>First</li><li>Second</li></ol></li></ul>");
+    ).toBe(formatHtml("<ul><li><ol><li>First</li><li>Second</li></ol></li></ul>"));
 });
 
 test("Simple blockquote", () => {
@@ -307,7 +312,7 @@ test("Simple blockquote", () => {
             },
         ]),
     ).toBe(
-        "<blockquote><p>Paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote>",
+        formatHtml("<blockquote><p>Paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote>"),
     );
 });
 
@@ -374,11 +379,11 @@ test("Nested blockquotes", () => {
             },
         ]),
     ).toBe(
-        "<blockquote><p>Paragraph content</p><blockquote><p>Inner paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote></blockquote>",
+        formatHtml("<blockquote><p>Paragraph content</p><blockquote><p>Inner paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote></blockquote>"),
     );
 });
 
 test("complex file", () => {
     let text = fs.readFileSync(testHtmlFile, "utf-8");
-    expect(ToHtmlFromFile(testJsonFile)).toBe(text);
+    expect(ToHtmlFromFile(testJsonFile)).toBe(formatHtml(text));
 });

@@ -1,4 +1,5 @@
 const { readFileSync } = require("fs");
+import * as prettier from "@prettier/sync";
 
 type Element = TextAnnotation | Paragraph | HeadingElement | ListItem;
 
@@ -245,5 +246,5 @@ export function ToHtmlFromJson(json: Slide[]): string {
     json.forEach((slide) => {
         res += HandleSlide(slide);
     });
-    return res;
+    return prettier.format(res, { parser: 'html' }); 
 }

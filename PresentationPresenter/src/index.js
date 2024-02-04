@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ToHtmlFromJson = exports.ToHtmlFromFile = void 0;
-var readFileSync = require('fs').readFileSync;
+var readFileSync = require("fs").readFileSync;
+var prettier = require("@prettier/sync");
 function ToHtmlFromFile(fileName) {
-    var stringJson = readFileSync(fileName, 'utf8');
+    var stringJson = readFileSync(fileName, "utf8");
     var data = JSON.parse(stringJson);
     return ToHtmlFromJson(data);
 }
@@ -43,14 +44,14 @@ function HandleContent(element) {
 }
 function HandleLink(link) {
     var res = "";
-    res += "<a href=\"" + link.address + "\">";
-    res += (link.content !== "") ? link.content : link.address;
+    res += '<a href="' + link.address + '">';
+    res += link.content !== "" ? link.content : link.address;
     res += "</a>";
     return res;
 }
 function HandleImage(image) {
     var res = "";
-    res += "<img src=\"" + image.address + "\" alt=\"" + image.alias + "\">";
+    res += '<img src="' + image.address + '" alt="' + image.alias + '">';
     return res;
 }
 function HandleInlineCode(element) {
@@ -124,9 +125,9 @@ function HandleListItems(list) {
 }
 function HandleList(list) {
     var res = "";
-    res += (list.listType === "unordered") ? "<ul>" : "<ol>";
+    res += list.listType === "unordered" ? "<ul>" : "<ol>";
     res += HandleListItems(list);
-    res += (list.listType === "unordered") ? "</ul>" : "</ol>";
+    res += list.listType === "unordered" ? "</ul>" : "</ol>";
     return res;
 }
 function HandleBlockQuote(blockquote) {
@@ -172,6 +173,6 @@ function ToHtmlFromJson(json) {
     json.forEach(function (slide) {
         res += HandleSlide(slide);
     });
-    return res;
+    return prettier.format(res, { parser: 'html' });
 }
 exports.ToHtmlFromJson = ToHtmlFromJson;
