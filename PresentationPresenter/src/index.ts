@@ -1,5 +1,9 @@
 const { readFileSync } = require("fs");
 import * as prettier from "@prettier/sync";
+import { NewLineKind } from "typescript";
+
+const unrecognisedElementMessage: string = "Unrecognised element: ";
+const missingFieldMessage: string = "Element is missing a field: "
 
 type Element = TextAnnotation | Paragraph | HeadingElement | ListItem;
 
@@ -61,16 +65,52 @@ type Slide = {
     content: [OuterElement];
 };
 
-export function ToHtmlFromFile(fileName: string): string {
-    let stringJson = readFileSync(fileName, "utf8");
-    let data = JSON.parse(stringJson);
-    return ToHtmlFromJson(data);
+function CheckOuterElementStructure(element: OuterElement) {
+    if (!element.hasOwnProperty("type")) {
+        throw new Error(missingFieldMessage + "type");
+    }
+    // TODO: list should be in its own category
+    if ((element.type !== "list" && !element.hasOwnProperty("content"))) {
+        throw new Error(missingFieldMessage + "content");
+    }
+}
+
+function CheckImageStructure(image: Image) {
+    if (!image.hasOwnProperty("address")) {
+        throw new Error(missingFieldMessage + "address")
+    }
+    if (!image.hasOwnProperty("alias")) { 
+        throw new Error(missingFieldMessage + "alias")
+    }
+}
+
+function CheckLinkStructure(link: Link) {
+    if (!link.hasOwnProperty("address")) {
+        throw new Error(missingFieldMessage + "address");
+    }
+    if (!link.hasOwnProperty("content")) {
+        throw new Error(missingFieldMessage + "content");
+    }
+}
+
+function CheckContentStructure(element: Text | InlineElement) {
+    if (!element.hasOwnProperty("type")) {
+        throw new Error(missingFieldMessage + "type");
+    }
+    // TODO: image and link shouldn't be bundled with the rest
+    if (element.type == "image" || element.type == "link") {
+        return;
+    }
+    if (!element.hasOwnProperty("content")) {
+        throw new Error(missingFieldMessage + "content");
+    }
 }
 
 function HandleContent(element: Element): string {
     let res: string = "";
     let content = element.content;
     content.forEach((c) => {
+        CheckContentStructure(c);
         switch (c.type) {
             case "bold":
                 res += HandleBold(c as TextAnnotation);
@@ -94,8 +134,7 @@ function HandleContent(element: Element): string {
                 res += HandleImage(c as Image);
                 break;
             default:
-                console.log("Unrecognised element");
-                break;
+                throw new Error(unrecognisedElementMessage + c.type);
         }
     });
     return res;
@@ -103,6 +142,7 @@ function HandleContent(element: Element): string {
 
 function HandleLink(link: Link): string {
     let res: string = "";
+    CheckLinkStructure(link);
     res += '<a href="' + link.address + '">';
     res += link.content !== "" ? link.content : link.address;
     res += "</a>";
@@ -111,6 +151,7 @@ function HandleLink(link: Link): string {
 
 function HandleImage(image: Image): string {
     let res: string = "";
+    CheckImageStructure(image);
     res += '<img src="' + image.address + '" alt="' + image.alias + '">';
     return res;
 }
@@ -160,6 +201,9 @@ function HandleParagraph(paragraph: Paragraph): string {
 
 function HandleHeading(heading: HeadingElement): string {
     let res: string = "";
+    if (!heading.hasOwnProperty("level")) {
+        throw new Error(missingFieldMessage + "level");
+    }
     res += "<h" + heading.level + ">";
     res += HandleContent(heading);
     res += "</h" + heading.level + ">";
@@ -174,6 +218,9 @@ function HandleListItem(item: ListItem) {
 
 function HandleListItems(list: List): string {
     let res: string = "";
+    if (!list.hasOwnProperty("items")) {
+        throw new Error(missingFieldMessage + "items");
+    }
     list.items.forEach((item) => {
         res += "<li>";
         switch (item.type) {
@@ -184,8 +231,7 @@ function HandleListItems(list: List): string {
                 res += HandleListItem(item as ListItem);
                 break;
             default:
-                console.log("Unrecognised list element");
-                break;
+                throw new Error(unrecognisedElementMessage + item.type);
         }
         res += "</li>";
     });
@@ -212,6 +258,7 @@ function HandleBlockQuote(blockquote: BlockQuote): string {
 
 function HandleOuterElement(element: OuterElement): string {
     let res: string = "";
+    CheckOuterElementStructure(element);
     switch (element.type) {
         case "paragraph":
             res += HandleParagraph(element as Paragraph);
@@ -226,8 +273,7 @@ function HandleOuterElement(element: OuterElement): string {
             res += HandleBlockQuote(element as BlockQuote);
             break;
         default:
-            console.log("Unrecognised slide element");
-            break;
+            throw new Error(unrecognisedElementMessage + element.type);
     }
     return res;
 }
@@ -244,7 +290,17 @@ function HandleSlide(slide: Slide): string {
 export function ToHtmlFromJson(json: Slide[]): string {
     let res = "";
     json.forEach((slide) => {
+        CheckOuterElementStructure(slide);
+        if (slide.type !== "slide") {
+            throw new Error(unrecognisedElementMessage + slide.type);
+        }
         res += HandleSlide(slide);
     });
     return prettier.format(res, { parser: 'html' }); 
+}
+
+export function ToHtmlFromFile(fileName: string): string {
+    let stringJson = readFileSync(fileName, "utf8");
+    let data = JSON.parse(stringJson);
+    return ToHtmlFromJson(data);
 }

@@ -387,3 +387,53 @@ test("complex file", () => {
     let text = fs.readFileSync(testHtmlFile, "utf-8");
     expect(ToHtmlFromFile(testJsonFile)).toBe(formatHtml(text));
 });
+
+const unrecognisedElementError = "Unrecognised element: X";
+const missingFieldError = "Element is missing a field: ";
+
+test("Unrecognised outer element", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "X", content: "text"}]}])).toThrow(unrecognisedElementError);
+});
+
+test("Unrecognised content element", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "X", content: "text"}]}]}])).toThrow(unrecognisedElementError);
+});
+
+test("Unrecognised list element", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "list", items: [{type: "X", content: "text"}]}]}])).toThrow(unrecognisedElementError);
+});
+
+test("Wrong slide json structure", () => {
+    expect(() => ToHtmlFromJson([{type: "X", content: []}])).toThrow(unrecognisedElementError);
+    expect(() => ToHtmlFromJson([{X: "slide", content: []}])).toThrow(missingFieldError + "type");
+    expect(() => ToHtmlFromJson([{type: "slide"}])).toThrow(missingFieldError);
+});
+
+test("Wrong outer element json structure", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "X", content: "text"}]}])).toThrow(unrecognisedElementError);
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{content: []}]}])).toThrow(missingFieldError + "type");
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph"}]}])).toThrow(missingFieldError + "content");
+});
+
+test("Wrong image element json structure", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "image", alias: "img"}]}]}])).toThrow(missingFieldError + "address");
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "image", address: "./img.jpg"}]}]}])).toThrow(missingFieldError + "alias");
+});
+
+test("Wrong link element json structure", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "link", content: "example"}]}]}])).toThrow(missingFieldError + "address");
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "link", address: "www.example.com"}]}]}])).toThrow(missingFieldError + "content");
+});
+
+test("Wrong heading element structure", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "heading", content: [{type: "text", content: "heading"}]}]}]).toThrow(missingFieldError + "level"));
+});
+
+test("Wrong content element structure", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{content: "text"}]}]}])).toThrow(missingFieldError + "type");
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "text"}]}]}])).toThrow(missingFieldError + "content");
+});
+
+test("Wrong list element structure", () => {
+    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "list"}]}])).toThrow(missingFieldError + "items");
+})

@@ -1,18 +1,52 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ToHtmlFromJson = exports.ToHtmlFromFile = void 0;
+exports.ToHtmlFromFile = exports.ToHtmlFromJson = void 0;
 var readFileSync = require("fs").readFileSync;
 var prettier = require("@prettier/sync");
-function ToHtmlFromFile(fileName) {
-    var stringJson = readFileSync(fileName, "utf8");
-    var data = JSON.parse(stringJson);
-    return ToHtmlFromJson(data);
+var unrecognisedElementMessage = "Unrecognised element: ";
+var missingFieldMessage = "Element is missing a field: ";
+function CheckOuterElementStructure(element) {
+    if (!element.hasOwnProperty("type")) {
+        throw new Error(missingFieldMessage + "type");
+    }
+    // TODO: list should be in its own category
+    if ((element.type !== "list" && !element.hasOwnProperty("content"))) {
+        throw new Error(missingFieldMessage + "content");
+    }
 }
-exports.ToHtmlFromFile = ToHtmlFromFile;
+function CheckImageStructure(image) {
+    if (!image.hasOwnProperty("address")) {
+        throw new Error(missingFieldMessage + "address");
+    }
+    if (!image.hasOwnProperty("alias")) {
+        throw new Error(missingFieldMessage + "alias");
+    }
+}
+function CheckLinkStructure(link) {
+    if (!link.hasOwnProperty("address")) {
+        throw new Error(missingFieldMessage + "address");
+    }
+    if (!link.hasOwnProperty("content")) {
+        throw new Error(missingFieldMessage + "content");
+    }
+}
+function CheckContentStructure(element) {
+    if (!element.hasOwnProperty("type")) {
+        throw new Error(missingFieldMessage + "type");
+    }
+    // TODO: image and link shouldn't be bundled with the rest
+    if (element.type == "image" || element.type == "link") {
+        return;
+    }
+    if (!element.hasOwnProperty("content")) {
+        throw new Error(missingFieldMessage + "content");
+    }
+}
 function HandleContent(element) {
     var res = "";
     var content = element.content;
     content.forEach(function (c) {
+        CheckContentStructure(c);
         switch (c.type) {
             case "bold":
                 res += HandleBold(c);
@@ -36,14 +70,14 @@ function HandleContent(element) {
                 res += HandleImage(c);
                 break;
             default:
-                console.log("Unrecognised element");
-                break;
+                throw new Error(unrecognisedElementMessage + c.type);
         }
     });
     return res;
 }
 function HandleLink(link) {
     var res = "";
+    CheckLinkStructure(link);
     res += '<a href="' + link.address + '">';
     res += link.content !== "" ? link.content : link.address;
     res += "</a>";
@@ -51,6 +85,7 @@ function HandleLink(link) {
 }
 function HandleImage(image) {
     var res = "";
+    CheckImageStructure(image);
     res += '<img src="' + image.address + '" alt="' + image.alias + '">';
     return res;
 }
@@ -94,6 +129,9 @@ function HandleParagraph(paragraph) {
 }
 function HandleHeading(heading) {
     var res = "";
+    if (!heading.hasOwnProperty("level")) {
+        throw new Error(missingFieldMessage + "level");
+    }
     res += "<h" + heading.level + ">";
     res += HandleContent(heading);
     res += "</h" + heading.level + ">";
@@ -106,6 +144,9 @@ function HandleListItem(item) {
 }
 function HandleListItems(list) {
     var res = "";
+    if (!list.hasOwnProperty("items")) {
+        throw new Error(missingFieldMessage + "items");
+    }
     list.items.forEach(function (item) {
         res += "<li>";
         switch (item.type) {
@@ -116,8 +157,7 @@ function HandleListItems(list) {
                 res += HandleListItem(item);
                 break;
             default:
-                console.log("Unrecognised list element");
-                break;
+                throw new Error(unrecognisedElementMessage + item.type);
         }
         res += "</li>";
     });
@@ -141,6 +181,7 @@ function HandleBlockQuote(blockquote) {
 }
 function HandleOuterElement(element) {
     var res = "";
+    CheckOuterElementStructure(element);
     switch (element.type) {
         case "paragraph":
             res += HandleParagraph(element);
@@ -155,8 +196,7 @@ function HandleOuterElement(element) {
             res += HandleBlockQuote(element);
             break;
         default:
-            console.log("Unrecognised slide element");
-            break;
+            throw new Error(unrecognisedElementMessage + element.type);
     }
     return res;
 }
@@ -171,8 +211,18 @@ function HandleSlide(slide) {
 function ToHtmlFromJson(json) {
     var res = "";
     json.forEach(function (slide) {
+        CheckOuterElementStructure(slide);
+        if (slide.type !== "slide") {
+            throw new Error(unrecognisedElementMessage + slide.type);
+        }
         res += HandleSlide(slide);
     });
     return prettier.format(res, { parser: 'html' });
 }
 exports.ToHtmlFromJson = ToHtmlFromJson;
+function ToHtmlFromFile(fileName) {
+    var stringJson = readFileSync(fileName, "utf8");
+    var data = JSON.parse(stringJson);
+    return ToHtmlFromJson(data);
+}
+exports.ToHtmlFromFile = ToHtmlFromFile;
