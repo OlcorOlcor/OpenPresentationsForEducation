@@ -1,71 +1,10 @@
 const { readFileSync } = require("fs");
 import * as prettier from "@prettier/sync";
-import { NewLineKind } from "typescript";
-
+import * as pt from "./presentationModel";
 const unrecognisedElementMessage: string = "Unrecognised element: ";
 const missingFieldMessage: string = "Element is missing a field: "
 
-type Element = TextAnnotation | Paragraph | HeadingElement | ListItem;
-
-type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
-
-type InlineElement = TextAnnotation | Link | Image;
-
-type Text = {
-    type: string;
-    content: string;
-};
-
-type TextAnnotation = {
-    type: string;
-    content: [Text | TextAnnotation];
-};
-
-type Link = {
-    type: string;
-    address: string;
-    content: string;
-};
-
-type Image = {
-    type: string;
-    address: string;
-    alias: string;
-};
-
-type ListItem = {
-    type: string;
-    content: [Text | TextAnnotation];
-};
-
-type List = {
-    type: string;
-    listType: string;
-    items: [List | ListItem];
-};
-
-type Paragraph = {
-    type: string;
-    content: [Text | InlineElement];
-};
-
-type HeadingElement = {
-    type: string;
-    level: number;
-    content: [Text | InlineElement];
-};
-
-type BlockQuote = {
-    type: string;
-    content: [OuterElement];
-};
-
-type Slide = {
-    type: string;
-    content: [OuterElement];
-};
-
-function CheckOuterElementStructure(element: OuterElement) {
+function CheckOuterElementStructure(element: pt.OuterElement) {
     if (!element.hasOwnProperty("type")) {
         throw new Error(missingFieldMessage + "type");
     }
@@ -75,7 +14,7 @@ function CheckOuterElementStructure(element: OuterElement) {
     }
 }
 
-function CheckImageStructure(image: Image) {
+function CheckImageStructure(image: pt.Image) {
     if (!image.hasOwnProperty("address")) {
         throw new Error(missingFieldMessage + "address")
     }
@@ -84,7 +23,7 @@ function CheckImageStructure(image: Image) {
     }
 }
 
-function CheckLinkStructure(link: Link) {
+function CheckLinkStructure(link: pt.Link) {
     if (!link.hasOwnProperty("address")) {
         throw new Error(missingFieldMessage + "address");
     }
@@ -93,7 +32,7 @@ function CheckLinkStructure(link: Link) {
     }
 }
 
-function CheckContentStructure(element: Text | InlineElement) {
+function CheckContentStructure(element: pt.Text | pt.InlineElement) {
     if (!element.hasOwnProperty("type")) {
         throw new Error(missingFieldMessage + "type");
     }
@@ -106,32 +45,32 @@ function CheckContentStructure(element: Text | InlineElement) {
     }
 }
 
-function HandleContent(element: Element): string {
+function HandleContent(element: pt.Element): string {
     let res: string = "";
     let content = element.content;
     content.forEach((c) => {
         CheckContentStructure(c);
         switch (c.type) {
             case "bold":
-                res += HandleBold(c as TextAnnotation);
+                res += HandleBold(c as pt.TextAnnotation);
                 break;
             case "italic":
-                res += HandleItalic(c as TextAnnotation);
+                res += HandleItalic(c as pt.TextAnnotation);
                 break;
             case "boldItalic":
-                res += HandleBoldItalic(c as TextAnnotation);
+                res += HandleBoldItalic(c as pt.TextAnnotation);
                 break;
             case "code":
-                res += HandleInlineCode(c as TextAnnotation);
+                res += HandleInlineCode(c as pt.TextAnnotation);
                 break;
             case "text":
-                res += HandleText(c as Text);
+                res += HandleText(c as pt.Text);
                 break;
             case "link":
-                res += HandleLink(c as Link);
+                res += HandleLink(c as pt.Link);
                 break;
             case "image":
-                res += HandleImage(c as Image);
+                res += HandleImage(c as pt.Image);
                 break;
             default:
                 throw new Error(unrecognisedElementMessage + c.type);
@@ -140,7 +79,7 @@ function HandleContent(element: Element): string {
     return res;
 }
 
-function HandleLink(link: Link): string {
+function HandleLink(link: pt.Link): string {
     let res: string = "";
     CheckLinkStructure(link);
     res += '<a href="' + link.address + '">';
@@ -149,14 +88,14 @@ function HandleLink(link: Link): string {
     return res;
 }
 
-function HandleImage(image: Image): string {
+function HandleImage(image: pt.Image): string {
     let res: string = "";
     CheckImageStructure(image);
     res += '<img src="' + image.address + '" alt="' + image.alias + '">';
     return res;
 }
 
-function HandleInlineCode(element: TextAnnotation) {
+function HandleInlineCode(element: pt.TextAnnotation) {
     let res: string = "";
     res += "<code>";
     res += HandleContent(element);
@@ -164,7 +103,7 @@ function HandleInlineCode(element: TextAnnotation) {
     return res;
 }
 
-function HandleBold(element: TextAnnotation): string {
+function HandleBold(element: pt.TextAnnotation): string {
     let res: string = "";
     res += "<strong>";
     res += HandleContent(element);
@@ -172,7 +111,7 @@ function HandleBold(element: TextAnnotation): string {
     return res;
 }
 
-function HandleItalic(element: TextAnnotation): string {
+function HandleItalic(element: pt.TextAnnotation): string {
     let res: string = "";
     res += "<em>";
     res += HandleContent(element);
@@ -180,18 +119,18 @@ function HandleItalic(element: TextAnnotation): string {
     return res;
 }
 
-function HandleBoldItalic(element: TextAnnotation): string {
+function HandleBoldItalic(element: pt.TextAnnotation): string {
     let res: string = "";
     res += "<em><strong>";
     res += HandleContent(element);
     res += "</strong></em>";
     return res;
 }
-function HandleText(text: Text): string {
+function HandleText(text: pt.Text): string {
     return text.content;
 }
 
-function HandleParagraph(paragraph: Paragraph): string {
+function HandleParagraph(paragraph: pt.Paragraph): string {
     let res: string = "";
     res += "<p>";
     res += HandleContent(paragraph);
@@ -199,7 +138,7 @@ function HandleParagraph(paragraph: Paragraph): string {
     return res;
 }
 
-function HandleHeading(heading: HeadingElement): string {
+function HandleHeading(heading: pt.HeadingElement): string {
     let res: string = "";
     if (!heading.hasOwnProperty("level")) {
         throw new Error(missingFieldMessage + "level");
@@ -210,13 +149,13 @@ function HandleHeading(heading: HeadingElement): string {
     return res;
 }
 
-function HandleListItem(item: ListItem) {
+function HandleListItem(item: pt.ListItem) {
     let res: string = "";
     res += HandleContent(item);
     return res;
 }
 
-function HandleListItems(list: List): string {
+function HandleListItems(list: pt.List): string {
     let res: string = "";
     if (!list.hasOwnProperty("items")) {
         throw new Error(missingFieldMessage + "items");
@@ -225,10 +164,10 @@ function HandleListItems(list: List): string {
         res += "<li>";
         switch (item.type) {
             case "list":
-                res += HandleList(item as List);
+                res += HandleList(item as pt.List);
                 break;
             case "listItem":
-                res += HandleListItem(item as ListItem);
+                res += HandleListItem(item as pt.ListItem);
                 break;
             default:
                 throw new Error(unrecognisedElementMessage + item.type);
@@ -238,7 +177,7 @@ function HandleListItems(list: List): string {
     return res;
 }
 
-function HandleList(list: List): string {
+function HandleList(list: pt.List): string {
     let res: string = "";
     res += list.listType === "unordered" ? "<ul>" : "<ol>";
     res += HandleListItems(list);
@@ -246,7 +185,7 @@ function HandleList(list: List): string {
     return res;
 }
 
-function HandleBlockQuote(blockquote: BlockQuote): string {
+function HandleBlockQuote(blockquote: pt.BlockQuote): string {
     let res: string = "";
     res += "<blockquote>";
     blockquote.content.forEach((c) => {
@@ -256,21 +195,21 @@ function HandleBlockQuote(blockquote: BlockQuote): string {
     return res;
 }
 
-function HandleOuterElement(element: OuterElement): string {
+function HandleOuterElement(element: pt.OuterElement): string {
     let res: string = "";
     CheckOuterElementStructure(element);
     switch (element.type) {
         case "paragraph":
-            res += HandleParagraph(element as Paragraph);
+            res += HandleParagraph(element as pt.Paragraph);
             break;
         case "heading":
-            res += HandleHeading(element as HeadingElement);
+            res += HandleHeading(element as pt.HeadingElement);
             break;
         case "list":
-            res += HandleList(element as List);
+            res += HandleList(element as pt.List);
             break;
         case "blockquote":
-            res += HandleBlockQuote(element as BlockQuote);
+            res += HandleBlockQuote(element as pt.BlockQuote);
             break;
         default:
             throw new Error(unrecognisedElementMessage + element.type);
@@ -278,7 +217,7 @@ function HandleOuterElement(element: OuterElement): string {
     return res;
 }
 
-function HandleSlide(slide: Slide): string {
+function HandleSlide(slide: pt.Slide): string {
     let res: string = "";
     let content = slide.content;
     content.forEach((c) => {
@@ -287,7 +226,7 @@ function HandleSlide(slide: Slide): string {
     return res;
 }
 
-export function ToHtmlFromJson(json: Slide[]): string {
+export function ToHtmlFromJson(json: pt.Slide[]): string {
     let res = "";
     json.forEach((slide) => {
         CheckOuterElementStructure(slide);
