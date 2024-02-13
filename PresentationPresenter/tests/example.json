@@ -7,69 +7,72 @@
                 "content": [
                     {
                         "type": "text",
-                        "content": "This is a paragraph "
+                        "content": ["This is a paragraph "]
                     }, 
                     {
                         "type": "bold",
                         "content": [
                             {
                                 "type": "text",
-                                "content": "with inline element"
+                                "content": ["with inline element"]
                             }
                         ]
                     },
                     {
                         "type": "text",
-                        "content": "\nand multiple lines"
+                        "content": ["\nand multiple lines"]
                     }
                 ]
             }, 
             {
                 "type": "heading",
-                "level": 1,
                 "content": [
                     {
                         "type": "text",
-                        "content": "Heading"
+                        "content": ["Heading"]
                     }
-                ]
+                ],
+                "attributes": {
+                    "level": 1
+                }
             }, 
             {
                 "type": "heading",
-                "level": 2,
                 "content": [
                     {
                         "type": "text",
-                        "content": "Subheading "
+                        "content": ["Subheading "]
                     },
                     {
                         "type": "italic",
                         "content": [
                             {
                                 "type": "text",
-                                "content": "with inline element"
+                                "content": ["with inline element"]
                             }
                         ]
                     }
-                ]
+                ],
+                "attributes": {
+                    "level": 2
+                }
             },
             {
                 "type": "list",
-                "listType": "unordered",
-                "items": [
+                "content": [
                     {
                         "type": "listItem",
                         "content": [
                             {
                                 "type": "text",
-                                "content": "Top "
+                                "content": ["Top "]
                             }, 
                             {
                                 "type": "italic",
                                 "content": [
                                     {
                                         "type": "text",
-                                        "content": "level 1"
+                                        "content": ["level 1"]
                                     }
                                 ]
                             }
@@ -77,14 +80,13 @@
                     }, 
                     {
                         "type": "list",
-                        "listType": "unordered",
-                        "items": [
+                        "content": [
                             {
                                 "type": "listItem",
                                 "content": [
                                     {
                                         "type": "text",
-                                        "content": "Second level 11"
+                                        "content": ["Second level 11"]
                                     }
                                 ]
                             },
@@ -93,20 +95,19 @@
                                 "content": [
                                     {
                                         "type": "text",
-                                        "content": "Second level 12"  
+                                        "content": ["Second level 12"]
                                     }   
                                 ]    
                             },
                             {
                                 "type": "list",
-                                "listType": "ordered",
-                                "items": [
+                                "content": [
                                     {
                                         "type": "listItem",
                                         "content": [
                                             {
                                                 "type": "text",
-                                                "content": "Third level 121"
+                                                "content": ["Third level 121"]
                                             }
                                         ]
                                     },
@@ -115,24 +116,33 @@
                                         "content": [
                                             {
                                                 "type": "text",
-                                                "content": "Third level 122"
+                                                "content": ["Third level 122"]
                                             }
                                         ]
                                     }            
-                                ]
+                                ],
+                                "attributes": {
+                                    "listType": "ordered"
+                                }
                             }
-                        ]
+                        ],
+                        "attributes": {
+                            "listType": "unordered"
+                        }
                     },
                     {
                         "type": "listItem",
                         "content": [
                             {
                                 "type": "text",
-                                "content": "Top level 2"
+                                "content": ["Top level 2"]
                             }
                         ]
                     }
-                ]
+                ],
+                "attributes": {
+                    "listType": "unordered"
+                }
             }
         ]
     }

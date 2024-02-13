@@ -5,23 +5,27 @@ const fs = require("fs");
 const prettier = require("@prettier/sync");
 
 function formatHtml(html) {
-    return prettier.format(html, { parser: 'html' });
+    return prettier.format(html, { parser: "html" });
 }
 
 const testJsonFile = path.join(__dirname, "./example.json");
 const testHtmlFile = path.join(__dirname, "./example.html");
 
 const inlineElementArray = [
-    { type: "text", content: "Text, " },
-    { type: "bold", content: [{ type: "text", content: "bolded text, " }] },
-    { type: "italic", content: [{ type: "text", content: "italic text, " }] },
+    { type: "text", content: ["Text, "] },
+    { type: "bold", content: [{ type: "text", content: ["bolded text, "] }] },
+    { type: "italic", content: [{ type: "text", content: ["italic text, "] }] },
     {
         type: "boldItalic",
-        content: [{ type: "text", content: "bolded italic text, " }],
+        content: [{ type: "text", content: ["bolded italic text, "] }],
     },
-    { type: "code", content: [{ type: "text", content: "inline code." }] },
-    { type: "link", address: "https://www.google.com", content: "Google" },
-    { type: "image", address: "img.jpg", alias: "image" },
+    { type: "code", content: [{ type: "text", content: ["inline code."] }] },
+    {
+        type: "link",
+        content: ["https://www.google.com"],
+        attributes: { alias: "Google" },
+    },
+    { type: "image", content: ["img.jpg"], attributes: { alias: "image" } },
 ];
 const inlineElementArrayResult =
     'Text, <strong>bolded text, </strong><em>italic text, </em><em><strong>bolded italic text, </strong></em><code>inline code.</code><a href="https://www.google.com">Google</a><img src="img.jpg" alt="image">';
@@ -38,7 +42,7 @@ test("Simple paragraph", () => {
                 content: [
                     {
                         type: "paragraph",
-                        content: [{ type: "text", content: "Text" }],
+                        content: [{ type: "text", content: ["Text"] }],
                     },
                 ],
             },
@@ -69,13 +73,13 @@ test("Nested  Inline Elements", () => {
                             {
                                 type: "bold",
                                 content: [
-                                    { type: "text", content: "Bold text" },
+                                    { type: "text", content: ["Bold text"] },
                                     {
                                         type: "italic",
                                         content: [
                                             {
                                                 type: "text",
-                                                content: " also italic",
+                                                content: [" also italic"],
                                             },
                                         ],
                                     },
@@ -86,7 +90,9 @@ test("Nested  Inline Elements", () => {
                 ],
             },
         ]),
-    ).toBe(formatHtml("<p><strong>Bold text<em> also italic</em></strong></p>"));
+    ).toBe(
+        formatHtml("<p><strong>Bold text<em> also italic</em></strong></p>"),
+    );
 });
 
 test("Simple heading", () => {
@@ -97,8 +103,10 @@ test("Simple heading", () => {
                 content: [
                     {
                         type: "heading",
-                        level: 1,
-                        content: [{ type: "text", content: "Text" }],
+                        content: [{ type: "text", content: ["Text"] }],
+                        attributes: {
+                            level: 1,
+                        },
                     },
                 ],
             },
@@ -112,7 +120,11 @@ test("Heading with Inline elements", () => {
             {
                 type: "slide",
                 content: [
-                    { type: "heading", level: 1, content: inlineElementArray },
+                    {
+                        type: "heading",
+                        content: inlineElementArray,
+                        attributes: { level: 1 },
+                    },
                 ],
             },
         ]),
@@ -127,14 +139,13 @@ test("Simple unordered list", () => {
                 content: [
                     {
                         type: "list",
-                        listType: "unordered",
-                        items: [
+                        content: [
                             {
                                 type: "listItem",
                                 content: [
                                     {
                                         type: "text",
-                                        content: "First",
+                                        content: ["First"],
                                     },
                                 ],
                             },
@@ -143,11 +154,14 @@ test("Simple unordered list", () => {
                                 content: [
                                     {
                                         type: "text",
-                                        content: "Second",
+                                        content: ["Second"],
                                     },
                                 ],
                             },
                         ],
+                        attributes: {
+                            listType: "unordered",
+                        },
                     },
                 ],
             },
@@ -163,14 +177,13 @@ test("Simple ordered list", () => {
                 content: [
                     {
                         type: "list",
-                        listType: "ordered",
-                        items: [
+                        content: [
                             {
                                 type: "listItem",
                                 content: [
                                     {
                                         type: "text",
-                                        content: "First",
+                                        content: ["First"],
                                     },
                                 ],
                             },
@@ -179,11 +192,14 @@ test("Simple ordered list", () => {
                                 content: [
                                     {
                                         type: "text",
-                                        content: "Second",
+                                        content: ["Second"],
                                     },
                                 ],
                             },
                         ],
+                        attributes: {
+                            listType: "ordered",
+                        },
                     },
                 ],
             },
@@ -199,8 +215,7 @@ test("List with inline elements", () => {
                 content: [
                     {
                         type: "list",
-                        listType: "unordered",
-                        items: [
+                        content: [
                             {
                                 type: "listItem",
                                 content: inlineElementArray,
@@ -210,16 +225,23 @@ test("List with inline elements", () => {
                                 content: [
                                     {
                                         type: "text",
-                                        content: "Second",
+                                        content: ["Second"],
                                     },
                                 ],
                             },
                         ],
+                        attributes: {
+                            listType: "unordered",
+                        },
                     },
                 ],
             },
         ]),
-    ).toBe(formatHtml("<ul><li>" + inlineElementArrayResult + "</li><li>Second</li></ul>"));
+    ).toBe(
+        formatHtml(
+            "<ul><li>" + inlineElementArrayResult + "</li><li>Second</li></ul>",
+        ),
+    );
 });
 
 test("Nested list", () => {
@@ -230,18 +252,16 @@ test("Nested list", () => {
                 content: [
                     {
                         type: "list",
-                        listType: "unordered",
-                        items: [
+                        content: [
                             {
                                 type: "list",
-                                listType: "ordered",
-                                items: [
+                                content: [
                                     {
                                         type: "listItem",
                                         content: [
                                             {
                                                 type: "text",
-                                                content: "First",
+                                                content: ["First"],
                                             },
                                         ],
                                     },
@@ -250,18 +270,26 @@ test("Nested list", () => {
                                         content: [
                                             {
                                                 type: "text",
-                                                content: "Second",
+                                                content: ["Second"],
                                             },
                                         ],
                                     },
                                 ],
+                                attributes: {
+                                    listType: "ordered",
+                                },
                             },
                         ],
+                        attributes: {
+                            listType: "unordered",
+                        },
                     },
                 ],
             },
         ]),
-    ).toBe(formatHtml("<ul><li><ol><li>First</li><li>Second</li></ol></li></ul>"));
+    ).toBe(
+        formatHtml("<ul><li><ol><li>First</li><li>Second</li></ol></li></ul>"),
+    );
 });
 
 test("Simple blockquote", () => {
@@ -278,20 +306,19 @@ test("Simple blockquote", () => {
                                 content: [
                                     {
                                         type: "text",
-                                        content: "Paragraph content",
+                                        content: ["Paragraph content"],
                                     },
                                 ],
                             },
                             {
                                 type: "list",
-                                listType: "unordered",
-                                items: [
+                                content: [
                                     {
                                         type: "listItem",
                                         content: [
                                             {
                                                 type: "text",
-                                                content: "First",
+                                                content: ["First"],
                                             },
                                         ],
                                     },
@@ -300,11 +327,14 @@ test("Simple blockquote", () => {
                                         content: [
                                             {
                                                 type: "text",
-                                                content: "Second",
+                                                content: ["Second"],
                                             },
                                         ],
                                     },
                                 ],
+                                attributes: {
+                                    listType: "unordered",
+                                },
                             },
                         ],
                     },
@@ -312,7 +342,9 @@ test("Simple blockquote", () => {
             },
         ]),
     ).toBe(
-        formatHtml("<blockquote><p>Paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote>"),
+        formatHtml(
+            "<blockquote><p>Paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote>",
+        ),
     );
 });
 
@@ -330,7 +362,7 @@ test("Nested blockquotes", () => {
                                 content: [
                                     {
                                         type: "text",
-                                        content: "Paragraph content",
+                                        content: ["Paragraph content"],
                                     },
                                 ],
                             },
@@ -342,21 +374,21 @@ test("Nested blockquotes", () => {
                                         content: [
                                             {
                                                 type: "text",
-                                                content:
+                                                content: [
                                                     "Inner paragraph content",
+                                                ],
                                             },
                                         ],
                                     },
                                     {
                                         type: "list",
-                                        listType: "unordered",
-                                        items: [
+                                        content: [
                                             {
                                                 type: "listItem",
                                                 content: [
                                                     {
                                                         type: "text",
-                                                        content: "First",
+                                                        content: ["First"],
                                                     },
                                                 ],
                                             },
@@ -365,11 +397,14 @@ test("Nested blockquotes", () => {
                                                 content: [
                                                     {
                                                         type: "text",
-                                                        content: "Second",
+                                                        content: ["Second"],
                                                     },
                                                 ],
                                             },
                                         ],
+                                        attributes: {
+                                            listType: "unordered",
+                                        },
                                     },
                                 ],
                             },
@@ -379,7 +414,9 @@ test("Nested blockquotes", () => {
             },
         ]),
     ).toBe(
-        formatHtml("<blockquote><p>Paragraph content</p><blockquote><p>Inner paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote></blockquote>"),
+        formatHtml(
+            "<blockquote><p>Paragraph content</p><blockquote><p>Inner paragraph content</p><ul><li>First</li><li>Second</li></ul></blockquote></blockquote>",
+        ),
     );
 });
 
@@ -392,48 +429,165 @@ const unrecognisedElementError = "Unrecognised element: X";
 const missingFieldError = "Element is missing a field: ";
 
 test("Unrecognised outer element", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "X", content: "text"}]}])).toThrow(unrecognisedElementError);
+    expect(() =>
+        ToHtmlFromJson([
+            { type: "slide", content: [{ type: "X", content: "text" }] },
+        ]),
+    ).toThrow(unrecognisedElementError);
 });
 
 test("Unrecognised content element", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "X", content: "text"}]}]}])).toThrow(unrecognisedElementError);
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [{ type: "X", content: "text" }],
+                    },
+                ],
+            },
+        ]),
+    ).toThrow(unrecognisedElementError);
 });
 
 test("Unrecognised list element", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "list", items: [{type: "X", content: "text"}]}]}])).toThrow(unrecognisedElementError);
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    { type: "list", items: [{ type: "X", content: "text" }] },
+                ],
+            },
+        ]),
+    ).toThrow(unrecognisedElementError);
 });
 
 test("Wrong slide json structure", () => {
-    expect(() => ToHtmlFromJson([{type: "X", content: []}])).toThrow(unrecognisedElementError);
-    expect(() => ToHtmlFromJson([{X: "slide", content: []}])).toThrow(missingFieldError + "type");
-    expect(() => ToHtmlFromJson([{type: "slide"}])).toThrow(missingFieldError);
+    expect(() => ToHtmlFromJson([{ type: "X", content: [] }])).toThrow(
+        unrecognisedElementError,
+    );
+    expect(() => ToHtmlFromJson([{ X: "slide", content: [] }])).toThrow(
+        missingFieldError + "type",
+    );
+    expect(() => ToHtmlFromJson([{ type: "slide" }])).toThrow(
+        missingFieldError,
+    );
 });
 
 test("Wrong outer element json structure", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "X", content: "text"}]}])).toThrow(unrecognisedElementError);
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{content: []}]}])).toThrow(missingFieldError + "type");
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph"}]}])).toThrow(missingFieldError + "content");
+    expect(() =>
+        ToHtmlFromJson([
+            { type: "slide", content: [{ type: "X", content: "text" }] },
+        ]),
+    ).toThrow(unrecognisedElementError);
+    expect(() =>
+        ToHtmlFromJson([{ type: "slide", content: [{ content: [] }] }]),
+    ).toThrow(missingFieldError + "type");
+    expect(() =>
+        ToHtmlFromJson([{ type: "slide", content: [{ type: "paragraph" }] }]),
+    ).toThrow(missingFieldError + "content");
 });
 
 test("Wrong image element json structure", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "image", alias: "img"}]}]}])).toThrow(missingFieldError + "address");
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "image", address: "./img.jpg"}]}]}])).toThrow(missingFieldError + "alias");
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [{ type: "image", alias: "img" }],
+                    },
+                ],
+            },
+        ]),
+    ).toThrow(missingFieldError + "address");
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [{ type: "image", address: "./img.jpg" }],
+                    },
+                ],
+            },
+        ]),
+    ).toThrow(missingFieldError + "alias");
 });
 
 test("Wrong link element json structure", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "link", content: "example"}]}]}])).toThrow(missingFieldError + "address");
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "link", address: "www.example.com"}]}]}])).toThrow(missingFieldError + "content");
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [{ type: "link", content: "example" }],
+                    },
+                ],
+            },
+        ]),
+    ).toThrow(missingFieldError + "address");
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [{ type: "link", address: "www.example.com" }],
+                    },
+                ],
+            },
+        ]),
+    ).toThrow(missingFieldError + "content");
 });
 
 test("Wrong heading element structure", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "heading", content: [{type: "text", content: "heading"}]}]}]).toThrow(missingFieldError + "level"));
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    {
+                        type: "heading",
+                        content: [{ type: "text", content: "heading" }],
+                    },
+                ],
+            },
+        ]).toThrow(missingFieldError + "level"),
+    );
 });
 
 test("Wrong content element structure", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{content: "text"}]}]}])).toThrow(missingFieldError + "type");
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "paragraph", content: [{type: "text"}]}]}])).toThrow(missingFieldError + "content");
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [
+                    { type: "paragraph", content: [{ content: "text" }] },
+                ],
+            },
+        ]),
+    ).toThrow(missingFieldError + "type");
+    expect(() =>
+        ToHtmlFromJson([
+            {
+                type: "slide",
+                content: [{ type: "paragraph", content: [{ type: "text" }] }],
+            },
+        ]),
+    ).toThrow(missingFieldError + "content");
 });
 
 test("Wrong list element structure", () => {
-    expect(() => ToHtmlFromJson([{type: "slide", content: [{type: "list"}]}])).toThrow(missingFieldError + "items");
-})
+    expect(() =>
+        ToHtmlFromJson([{ type: "slide", content: [{ type: "list" }] }]),
+    ).toThrow(missingFieldError + "items");
+});
