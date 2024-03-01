@@ -97,3 +97,77 @@ class HtmlVisitor implements IVisitor {
         return this.result;
     }
 }
+
+class MarkdownVisitor implements IVisitor {
+    result: string = "";
+    
+    visitTextNode(element: pm.TextElement): void {
+        this.result += element.content;
+    }
+    visitBoldNode(element: pm.BoldElement): void {
+        this.result += "**";
+        element.content.forEach(c => c.accept(this));
+        this.result += "**";
+    }
+    visitItalicNode(element: pm.ItalicElement): void {
+        this.result += "*";
+        element.content.forEach(c => c.accept(this));
+        this.result += "*";
+    }
+    visitBoldItalicNode(element: pm.BoldItalicElement): void {
+        this.result += "***";
+        element.content.forEach(c => c.accept(this));
+        this.result += "***";
+    }
+    visitCodeNode(element: pm.CodeElement): void {
+        this.result += "```\n";
+        element.content.forEach(c => c.accept(this));
+        this.result += "```\n";
+    }
+    visitImageNode(element: pm.ImageElement): void {
+        this.result += "![" + element.alias + "](" + element.content + ")";
+    }
+    visitLinkNode(element: pm.LinkElement): void {
+        this.result += "[" + element.alias + "](" + element.content + ")";
+    }
+    visitParagraphNode(element: pm.ParagraphElement): void {
+        element.content.forEach(c => c.accept(this));
+        this.result += "\n\n";
+    }
+    visitHeadingNode(element: pm.HeadingElement): void {
+        for (let i = 0; i < element.level; ++i) {
+            this.result += "#";
+        }
+        this.result += " ";
+        element.content.forEach(c => c.accept(this));
+        this.result += "\n";
+    }
+
+    visitListNode(element: pm.ListElement): void {
+        let counter = 1;
+        element.content.forEach(c => {
+            // TODO: indent
+            this.result += (element.listType === "ordered") ? counter + ". " : "-";
+            c.accept(this);
+            this.result += "\n";
+        });
+    }
+
+    visitListItemNode(element: pm.ListItemElement): void {
+        element.content.forEach(c => c.accept(this));
+    }
+    
+    visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
+        element.content.forEach(c => {
+            this.result += "> ";
+            c.accept(this);
+            this.result += "\n";
+        })
+    }
+
+    visitSlideNode(element: pm.SlideElement): string {
+        element.content.forEach(c => c.accept(this));
+        return this.result;    
+    }
+
+}
