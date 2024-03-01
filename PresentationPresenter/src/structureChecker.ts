@@ -11,11 +11,10 @@ const incorrectListTypeMessage = (type: string) => "List type $type is incorrect
 type Result = {
     success: boolean;
     errors: string[];
-    slides: Presentation[]
 }
 
 class Checker {
-    private result: Result = { success: true, errors: [], slides: [] };
+    private result: Result = { success: true, errors: [] };
 
     private CheckProperty(element: any, property: string): boolean {
         if (!element.hasOwnProperty(property)) {
