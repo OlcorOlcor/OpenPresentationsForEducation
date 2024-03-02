@@ -100,7 +100,8 @@ class HtmlVisitor implements IVisitor {
 
 class MarkdownVisitor implements IVisitor {
     result: string = "";
-    
+    listLevel: number = 0;
+
     visitTextNode(element: pm.TextElement): void {
         this.result += element.content;
     }
@@ -145,12 +146,16 @@ class MarkdownVisitor implements IVisitor {
 
     visitListNode(element: pm.ListElement): void {
         let counter = 1;
+        this.listLevel++;
         element.content.forEach(c => {
-            // TODO: indent
+            for (let indentCounter = 0; indentCounter < this.listLevel; indentCounter++) {
+                this.result += "\t";
+            }
             this.result += (element.listType === "ordered") ? counter + ". " : "-";
             c.accept(this);
             this.result += "\n";
         });
+        this.listLevel--;
     }
 
     visitListItemNode(element: pm.ListItemElement): void {
@@ -169,5 +174,4 @@ class MarkdownVisitor implements IVisitor {
         element.content.forEach(c => c.accept(this));
         return this.result;    
     }
-
 }
