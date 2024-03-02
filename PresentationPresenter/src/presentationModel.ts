@@ -1,55 +1,50 @@
-import { isDeepStrictEqual } from "util";
-
-interface IVisitor {
-    visitTextNode(element: TextElement): string;
-    visitBoldNode(element: BoldElement): string;
-    visitItalicNode(element: ItalicElement): string;
-    visitBoldItalicNode(element: BoldItalicElement): string;
-    visitCodeNode(element: CodeElement): string;
-    visitImageNode(element: ImageElement): string;
-    visitLinkNode(element: LinkElement): string;
-    visitParagraphNode(element: ParagraphElement): string;
-    visitHeadingNode(element: HeadingElement): string;
-    visitListNode(element: ListElement): string;
-    visitListItemNode(element: ListItemElement): string;
-    visitBlockQuoteNode(element: BlockQuoteElement): string;
-    visitSlideNode(element: SlideElement): string;
-}
-
-interface IVisitable {
-    accept(visitor: IVisitor): void;
-}
+import { IVisitor, IVisitable } from "./Visitors";
 
 class BaseElement { }
 
-export class ListItemElement extends BaseElement {
-    content: (Text | InlineElement)[];
-    public constructor(content: (Text | InlineElement)[]) {
-        super();
-        this.content = content;
-    }
-}
-
-export class TextElement extends BaseElement {
-    content: string;
-    public constructor(content: string) {
-        super();
-        this.content = content;
-    }
-}
-
-export class InlineElement extends BaseElement { }
-
-export class InlineWrapperElement extends InlineElement {
+export class ListItemElement extends BaseElement implements IVisitable {
     content: (TextElement | InlineElement)[];
     public constructor(content: (TextElement | InlineElement)[]) {
         super();
         this.content = content;
     }
+
+    accept(visitor: IVisitor): void {
+        visitor.visitListItemNode(this);
+    }
 }
 
-export class InlineLeafElement extends InlineElement { }
- export class BoldElement extends InlineWrapperElement implements IVisitable {
+export class TextElement extends BaseElement implements IVisitable {
+    content: string;
+    public constructor(content: string) {
+        super();
+        this.content = content;
+    }
+    accept(visitor: IVisitor): void {
+        visitor.visitTextNode(this);
+    }
+}
+
+export abstract class InlineElement extends BaseElement implements IVisitable {
+    abstract accept(visitor: IVisitor): void;
+}
+
+export abstract class InlineWrapperElement extends InlineElement {
+    content: (TextElement | InlineElement)[];
+    
+    public constructor(content: (TextElement | InlineElement)[]) {
+        super();
+        this.content = content;
+    }
+
+    abstract accept(visitor: IVisitor): void;
+}
+
+export abstract class InlineLeafElement extends InlineElement {
+    abstract accept(visitor: IVisitor): void;
+}
+
+export class BoldElement extends InlineWrapperElement implements IVisitable {
     accept(visitor: IVisitor): void {
         visitor.visitBoldNode(this);
     }
@@ -105,13 +100,17 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
     }
 }
 
-export class OuterElement extends BaseElement { }
+export abstract class OuterElement extends BaseElement implements IVisitable {
+    abstract accept(visitor: IVisitor): void;
+}
+
 export class ParagraphElement extends OuterElement implements IVisitable {
     content: (TextElement | InlineElement)[];
     public constructor(content: (TextElement | InlineElement)[]) {
         super();
         this.content = content;
     }
+    
     accept(visitor: IVisitor): void {
         visitor.visitParagraphNode(this);
     }
