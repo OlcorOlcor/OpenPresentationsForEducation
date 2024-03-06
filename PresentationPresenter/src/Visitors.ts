@@ -1,6 +1,5 @@
 import * as pm from "./presentationModel";
 
-
 export interface IVisitor {
     visitTextNode(element: pm.TextElement): void;
     visitBoldNode(element: pm.BoldElement): void;
@@ -21,7 +20,7 @@ export interface IVisitable {
     accept(visitor: IVisitor): void;
 }
 
-class HtmlVisitor implements IVisitor {
+export class HtmlVisitor implements IVisitor {
     result: string = "";
 
     visitTextNode(element: pm.TextElement): void {
@@ -98,7 +97,7 @@ class HtmlVisitor implements IVisitor {
     }
 }
 
-class MarkdownVisitor implements IVisitor {
+export class MarkdownVisitor implements IVisitor {
     result: string = "";
     listLevel: number = 0;
 
