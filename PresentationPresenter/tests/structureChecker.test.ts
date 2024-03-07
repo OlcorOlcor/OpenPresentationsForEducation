@@ -3,7 +3,7 @@ const { Checker, Result } = require("../src/structureChecker");
 
 const inlineElementArray = [
     { type: "text", content: ["Text, "] },
-    { type: "bold", content: [{ type: "text", content: ["bolded text, "] }] },
+    { type: "bold", content: [{ type: "text", content: ["bolded text, "] }, {type: "italic", content: [{ type: "text", content: ["italic text, "]}] }]},
     { type: "italic", content: [{ type: "text", content: ["italic text, "] }] },
     {
         type: "boldItalic",
@@ -227,4 +227,101 @@ test("Missing attributes", () => {
     ];
     let result = { success: false, errors: ["Element is missing a field: attributes", "Element is missing a field: attributes", "Element is missing a field: attributes", "Element is missing a field: attributes"] };
     expect(checker.CheckJsonStructure(json)).toEqual(result);
+});
+
+test("Missing type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: type"] };
+    expect(checker.CheckJsonStructure([{content: []}])).toEqual(result);
+});
+
+test("Missing content", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: content"] };
+    expect(checker.CheckJsonStructure([{ type: "slide" }])).toEqual(result);
+});
+
+test("Incorrect slide type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Type side is incorrect."] };
+    expect(checker.CheckJsonStructure([{ type: "side", content: []}])).toEqual(result);
+});
+
+test("Incorrect outer element type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Type outer is incorrect."] };
+    expect(checker.CheckJsonStructure([{ type: "slide", content: [{ type: "outer", content: []}]}])).toEqual(result);
+});
+
+test("Missing outer element type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: type"] };
+    expect(checker.CheckJsonStructure([{ type: "slide", content: [{ content: []}]}])).toEqual(result);
+});
+
+test("Missing outer element content", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: content"] };
+    expect(checker.CheckJsonStructure([{ type: "slide", content: [{ type: "paragraph"}]}])).toEqual(result);
+})
+
+test("Incorrect inline element type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Type inline is incorrect."] };
+    expect(checker.CheckJsonStructure([{ type: "slide", content: [{ type: "paragraph", content: [{type: "inline", content: []}]}]}])).toEqual(result);
+});
+
+test("Missing inline element type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: type"] };
+    expect(checker.CheckJsonStructure([{ type: "slide", content: [{ type: "paragraph", content: [{content: []}]}]}])).toEqual(result);
+});
+
+test("Missing alias in link", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: alias"]};
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "paragraph", content: [{type: "link", content: [], attributes: {}}]}]}])).toEqual(result);
+});
+
+test("Missing alias in image", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: alias"]};
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "paragraph", content: [{type: "image", content: [], attributes: {}}]}]}])).toEqual(result);
+});
+
+test("Missing content in text", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: content"]};
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "paragraph", content: [{type: "text"}]}]}])).toEqual(result);
+});
+
+test("Text content isn't a string", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Text element content can only contain string literals"]};
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "paragraph", content: [{type: "text", content: ["text", "string", 123]}]}]}])).toEqual(result);
+});
+
+test("Missing level in heading", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: level"] };
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "heading", content: [], attributes: {}}]}])).toEqual(result);
+});
+
+test("Level isn't an integer", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Level should be a positive integer."]};
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "heading", content: [], attributes: {level: -1}}]}])).toEqual(result);
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "heading", content: [], attributes: {level: "1"}}]}])).toEqual(result);
+});
+
+test("Missing list type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["Element is missing a field: listType"]};
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "list", content: [], attributes: {}}]}])).toEqual(result);
+});
+
+test("Incorrect list type", () => {
+    let checker = new Checker();
+    let result = { success: false, errors: ["List type list is incorrect."]};
+    expect(checker.CheckJsonStructure([{type: "slide", content: [{type: "list", content: [], attributes: {listType: "list"}}]}])).toEqual(result);
 });
