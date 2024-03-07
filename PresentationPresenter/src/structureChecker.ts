@@ -5,15 +5,15 @@ const unrecognisedElementMessage: string = "Unrecognised element: ";
 const missingFieldMessage: string = "Element is missing a field: ";
 const levelMessage: string = "Level should be a positive integer.";
 const textMessage: string = "Text element content can only contain string literals";
-const incorrectTypeMessage = (type: string) => "Type $type is incorrect.";
-const incorrectListTypeMessage = (type: string) => "List type $type is incorrect.";
+const incorrectTypeMessage = (type: string) => "Type " + type + " is incorrect.";
+const incorrectListTypeMessage = (type: string) => "List type " + type + " is incorrect.";
 
-type Result = {
+export type Result = {
     success: boolean;
     errors: string[];
 }
 
-class Checker {
+export class Checker {
     private result: Result = { success: true, errors: [] };
 
     private CheckProperty(element: any, property: string): boolean {
@@ -25,7 +25,7 @@ class Checker {
         return true;
     }
 
-    private CheckParagraph(paragraph: pt.Paragraph) {
+    private CheckParagraphStructure(paragraph: pt.Paragraph) {
         paragraph.content.forEach(el => {
             if (!this.CheckProperty(el, "type")) {
                 return;
@@ -42,7 +42,7 @@ class Checker {
         if (!this.CheckProperty(element, "attributes")) {
             return;
         }
-        if (!this.CheckProperty(element, "alias")) {
+        if (!this.CheckProperty(element.attributes, "alias")) {
             return
         }
     }
@@ -51,7 +51,7 @@ class Checker {
         if (!this.CheckProperty(element, "attributes")) {
             return;
         }
-        if (!this.CheckProperty(element, "alias")) {
+        if (!this.CheckProperty(element.attributes, "alias")) {
             return;
         }
     }
@@ -83,6 +83,7 @@ class Checker {
             case "bold":
             case "italic":
             case "boldItalic":
+            case "code":
                 element.content.forEach(textAnnotation => {
                     if ((textAnnotation as pt.TextAnnotation).type === "text") {
                         this.CheckTextElementStructure(textAnnotation as pt.Text);
@@ -96,6 +97,9 @@ class Checker {
             break;
             case "image":
                 this.CheckImageElementStructure(element as pt.Image);
+            break;
+            case "text":
+                this.CheckTextElementStructure(element as pt.Text);
             break;
             default:
                 this.result.errors.push(incorrectTypeMessage(element.type));
@@ -150,7 +154,7 @@ class Checker {
             if (!this.CheckProperty(el, "type")) {
                 return;
             }
-            if (el.type === "List") {
+            if (el.type === "list") {
                 this.CheckListElementStructure(el as pt.List);
             } else {
                 this.CheckListItemStructure(el as pt.ListItem);
@@ -167,14 +171,15 @@ class Checker {
         }
         switch (element.type) {
             case "paragraph":
-                element.content.forEach(el => this.CheckInlineElementStructure(el as pt.InlineElement));
+                this.CheckParagraphStructure(element as pt.Paragraph);
+            break;
             case "heading":
                 this.CheckHeadingElementStructure(element as pt.HeadingElement);
             break;
             case "list":
                 this.CheckListElementStructure(element as pt.List);
             break;
-            case "blockQuote":
+            case "blockquote":
                 element.content.forEach(el => this.CheckOuterElementStructure(el as pt.OuterElement));
             break;
             default:
@@ -204,7 +209,7 @@ class Checker {
 
 }
 
-class PresentationParser {
+export class PresentationParser {
     private slides: pt.Slide[];
 
     public constructor(slides: pt.Slide[]) {
