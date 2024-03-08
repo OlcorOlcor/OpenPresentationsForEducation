@@ -1,16 +1,13 @@
 import * as pt from "./presentationTypes";
 import * as pm from "./presentationModel";
-import { Checker } from "./structureChecker";
+import { Checker, Result } from "./structureChecker";
 
 export class PresentationParser {
     private slides: pt.Slide[];
-
+    private checkerResult: Result; 
     public constructor(slides: pt.Slide[]) {
         let checker = new Checker();
-        let result = checker.CheckJsonStructure(slides);
-        if (!result.success) {
-            // TODO
-        }
+        this.checkerResult = checker.CheckJsonStructure(slides);
         this.slides = slides;
     }
 
@@ -122,7 +119,7 @@ export class PresentationParser {
                 case "list":
                     content.push(this.GetListElement(jsonElement as pt.List));
                 break;
-                case "blockQuote":
+                case "blockquote":
                     content.push(this.GetBlockQuoteElement(jsonElement as pt.BlockQuote));
                 break;
             }
@@ -148,7 +145,11 @@ export class PresentationParser {
         return slides;
     }
 
-    public GetPresentation(): pm.Presentation {
+    public GetPresentation(): pm.Presentation | Result {
+        if (!this.checkerResult.success) {
+            return this.checkerResult;
+        }
+
         return new pm.Presentation(this.GetSlides());
     }
 }
