@@ -172,9 +172,12 @@ export class SlideElement extends BaseElement implements IVisitable {
     }
 }
 
-export class Presentation {
+export class Presentation implements IVisitable {
     slides: SlideElement[];
     constructor(slides: SlideElement[]) {
         this.slides = slides;
+    }
+    accept(visitor: IVisitor): void {
+        visitor.visitPresentationNode(this);
     }
 }

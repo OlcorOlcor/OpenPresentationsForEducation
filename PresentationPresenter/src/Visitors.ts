@@ -1,3 +1,4 @@
+import { getDefaultResultOrder } from "dns";
 import * as pm from "./presentationModel";
 
 export interface IVisitor {
@@ -13,7 +14,8 @@ export interface IVisitor {
     visitListNode(element: pm.ListElement): void;
     visitListItemNode(element: pm.ListItemElement): void;
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void;
-    visitSlideNode(element: pm.SlideElement): string;
+    visitSlideNode(element: pm.SlideElement): void;
+    visitPresentationNode(element: pm.Presentation): void;
 }
 
 export interface IVisitable {
@@ -91,8 +93,15 @@ export class HtmlVisitor implements IVisitor {
         this.result += "</blockquote>";
     }
 
-    visitSlideNode(element: pm.SlideElement): string {
+    visitSlideNode(element: pm.SlideElement): void {
         element.content.forEach(c => { c.accept(this) });
+    }
+
+    visitPresentationNode(element: pm.Presentation): void {
+        element.slides.forEach(slide => {slide.accept(this)});
+    }
+
+    getResult(): string {
         return this.result;
     }
 }
@@ -169,8 +178,15 @@ export class MarkdownVisitor implements IVisitor {
         })
     }
 
-    visitSlideNode(element: pm.SlideElement): string {
+    visitSlideNode(element: pm.SlideElement): void {
         element.content.forEach(c => c.accept(this));
-        return this.result;    
+    }
+
+    visitPresentationNode(element: pm.Presentation): void {
+        element.slides.forEach(slide => {slide.accept(this)});
+    }
+
+    getResult(): string {
+        return this.result;
     }
 }
