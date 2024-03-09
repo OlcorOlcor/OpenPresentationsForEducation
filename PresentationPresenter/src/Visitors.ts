@@ -98,6 +98,7 @@ export class HtmlVisitor implements IVisitor {
     }
 
     visitPresentationNode(element: pm.Presentation): void {
+        this.result = "";
         element.slides.forEach(slide => {slide.accept(this)});
     }
 
