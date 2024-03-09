@@ -130,9 +130,9 @@ export class MarkdownVisitor implements IVisitor {
         this.result += "***";
     }
     visitCodeNode(element: pm.CodeElement): void {
-        this.result += "```\n";
+        this.result += "`";
         element.content.forEach(c => c.accept(this));
-        this.result += "```\n";
+        this.result += "`";
     }
     visitImageNode(element: pm.ImageElement): void {
         this.result += "![" + element.alias + "](" + element.content + ")";
@@ -157,12 +157,16 @@ export class MarkdownVisitor implements IVisitor {
         let counter = 1;
         this.listLevel++;
         element.content.forEach(c => {
-            for (let indentCounter = 0; indentCounter < this.listLevel; indentCounter++) {
+            for (let indentCounter = 0; indentCounter < this.listLevel - 1; indentCounter++) {
                 this.result += "\t";
             }
-            this.result += (element.listType === "ordered") ? counter + ". " : "-";
+            if (c instanceof pm.ListItemElement) {
+                this.result += (element.listType === "ordered") ? counter + ". " : "- ";
+            }
             c.accept(this);
-            this.result += "\n";
+            if (c instanceof pm.ListItemElement) {
+                this.result += "\n";
+            }
         });
         this.listLevel--;
     }
@@ -175,8 +179,7 @@ export class MarkdownVisitor implements IVisitor {
         element.content.forEach(c => {
             this.result += "> ";
             c.accept(this);
-            this.result += "\n";
-        })
+        });
     }
 
     visitSlideNode(element: pm.SlideElement): void {
@@ -184,6 +187,7 @@ export class MarkdownVisitor implements IVisitor {
     }
 
     visitPresentationNode(element: pm.Presentation): void {
+        this.result = "";
         element.slides.forEach(slide => {slide.accept(this)});
     }
 
