@@ -1,5 +1,5 @@
-const { expect, test } = require("@jest/globals");
-const { Checker, Result } = require("../src/structureChecker");
+import { expect, test } from "@jest/globals";
+import { Checker, Result } from "../src/structureChecker";
 
 const inlineElementArray = [
     { type: "text", content: ["Text, "] },

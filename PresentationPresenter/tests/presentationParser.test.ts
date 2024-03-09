@@ -1,5 +1,6 @@
-const { PresentationParser } = require("../src/presentationParser");
-const pm = require("../src/presentationModel");
+import { PresentationParser } from "../src/presentationParser";
+import * as pm from "../src/presentationModel";
+import {expect, test} from "@jest/globals";
 
 test("empty slides", () => {
     let slides = [];
