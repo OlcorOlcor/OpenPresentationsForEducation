@@ -11,7 +11,7 @@ export type Text = {
 
 export type TextAnnotation = {
     type: string;
-    content: (Text | TextAnnotation)[];
+    content: (Text | InlineElement)[];
 };
 
 export type Link = {
