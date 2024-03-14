@@ -4,11 +4,11 @@ import "./App.css";
 import EditorContainer, { EditorMethods } from "./EditorContainer";
 import Preview from "./Preview";
 import { tokenizeText, OpenTagToken, CloseTagToken } from "./AreaTokenizer";
-import MetadataContainer, {
-  MetadataContainerMethods,
-} from "./MetadataContainer";
-import { CustomArea, CustomAreaProcessor } from "./CustomAreaProcessor";
-
+import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
+import { MarkdownParser } from "./markdownParser";
+import { HtmlVisitor } from "./Visitors";
+import { PresentationParser } from "./presentationParser";
+import { Presentation } from "./presentationModel"
 function App() {
   const editorContainerRef = useRef<EditorMethods>(null);
   const metadataComponentRef = useRef<MetadataContainerMethods>(null);
@@ -24,6 +24,30 @@ function App() {
 
     //TODO: save to file
     console.log(tokenArray);
+  }
+
+
+  function fetchHtml(): string {
+    let mp = new MarkdownParser();
+    if (editorContainerRef.current === null) {
+      return "";
+    }
+    let slides = mp.parseMarkdown(editorContainerRef.current.getData());
+    let pp = new PresentationParser(slides);
+    let presentation = pp.GetPresentation();
+    let visitor = new HtmlVisitor();
+    console.log(presentation);
+    visitor.visitPresentationNode(presentation as Presentation);
+    return visitor.getResult();
+  }
+
+  function fetchJson(): string {
+    let mp = new MarkdownParser();
+    if (editorContainerRef.current === null) {
+      return "";
+    }
+    let slide = mp.parseMarkdown(editorContainerRef.current.getData());
+    return JSON.stringify(slide);
   }
 
   return (
@@ -48,7 +72,7 @@ function App() {
           </Grid>
         </Grid>
         <Grid item xs={6}>
-          <div className="half">{generatedData}</div>
+          <Preview fetchHtml={fetchHtml} fetchJson={fetchJson} />
         </Grid>
       </Grid>
     </div>
