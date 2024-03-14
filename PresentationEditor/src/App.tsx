@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, ChangeEvent } from "react";
 import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer, { EditorMethods } from "./EditorContainer";
@@ -6,7 +6,7 @@ import Preview from "./Preview";
 import { tokenizeText, OpenTagToken, CloseTagToken } from "./AreaTokenizer";
 import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { MarkdownParser } from "./markdownParser";
-import { HtmlVisitor } from "./Visitors";
+import { HtmlVisitor, MarkdownVisitor } from "./Visitors";
 import { PresentationParser } from "./presentationParser";
 import { Presentation } from "./presentationModel"
 function App() {
@@ -15,6 +15,8 @@ function App() {
   const [generatedData, setGeneratedData] = useState(
     "Here your presentation will be displayed",
   );
+  const [editorData, setEditorData] = useState("");
+
   function compile() {
     if (editorContainerRef.current === null) {
       return;
@@ -26,6 +28,28 @@ function App() {
     console.log(tokenArray);
   }
 
+  const importFile = (event: ChangeEvent<HTMLInputElement>) => {
+    let element = event.target as HTMLInputElement;
+    let file = element.files?.[0];
+    if (!file) {
+      return;
+    }
+    let reader = new FileReader();
+
+    reader.onload = (e) => {
+      let content = e.target?.result as string;
+      let pp = new PresentationParser(JSON.parse(content));
+      let presentation = pp.GetPresentation();
+      let visitor = new MarkdownVisitor();
+      visitor.visitPresentationNode(presentation as Presentation);
+      
+      if (editorContainerRef.current !== null) {
+        editorContainerRef.current.setData(visitor.getResult());
+      }
+    }
+
+    reader.readAsText(file)
+  }
 
   function fetchHtml(): string {
     let mp = new MarkdownParser();
@@ -36,7 +60,6 @@ function App() {
     let pp = new PresentationParser(slides);
     let presentation = pp.GetPresentation();
     let visitor = new HtmlVisitor();
-    console.log(presentation);
     visitor.visitPresentationNode(presentation as Presentation);
     return visitor.getResult();
   }
@@ -62,9 +85,10 @@ function App() {
           >
             <Grid item xs={1}>
               <button onClick={compile}>Compile</button>
+              <input type="file" id="fileInput" onChange={importFile} />
             </Grid>
             <Grid item xs={8}>
-              <EditorContainer ref={editorContainerRef} />
+              <EditorContainer data={editorData} ref={editorContainerRef} />
             </Grid>
             <Grid item xs={3}>
               <MetadataContainer ref={metadataComponentRef} />
