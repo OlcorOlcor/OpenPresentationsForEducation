@@ -180,4 +180,8 @@ export class Presentation implements IVisitable {
     accept(visitor: IVisitor): void {
         visitor.visitPresentationNode(this);
     }
+
+    public getSlides(): SlideElement[] {
+        return this.slides;
+    }
 }

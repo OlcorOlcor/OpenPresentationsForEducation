@@ -3,30 +3,21 @@ import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer, { EditorMethods } from "./EditorContainer";
 import Preview from "./Preview";
-import { tokenizeText, OpenTagToken, CloseTagToken } from "./AreaTokenizer";
 import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { MarkdownParser } from "./markdownParser";
 import { HtmlVisitor, MarkdownVisitor } from "./Visitors";
 import { PresentationParser } from "./presentationParser";
-import { Presentation } from "./presentationModel"
+import { Presentation, SlideElement } from "./presentationModel"
+import SlideSelect from "./SlideSelect";
+
 function App() {
+  const [slides, setSlides] = useState<SlideElement[]>([]);
   const editorContainerRef = useRef<EditorMethods>(null);
   const metadataComponentRef = useRef<MetadataContainerMethods>(null);
   const [generatedData, setGeneratedData] = useState(
     "Here your presentation will be displayed",
   );
   const [editorData, setEditorData] = useState("");
-
-  function compile() {
-    if (editorContainerRef.current === null) {
-      return;
-    }
-    let text = editorContainerRef.current.getData();
-    let tokenArray = tokenizeText(text);
-
-    //TODO: save to file
-    console.log(tokenArray);
-  }
 
   const importFile = (event: ChangeEvent<HTMLInputElement>) => {
     let element = event.target as HTMLInputElement;
@@ -40,6 +31,8 @@ function App() {
       let content = e.target?.result as string;
       let pp = new PresentationParser(JSON.parse(content));
       let presentation = pp.GetPresentation();
+      
+      setSlides((presentation as Presentation).getSlides());
       let visitor = new MarkdownVisitor();
       visitor.visitPresentationNode(presentation as Presentation);
       
@@ -73,19 +66,25 @@ function App() {
     return JSON.stringify(slide);
   }
 
+  function selectSlide(selectedSlide: SlideElement): void {
+    if (editorContainerRef.current == null) {
+      return;
+    }
+    const visitor = new MarkdownVisitor();
+    visitor.visitSlideNode(selectedSlide);
+    editorContainerRef.current.setData(visitor.getResult());
+  }
+
   return (
     <div className="container">
       <Grid container spacing={2} className="gridContainer">
         <Grid item xs={6}>
-          <Grid
-            container
-            direction="column"
-            spacing={2}
-            style={{ height: "100%" }}
-          >
+          <Grid container direction="column" spacing={2} style={{ height: "100%" }}>
             <Grid item xs={1}>
-              <button onClick={compile}>Compile</button>
               <input type="file" id="fileInput" onChange={importFile} />
+            </Grid>
+            <Grid item xs={2}>
+              <SlideSelect slides={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={8}>
               <EditorContainer data={editorData} ref={editorContainerRef} />
