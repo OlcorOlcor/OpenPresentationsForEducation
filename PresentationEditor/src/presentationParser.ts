@@ -72,7 +72,7 @@ export class PresentationParser {
     private GetImageElement(imageJson: pt.Image): pm.ImageElement {
         let content: string = "";
         imageJson.content.forEach(c => content += c);
-        return new pm.LinkElement(content, imageJson.attributes.alias);
+        return new pm.ImageElement(content, imageJson.attributes.alias);
     }
 
     private GetParagraphElement(jsonParagraph: pt.Paragraph): pm.ParagraphElement {
