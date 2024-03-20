@@ -1,0 +1,70 @@
+[
+    {
+        "type": "slide",
+        "content": [
+            {
+                "type": "heading",
+                "content": [
+                    {
+                        "type": "text",
+                        "content": [
+                            "heading"
+                        ]
+                    }
+                ],
+                "attributes": {
+                    "level": 1
+                }
+            },
+            {
+                "type": "paragraph",
+                "content": [
+                    {
+                        "type": "text",
+                        "content": [
+                            "paragraph"
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "list",
+                "content": [
+                    {
+                        "type": "listItem",
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": [
+                                    "list"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "list",
+                        "content": [
+                            {
+                                "type": "listItem",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "content": [
+                                            "num"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "attributes": {
+                            "listType": "ordered"
+                        }
+                    }
+                ],
+                "attributes": {
+                    "listType": "unordered"
+                }
+            }
+        ]
+    }
+]
