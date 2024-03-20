@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { SlideElement } from "./presentationModel";
-
+import "./SlideSelect.css";
 
 interface SlideSelectProps {
     slides: SlideElement[];
@@ -16,9 +16,9 @@ const SlideSelect: React.FC<SlideSelectProps> = ({slides, onSelect}) => {
     };
 
     return ( 
-        <div className="slide-select">
+        <div className="slide-select-container">
             {slides.map((slide, index) => (
-            <div onClick={() => handleItemClick(slide)}>
+            <div className="slide-item" onClick={() => handleItemClick(slide)}>
                 {index}
             </div>
             ))}

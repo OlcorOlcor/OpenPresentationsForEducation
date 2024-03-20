@@ -34,7 +34,7 @@ function App() {
       
       setSlides((presentation as Presentation).getSlides());
       let visitor = new MarkdownVisitor();
-      visitor.visitPresentationNode(presentation as Presentation);
+      visitor.visitSlideNode((presentation as Presentation).getSlides()[0]);
       
       if (editorContainerRef.current !== null) {
         editorContainerRef.current.setData(visitor.getResult());
@@ -79,7 +79,7 @@ function App() {
     <div className="container">
       <Grid container spacing={2} className="gridContainer">
         <Grid item xs={6}>
-          <Grid container direction="column" spacing={2} style={{ height: "100%" }}>
+          <Grid container direction="column" spacing={1} style={{ height: "100%" }}>
             <Grid item xs={1}>
               <input type="file" id="fileInput" onChange={importFile} />
             </Grid>
