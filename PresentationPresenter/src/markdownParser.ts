@@ -143,7 +143,11 @@ export class MarkdownParser {
         let inlineElements: (pt.InlineElement | pt.Text)[] = [];
         let stack: (pt.TextAnnotation)[] = [];
         let current: pt.TextAnnotation;
-        inline.children?.forEach(child => {
+        if (inline.children == null) {
+            return [];
+        }
+        for (let i = 0; i < inline.children.length; ++i) {
+            let child = inline.children[i];
             switch (child.type) {
                 case "text":
                     if (child.content === "") {
@@ -154,6 +158,13 @@ export class MarkdownParser {
                         break;
                     }
                     stack[stack.length - 1].content.push({type: "text", content: [child.content]});
+                    break;
+                case "softbreak":
+                    if (stack.length === 0) {
+                        inlineElements.push({type: "text", content: ["\n"]});
+                        break;
+                    }
+                    stack[stack.length - 1].content.push({type: "text", content: ["\n"]});
                 break;
                 case "strong_open":
                     current = { type: "bold", content: [] };
@@ -170,21 +181,21 @@ export class MarkdownParser {
                     stack.push(current);
                 break;
                 case "link_open":
-                    let link_href = child.attrGet("href");
-                    if (link_href != null) {
-                        // TODO: alias is in another child
-                        let link: pt.Link = {type: "link", content: [link_href], attributes: {alias: child.content}};
-                        if (stack.length === 0) {
-                            inlineElements.push(link);
-                            break;
-                        }
-                        stack[stack.length - 1].content.push(link);
+                    ++i;
+                    let linkAlias = inline.children[i];
+                    let linkContent = child.attrGet("href");
+                    if (linkContent == null) {
+                        break;
+                    }
+                    let link: pt.InlineElement = { type: "link", content: [linkContent], attributes: {alias: linkAlias.content}}
+                    if (stack.length === 0) {
+                        inlineElements.push(link);
                     }
                 break;
                 case "image":
-                    let img_href = child.attrGet("src");
-                    if (img_href != null) {
-                        let image: pt.Image = {type: "image", content: [img_href], attributes: {alias: child.content}};
+                    let imgHref = child.attrGet("src");
+                    if (imgHref != null) {
+                        let image: pt.Image = {type: "image", content: [imgHref], attributes: {alias: child.content}};
                         if (stack.length === 0) {
                             inlineElements.push(image);
                             break;
@@ -204,16 +215,15 @@ export class MarkdownParser {
                 case "em_close":
                     if (stack.length === 1) {
                         inlineElements.push(stack[0]);
-                    } 
+                    }
                     stack.pop();
                 break;
                 case "link_close":
                 break;
                 default:
-                    throw "unexpected";
+                    throw "Markdown failed to compile: " + child.type;
             }
-        });
-        
+        }
         return inlineElements;
     }
 
