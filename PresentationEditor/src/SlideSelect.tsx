@@ -4,24 +4,25 @@ import "./SlideSelect.css";
 
 interface SlideSelectProps {
     slides: SlideElement[];
-    onSelect: (selectedSlide: SlideElement) => void;
+    onSelect: (selectedSlideIndex: number) => void;
+    addSlide: (newSlide: SlideElement) => void;
 }
 
-const SlideSelect: React.FC<SlideSelectProps> = ({slides, onSelect}) => {
-    const [selectedSlide, setSelectedSlide] = useState<SlideElement | null>(null);
+const SlideSelect: React.FC<SlideSelectProps> = ({slides, onSelect, addSlide}) => {
 
-    const handleItemClick = (slide: SlideElement) => {
-        setSelectedSlide(slide);
-        onSelect(slide);
-    };
+    const newSlide = () => {
+        let newSlide = new SlideElement([]);
+        addSlide(newSlide);
+    }
 
     return ( 
         <div className="slide-select-container">
             {slides.map((slide, index) => (
-            <div className="slide-item" onClick={() => handleItemClick(slide)}>
+            <div key={index} className="slide-item" onClick={() => onSelect(index)}>
                 {index}
             </div>
             ))}
+            <div className="new-item" onClick={newSlide}>Add new slide</div>
         </div>
     )
 }

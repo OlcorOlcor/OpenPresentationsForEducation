@@ -5,22 +5,22 @@ import { CustomAreaProcessor, CustomArea } from "./CustomAreaProcessor";
 
 export interface EditorMethods {
   getData: () => string;
-  setData: (text: string) => void;
 }
 
 interface EditorProps {
   data: string;
+  regenerateSlide: () => void;
 }
 
 const EditorContainer = forwardRef<EditorMethods, EditorProps>((props, ref) => {
   const editorRef = useRef(null);
-  const [editorValue, setEditorValue] = useState<string>(props.data);
+  let timeout: NodeJS.Timeout;
   function handleMount(editor: any) {
     editorRef.current = editor;
-  }
-  
-  function setData(text: string): void {
-    setEditorValue(text);
+    editor.onDidChangeModelContent(() => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => props.regenerateSlide(), 2000);
+    });
   }
 
   function getData(): string {
@@ -33,12 +33,11 @@ const EditorContainer = forwardRef<EditorMethods, EditorProps>((props, ref) => {
 
 
   useImperativeHandle(ref, () => ({
-    getData,
-    setData
+    getData
   }));
 
   return (
-    <Editor height="100%" value={editorValue} defaultLanguage="Markdown" onMount={handleMount} />
+    <Editor height="100%" value={props.data} defaultLanguage="Markdown" onMount={handleMount} />
   );
 });
 

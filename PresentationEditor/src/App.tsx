@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEvent } from "react";
+import React, { useState, useRef, ChangeEvent, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import "./App.css";
 import EditorContainer, { EditorMethods } from "./EditorContainer";
@@ -11,13 +11,15 @@ import { Presentation, SlideElement } from "./presentationModel"
 import SlideSelect from "./SlideSelect";
 
 function App() {
-  const [slides, setSlides] = useState<SlideElement[]>([]);
+  const [slides, setSlides] = useState<SlideElement[]>([new SlideElement([])]);
+  const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
   const editorContainerRef = useRef<EditorMethods>(null);
   const metadataComponentRef = useRef<MetadataContainerMethods>(null);
-  const [generatedData, setGeneratedData] = useState(
-    "Here your presentation will be displayed",
-  );
   const [editorData, setEditorData] = useState("");
+
+  useEffect(() => {
+    updateEditor();
+  }, [selectedSlideIndex]);
 
   const importFile = (event: ChangeEvent<HTMLInputElement>) => {
     let element = event.target as HTMLInputElement;
@@ -31,17 +33,18 @@ function App() {
       let content = e.target?.result as string;
       let pp = new PresentationParser(JSON.parse(content));
       let presentation = pp.GetPresentation();
-      
-      setSlides((presentation as Presentation).getSlides());
+      let parsedSlides = (presentation as Presentation).getSlides();
+      setSlides(parsedSlides);
       let visitor = new MarkdownVisitor();
       visitor.visitSlideNode((presentation as Presentation).getSlides()[0]);
       
       if (editorContainerRef.current !== null) {
-        editorContainerRef.current.setData(visitor.getResult());
+        //editorContainerRef.current.setData(visitor.getResult());
+        setEditorData(visitor.getResult());
       }
     }
 
-    reader.readAsText(file)
+    reader.readAsText(file);
   }
 
   function fetchHtml(): string {
@@ -66,13 +69,47 @@ function App() {
     return JSON.stringify(slide);
   }
 
-  function selectSlide(selectedSlide: SlideElement): void {
+  function updateEditor() {
+    const visitor = new MarkdownVisitor();
+    visitor.visitSlideNode(slides[selectedSlideIndex]);
+    setEditorData(visitor.getResult());
+  }
+
+
+  function selectSlide(slideIndex: number): void {
     if (editorContainerRef.current == null) {
       return;
     }
-    const visitor = new MarkdownVisitor();
-    visitor.visitSlideNode(selectedSlide);
-    editorContainerRef.current.setData(visitor.getResult());
+    setSelectedSlideIndex(slideIndex);
+  }
+
+  function newSlide(newSlide: SlideElement): void {
+    let count = slides.length;
+    setSlides([...slides, newSlide]);
+    // this is done due to the async nature of react
+    setSelectedSlideIndex(count);
+    if (editorContainerRef.current == null) {
+      return;
+    }
+  }
+
+  function regenarateSlide(): void {
+    if (editorContainerRef.current == null) {
+      return;
+    }
+    let markdownParser = new MarkdownParser();
+    const editorData = editorContainerRef.current.getData();
+    console.log("Received Data: " + editorData);
+    let jsonSlides = markdownParser.parseMarkdown(editorData);
+    let presentationParser = new PresentationParser(jsonSlides);
+    // TODO: check result
+    setSlides(prevSlides => {
+      console.log(selectedSlideIndex);
+      const updatedSlides = [...prevSlides];
+      console.log("EDITING INDEX: " + selectedSlideIndex);
+      updatedSlides[selectedSlideIndex] = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
+      return updatedSlides;
+    });
   }
 
   return (
@@ -84,10 +121,10 @@ function App() {
               <input type="file" id="fileInput" onChange={importFile} />
             </Grid>
             <Grid item xs={2}>
-              <SlideSelect slides={slides} onSelect={selectSlide}/>
+              <SlideSelect addSlide={newSlide} slides={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={8}>
-              <EditorContainer data={editorData} ref={editorContainerRef} />
+              <EditorContainer regenerateSlide={regenarateSlide} data={editorData} ref={editorContainerRef} />
             </Grid>
             <Grid item xs={3}>
               <MetadataContainer ref={metadataComponentRef} />
