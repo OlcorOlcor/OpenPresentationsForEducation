@@ -1,13 +1,11 @@
 import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
-import { CustomAreaProcessor, CustomArea } from "./CustomAreaProcessor";
 interface EditorProps {
   data: string;
-  regenerateSlide: () => void;
   setEditorData: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditorContainer: React.FC<EditorProps> =({data, regenerateSlide, setEditorData}) => {
+const EditorContainer: React.FC<EditorProps> =({data, setEditorData}) => {
   let timeout: NodeJS.Timeout;
   function handleMount(editor: any) {
     editor.onDidChangeModelContent(() => {

@@ -2,23 +2,44 @@ import React, { useState, useRef, ChangeEvent, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import "./App.css";
 import Preview from "./Preview";
-import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { MarkdownParser } from "./markdownParser";
 import { HtmlVisitor, MarkdownVisitor } from "./Visitors";
 import { PresentationParser } from "./presentationParser";
 import { Presentation, SlideElement } from "./presentationModel"
-import SlideSelect from "./SlideSelect";
 import EditorModule from "./EditorModule";
-
+import SpeakerNoteEditorContainer from "./SpeakerNoteEditorContainer";
 
 function App() {
   const [editorData, setEditorData] = useState<string>("");
+  const [speakerNoteData, setSpeakerNoteData] = useState<string>("");
+  const [slides, setSlides] = useState<SlideElement[]>([new SlideElement([])]);
   const modules = [
-    {name: "Editor module", module: <EditorModule editorData={editorData} setEditorData={setEditorData}/>},
+    {name: "Editor module", module: <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} />},
     {name: "Preview module", module: <Preview fetchHtml={fetchHtml} fetchJson={fetchJson} />},
+    {name: "Speaker Notes module", module: <SpeakerNoteEditorContainer data={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData}/>},
   ];
   const [firstModule, setFirstModule] = useState<any>(modules[0].module);
   const [secondModule, setSecondModule] = useState<any>(modules[1].module);
+
+  // temp fix, error is likely caused by mui grid
+  useEffect(() => {
+    window.addEventListener('error', e => {
+        if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
+          const resizeObserverErrDiv = document.getElementById(
+            'webpack-dev-server-client-overlay-div'
+          );
+          const resizeObserverErr = document.getElementById(
+              'webpack-dev-server-client-overlay'
+          );
+          if (resizeObserverErr) {
+              resizeObserverErr.setAttribute('style', 'display: none');
+          }
+          if (resizeObserverErrDiv) {
+              resizeObserverErrDiv.setAttribute('style', 'display: none');
+          }
+      }
+    });
+  }, []);
 
   const handleFirstModuleSelect = (event: any) => {
     setFirstModule(modules[event.target.value].module);

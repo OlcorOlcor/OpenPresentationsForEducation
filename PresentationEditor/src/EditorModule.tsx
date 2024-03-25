@@ -11,10 +11,11 @@ import { MarkdownParser } from "./markdownParser";
 interface EditorModuleProps {
   editorData: string;
   setEditorData: React.Dispatch<React.SetStateAction<string>>;
+  slides: SlideElement[];
+  setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
 }
 
-const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData}) => {
-    const [slides, setSlides] = useState<SlideElement[]>([new SlideElement([])]);
+const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides}) => {
     const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
     const metadataComponentRef = useRef<MetadataContainerMethods>(null);
     
@@ -85,7 +86,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData}) 
             <SlideSelect addSlide={newSlide} slides={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={8}>
-            <EditorContainer regenerateSlide={regenarateSlide} setEditorData={setEditorData} data={editorData} />
+            <EditorContainer setEditorData={setEditorData} data={editorData} />
             </Grid>
             <Grid item xs={3}>
             <MetadataContainer ref={metadataComponentRef} />
