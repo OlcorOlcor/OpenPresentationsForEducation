@@ -13,10 +13,12 @@ interface EditorModuleProps {
   setEditorData: React.Dispatch<React.SetStateAction<string>>;
   slides: SlideElement[];
   setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
+  selectedSlideIndex: number;
+  setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides}) => {
-    const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
+const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex}) => {
+    
     const metadataComponentRef = useRef<MetadataContainerMethods>(null);
     
     useEffect(() => {
