@@ -13,6 +13,20 @@ import EditorModule from "./EditorModule";
 
 function App() {
   const [editorData, setEditorData] = useState<string>("");
+  const modules = [
+    {name: "Editor module", module: <EditorModule editorData={editorData} setEditorData={setEditorData}/>},
+    {name: "Preview module", module: <Preview fetchHtml={fetchHtml} fetchJson={fetchJson} />},
+  ];
+  const [firstModule, setFirstModule] = useState<any>(modules[0].module);
+  const [secondModule, setSecondModule] = useState<any>(modules[1].module);
+
+  const handleFirstModuleSelect = (event: any) => {
+    setFirstModule(modules[event.target.value].module);
+  }
+
+  const handleSecondModuleSelect = (event: any) => {
+    setSecondModule(modules[event.target.value].module);
+  }
 
   function fetchHtml(): string {
     let mp = new MarkdownParser();
@@ -34,10 +48,26 @@ function App() {
     <div className="container">
       <Grid container spacing={2} className="gridContainer">
         <Grid item xs={6}>
-          <EditorModule editorData={editorData} setEditorData={setEditorData}/>
+          <select onChange={handleFirstModuleSelect}>
+            <option value="">Select Module</option>
+            {modules.map((option, index) => (
+              <option key={index} value={index}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+          {firstModule && firstModule}
         </Grid>
         <Grid item xs={6}>
-          <Preview fetchHtml={fetchHtml} fetchJson={fetchJson} />
+          <select onChange={handleSecondModuleSelect}>
+            <option value="">Select Module</option>
+            {modules.map((option, index) => (
+              <option key={index} value={index}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+          {secondModule && secondModule}
         </Grid>
       </Grid>
     </div>
