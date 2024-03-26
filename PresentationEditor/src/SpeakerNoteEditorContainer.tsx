@@ -18,7 +18,7 @@ const SpeakerNoteEditorContainer: React.FC<SpeakerNoteEditorProps> = ({data, set
     }
     
     return (
-        <Editor height="100%" value={data} defaultLanguage="Markdown" onMount={handleMount} />
+        <Editor height="90%" value={data} defaultLanguage="Markdown" onMount={handleMount} />
     );
 }
 

@@ -18,7 +18,7 @@ interface EditorModuleProps {
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex}) => {
-    
+    console.log("Rerendering EditorModule");
     const metadataComponentRef = useRef<MetadataContainerMethods>(null);
     
     useEffect(() => {
@@ -57,9 +57,15 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
     }
 
     function newSlide(newSlide: SlideElement): void {
-        let count = slides.length;
-        setSlides([...slides, newSlide]);
-        setSelectedSlideIndex(count);
+        console.log("Old slides:");
+        console.log(slides);
+        setSlides(prevSlides => {
+          const newSlides = [...prevSlides, newSlide];
+          console.log("New slides:");
+          console.log(newSlides);
+          setSelectedSlideIndex(newSlides.length - 1);
+          return newSlides;
+        });
       }
     
       function regenarateSlide(): void {
@@ -90,7 +96,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
             <Grid item xs={8}>
             <EditorContainer setEditorData={setEditorData} data={editorData} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={1}>
             <MetadataContainer ref={metadataComponentRef} />
             </Grid>
       </Grid>

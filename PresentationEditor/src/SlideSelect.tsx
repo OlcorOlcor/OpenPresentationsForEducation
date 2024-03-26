@@ -9,7 +9,8 @@ interface SlideSelectProps {
 }
 
 const SlideSelect: React.FC<SlideSelectProps> = ({slides, onSelect, addSlide}) => {
-
+    console.log("Rendering SlideSelect");
+    
     const newSlide = () => {
         let newSlide = new SlideElement([]);
         addSlide(newSlide);

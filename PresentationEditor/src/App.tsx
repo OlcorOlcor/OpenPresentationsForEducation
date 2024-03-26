@@ -27,8 +27,18 @@ function App() {
   }, [selectedSlideIndex]);
 
   useEffect(() => {
-    // TODO: create new array
-    slides[selectedSlideIndex].speakerNotes = speakerNoteData;
+    console.log("useEffect slides:");
+    console.log(slides);
+  }, [slides])
+
+  useEffect(() => {
+    setSlides(prevSlides => {
+      let newSlides = [...prevSlides];
+      let slide = newSlides[selectedSlideIndex];
+      slide.speakerNotes = speakerNoteData;
+      newSlides[selectedSlideIndex] = slide;
+      return newSlides;
+    });
   }, [speakerNoteData]);
   
   // temp fix, error is likely caused by mui grid
