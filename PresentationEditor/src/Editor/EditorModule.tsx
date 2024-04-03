@@ -3,10 +3,10 @@ import SlideSelect from "./SlideSelect";
 import EditorContainer from "./EditorContainer";
 import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { MarkdownVisitor } from "./Visitors";
-import { Presentation, SlideElement } from "./presentationModel";
-import { PresentationParser } from "./presentationParser";
-import { MarkdownParser } from "./markdownParser";
+import { MarkdownVisitor } from "../Model/Visitors";
+import { Presentation, SlideElement } from "../Model/presentationModel";
+import { PresentationParser } from "../Model/presentationParser";
+import { MarkdownParser } from "../Model/markdownParser";
 
 interface EditorModuleProps {
   editorData: string;
