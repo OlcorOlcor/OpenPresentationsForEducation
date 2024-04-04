@@ -1,4 +1,4 @@
-import * as pm from "./presentationModel";
+import * as pm from "./PresentationModel";
 
 export interface IVisitor {
     visitTextNode(element: pm.TextElement): void;

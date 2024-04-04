@@ -2,10 +2,10 @@ import React, { useState, useRef, ChangeEvent, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import "./App.css";
 import Preview from "./Preview";
-import { MarkdownParser } from "../Model/markdownParser";
+import { MarkdownParser } from "../Model/MarkdownParser";
 import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
-import { PresentationParser } from "../Model/presentationParser";
-import { Presentation, SlideElement } from "../Model/presentationModel"
+import { PresentationParser } from "../Model/PresentationParser";
+import { Presentation, SlideElement } from "../Model/PresentationModel"
 import EditorModule from "./EditorModule";
 import SpeakerNoteEditorContainer from "./SpeakerNoteEditorContainer";
 

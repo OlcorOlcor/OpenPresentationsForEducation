@@ -1,4 +1,4 @@
-import * as pt from "./presentationTypes";
+import * as pt from "./PresentationTypes";
 
 const missingFieldMessage: string = "Element is missing a field: ";
 const levelMessage: string = "Level should be a positive integer.";

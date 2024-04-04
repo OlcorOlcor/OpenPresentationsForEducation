@@ -1,4 +1,4 @@
-import * as pt from "./presentationTypes"; 
+import * as pt from "./PresentationTypes"; 
 import markdownit, { Token } from "markdown-it";
 
 class RefIndex {

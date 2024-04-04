@@ -4,9 +4,9 @@ import EditorContainer from "./EditorContainer";
 import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { MarkdownVisitor } from "../Model/Visitors";
-import { Presentation, SlideElement } from "../Model/presentationModel";
-import { PresentationParser } from "../Model/presentationParser";
-import { MarkdownParser } from "../Model/markdownParser";
+import { Presentation, SlideElement } from "../Model/PresentationModel";
+import { PresentationParser } from "../Model/PresentationParser";
+import { MarkdownParser } from "../Model/MarkdownParser";
 
 interface EditorModuleProps {
   editorData: string;

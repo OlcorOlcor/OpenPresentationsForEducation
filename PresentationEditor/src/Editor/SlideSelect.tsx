@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { SlideElement } from "../Model/presentationModel";
+import { SlideElement } from "../Model/PresentationModel";
 import "./SlideSelect.css";
 
 interface SlideSelectProps {

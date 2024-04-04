@@ -1,6 +1,6 @@
-import * as pt from "./presentationTypes";
-import * as pm from "./presentationModel";
-import { Checker, Result } from "./structureChecker";
+import * as pt from "./PresentationTypes";
+import * as pm from "./PresentationModel";
+import { Checker, Result } from "./StructureChecker";
 
 export class PresentationParser {
     private slides: pt.Slide[];
