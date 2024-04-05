@@ -21,15 +21,15 @@ interface ModuleSelectorProps {
 
 
 const ModuleSelector: React.FC<ModuleSelectorProps> = ({moduleName, editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, fetchHtml, fetchJson, speakerNoteData, setSpeakerNoteData}) => {
-    const [selectedModule, setSelectedModule] = useState<any>(moduleName);
+    const [selectedModule, setSelectedModule] = useState<any>(null);
+    const [selectedModuleName, setSelectedModuleName] = useState<string>(moduleName);
     const modules = ["editor", "preview", "speakerNotes"];
     useEffect(() => {
-        selectModule(selectedModule);
-    }, [moduleName, slides, selectedSlideIndex, editorData]);
+        selectModule();
+    }, [selectedModuleName, moduleName, slides, selectedSlideIndex, editorData]);
 
-    function selectModule(moduleName: string) {
-        console.log("Heyo");
-        switch (moduleName) {
+    function selectModule() {
+        switch (selectedModuleName) {
             case "editor": 
                 setSelectedModule(<EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} />);
             break;
@@ -43,7 +43,7 @@ const ModuleSelector: React.FC<ModuleSelectorProps> = ({moduleName, editorData, 
     }
     return (
         <>
-            <select name="modules" onChange={(e) => selectModule(e.target.value)}>
+            <select name="modules" onChange={(e) => { setSelectedModuleName(e.target.value); }}>
                 {modules.map((module) => (
                     <option key={module} value={module}>
                         {module}
