@@ -18,11 +18,6 @@ function App() {
   }, [selectedSlideIndex]);
 
   useEffect(() => {
-    console.log("useEffect slides:");
-    console.log(slides);
-  }, [slides])
-
-  useEffect(() => {
     setSlides(prevSlides => {
       let newSlides = [...prevSlides];
       let slide = newSlides[selectedSlideIndex];

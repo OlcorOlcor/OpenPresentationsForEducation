@@ -18,7 +18,6 @@ interface EditorModuleProps {
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex}) => {
-    console.log("Rerendering EditorModule");
     const metadataComponentRef = useRef<MetadataContainerMethods>(null);
     
     useEffect(() => {
@@ -57,12 +56,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
     }
 
     function newSlide(newSlide: SlideElement): void {
-        console.log("Old slides:");
-        console.log(slides);
         setSlides(prevSlides => {
           const newSlides = [...prevSlides, newSlide];
-          console.log("New slides:");
-          console.log(newSlides);
           setSelectedSlideIndex(newSlides.length - 1);
           return newSlides;
         });
@@ -74,7 +69,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
         let presentationParser = new PresentationParser(jsonSlides);
         // TODO: check result
         setSlides(prevSlides => {
-          console.log(selectedSlideIndex);
           const updatedSlides = [...prevSlides];
           updatedSlides[selectedSlideIndex] = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
           return updatedSlides;
