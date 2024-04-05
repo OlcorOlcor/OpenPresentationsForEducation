@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
 import { SlideElement } from "../Model/PresentationModel";
 import Preview from "./Preview";
-import SpeakerNoteEditorContainer from "./SpeakerNoteEditorContainer";
+import SpeakerNotesModule from "./SpeakerNotesModule";
+
 
 
 interface ModuleSelectorProps {
@@ -37,7 +38,7 @@ const ModuleSelector: React.FC<ModuleSelectorProps> = ({moduleName, editorData, 
                 setSelectedModule(<Preview fetchHtml={fetchHtml} fetchJson={fetchJson} />)
             break; 
             case "speakerNotes":
-                setSelectedModule(<SpeakerNoteEditorContainer data={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData}/>);
+                setSelectedModule(<SpeakerNotesModule data={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} />);
             break;
         }
     }

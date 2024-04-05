@@ -79,6 +79,13 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
         setSelectedSlideIndex(slideIndex);
     }
     
+    function editorChange(timeout: NodeJS.Timeout, editor: any): void {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setEditorData(editor.getValue());
+      }, 2000);
+    }
+
     return (
         <Grid container direction="column" spacing={1} style={{ height: "100%" }}>
             <Grid item xs={1}>
@@ -88,7 +95,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
             <SlideSelect addSlide={newSlide} slides={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={8}>
-            <EditorContainer setEditorData={setEditorData} data={editorData} />
+            <EditorContainer data={editorData} onEditorChange={editorChange} />
             </Grid>
             <Grid item xs={1}>
             <MetadataContainer ref={metadataComponentRef} />

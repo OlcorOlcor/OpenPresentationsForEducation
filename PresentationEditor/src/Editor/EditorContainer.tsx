@@ -2,17 +2,15 @@ import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
 interface EditorProps {
   data: string;
-  setEditorData: React.Dispatch<React.SetStateAction<string>>;
+  //setEditorData: React.Dispatch<React.SetStateAction<string>>;
+  onEditorChange(timeout: NodeJS.Timeout, editor: any): void;
 }
 
-const EditorContainer: React.FC<EditorProps> =({data, setEditorData}) => {
+const EditorContainer: React.FC<EditorProps> =({data, onEditorChange}) => {
   let timeout: NodeJS.Timeout;
   function handleMount(editor: any) {
     editor.onDidChangeModelContent(() => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        setEditorData(editor.getValue());
-      }, 2000);
+      onEditorChange(timeout, editor);
     });
   }
 
