@@ -36,6 +36,12 @@
       "react-app/jest"
     ]
   },
+  "devDependencies": {
+    "@babel/preset-flow": "^7.23.3",
+    "prettier": "^3.0.3",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -47,11 +53,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/preset-flow": "^7.23.3",
-    "prettier": "^3.0.3",
-    "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1"
   }
 }

@@ -1,0 +1,27 @@
+.slide-select-container {
+    display: flex;
+    padding: 10px 0;
+}
+  
+.slide-item {
+    flex: 0 0 auto;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.new-item {
+    flex: 0 0 auto;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid blue;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: lightblue;
+}
+
+.slide-item:hover {
+    background-color: gray;
+}

@@ -161,7 +161,7 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
 
 export class SlideElement extends BaseElement implements IVisitable {
     content: OuterElement[];
-    
+    public speakerNotes: string = "";
     public constructor(content: OuterElement[]) {
         super();
         this.content = content;
@@ -179,5 +179,9 @@ export class Presentation implements IVisitable {
     }
     accept(visitor: IVisitor): void {
         visitor.visitPresentationNode(this);
+    }
+
+    public getSlides(): SlideElement[] {
+        return this.slides;
     }
 }

@@ -66,5 +66,38 @@
                 }
             }
         ]
+    },
+    {
+        "type": "slide",
+        "content": [
+            {
+                "type": "paragraph",
+                "content": [
+                    {
+                        "type": "text",
+                        "content": ["second slide"]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "slide",
+        "content": [
+            {
+                "type": "paragraph",
+                "content": [
+                    {
+                        "type": "bold",
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": ["third slide"]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 ]
