@@ -1,5 +1,4 @@
 import Grid from "@mui/material/Grid";
-import SlideSelect from "./SlideSelect";
 import EditorContainer from "./EditorContainer";
 import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -7,6 +6,7 @@ import { MarkdownVisitor } from "../Model/Visitors";
 import { Presentation, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import { MarkdownParser } from "../Model/MarkdownParser";
+import SelectContainer from "./SelectContainer";
 
 interface EditorModuleProps {
   editorData: string;
@@ -55,8 +55,9 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
         reader.readAsText(file);
     }
 
-    function newSlide(newSlide: SlideElement): void {
+    function newSlide(): void {
         setSlides(prevSlides => {
+          let newSlide = new SlideElement([]);
           const newSlides = [...prevSlides, newSlide];
           setSelectedSlideIndex(newSlides.length - 1);
           return newSlides;
@@ -92,7 +93,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
             <input type="file" id="fileInput" onChange={importFile} />
             </Grid>
             <Grid item xs={2}>
-            <SlideSelect addSlide={newSlide} slides={slides} onSelect={selectSlide}/>
+            <SelectContainer onAdd={newSlide} elements={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={8}>
             <EditorContainer data={editorData} onEditorChange={editorChange} />
