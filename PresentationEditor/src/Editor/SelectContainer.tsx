@@ -8,14 +8,24 @@ interface SelectContainerProps {
 }
 
 const SelectContainer: React.FC<SelectContainerProps> = ({elements, onSelect, onAdd}) => {
-    return (
+    const [selectedElement, setSelectedElement] = useState<number>(0);
+    function select(index: number) {
+        setSelectedElement(index);
+        onSelect(index);
+    }
+
+    function add() {
+        setSelectedElement(elements.length);
+        onAdd();
+    }
+    return ( 
         <div className="slide-select-container">
             {elements.map((element, index) => (
-            <div key={index} className="slide-item" onClick={() => onSelect(index)}>
+            <div key={index} className={`slide-item ${selectedElement === index ? "selected" : ""}`} onClick={() => select(index)}>
                 {index}
             </div>
             ))}
-            <div className="new-item" onClick={onAdd}>Add</div>
+            <div className="new-item" onClick={() => add()}>Add</div>
         </div>
     )
 }
