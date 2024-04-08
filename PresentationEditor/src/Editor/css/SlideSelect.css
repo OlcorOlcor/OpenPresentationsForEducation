@@ -23,5 +23,9 @@
 }
 
 .slide-item:hover {
+    background-color: lightgray
+}
+
+.selected {
     background-color: gray;
 }

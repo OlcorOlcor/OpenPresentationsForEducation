@@ -12,20 +12,8 @@ function App() {
   const [speakerNoteData, setSpeakerNoteData] = useState<string>("");
   const [slides, setSlides] = useState<SlideElement[]>([new SlideElement([])]);
   const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
-
-  useEffect(() => {
-    setSpeakerNoteData(slides[selectedSlideIndex].speakerNotes);
-  }, [selectedSlideIndex]);
-
-  useEffect(() => {
-    setSlides(prevSlides => {
-      let newSlides = [...prevSlides];
-      let slide = newSlides[selectedSlideIndex];
-      slide.speakerNotes = speakerNoteData;
-      newSlides[selectedSlideIndex] = slide;
-      return newSlides;
-    });
-  }, [speakerNoteData]);
+  const [speakerNotes, setSpeakerNotes] = useState<string[]>([""]);
+  const [selectedSpeakerNoteIndex, setSelectedSpeakerNoteIndex] = useState<number>(0);
   
   // temp fix, error is likely caused by mui grid
   useEffect(() => {
@@ -67,10 +55,10 @@ function App() {
     <div className="container">
       <Grid container spacing={2} className="gridContainer">
         <Grid item xs={6}>
-          <ModuleSelector moduleName={"editor"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} />
+          <ModuleSelector moduleName={"editor"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>
         </Grid>
         <Grid item xs={6}>
-          <ModuleSelector moduleName={"preview"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} />
+          <ModuleSelector moduleName={"preview"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>
         </Grid>
       </Grid>
     </div>
