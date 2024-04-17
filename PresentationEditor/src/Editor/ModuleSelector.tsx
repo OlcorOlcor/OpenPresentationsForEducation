@@ -36,10 +36,10 @@ const ModuleSelector: React.FC<ModuleSelectorProps> = ({moduleName, editorData, 
     function selectModule() {
         switch (selectedModuleName) {
             case "editor": 
-                setSelectedModule(<EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} />);
+                //setSelectedModule(<EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} />);
             break;
             case "preview":
-                setSelectedModule(<Preview fetchHtml={fetchHtml} fetchJson={fetchJson} />)
+                //setSelectedModule(<Preview fetchHtml={fetchHtml} fetchJson={fetchJson} />)
             break; 
             case "speakerNotes":
                 setSelectedModule(<SpeakerNotesModule data={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>);

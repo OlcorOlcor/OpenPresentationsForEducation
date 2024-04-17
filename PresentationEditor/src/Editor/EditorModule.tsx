@@ -7,6 +7,7 @@ import { Presentation, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import { MarkdownParser } from "../Model/MarkdownParser";
 import SelectContainer from "./SelectContainer";
+import Preview from "./Preview";
 
 interface EditorModuleProps {
   editorData: string;
@@ -15,11 +16,11 @@ interface EditorModuleProps {
   setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
   selectedSlideIndex: number;
   setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
+  editorView: boolean;
 }
 
-const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex}) => {
-    const metadataComponentRef = useRef<MetadataContainerMethods>(null);
-    
+const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, editorView}) => {
+    const [selectedView, setSelectedView] = useState<any>(null);
     useEffect(() => {
         updateEditor();
     }, [selectedSlideIndex]);
@@ -27,6 +28,10 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
     useEffect(() => {
         regenarateSlide();
     }, [editorData]);
+
+    useEffect(() => {
+        SwitchView();
+    }, [editorView, slides, selectedSlideIndex, editorData]);
 
     function updateEditor() {
         const visitor = new MarkdownVisitor();
@@ -84,22 +89,27 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         setEditorData(editor.getValue());
-      }, 2000);
+      }, 1000);
     }
 
+    function SwitchView() {
+        if (editorView) {
+          setSelectedView(<EditorContainer data={editorData} onEditorChange={editorChange} />);
+        } else {
+            const data = editorData;
+            setSelectedView(<Preview data={data} />);
+        }
+    }
     return (
         <Grid container direction="column" spacing={1} style={{ height: "100%" }}>
             <Grid item xs={1}>
-            <input type="file" id="fileInput" onChange={importFile} />
+              <input type="file" id="fileInput" onChange={importFile} />
             </Grid>
             <Grid item xs={2}>
-            <SelectContainer onAdd={newSlide} elements={slides} onSelect={selectSlide}/>
+              <SelectContainer onAdd={newSlide} elements={slides} onSelect={selectSlide}/>
             </Grid>
-            <Grid item xs={8}>
-            <EditorContainer data={editorData} onEditorChange={editorChange} />
-            </Grid>
-            <Grid item xs={1}>
-            <MetadataContainer ref={metadataComponentRef} />
+            <Grid item xs={9}>
+              {selectedView && selectedView}
             </Grid>
       </Grid>
     )

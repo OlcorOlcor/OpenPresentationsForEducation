@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import "./css/SelectContainer.css";
+import "./css/SlideSelect.css";
 
 interface SelectContainerProps {
     elements: any[];

@@ -6,6 +6,7 @@ import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
 import { PresentationParser } from "../Model/PresentationParser";
 import { Presentation, SlideElement } from "../Model/PresentationModel"
 import ModuleSelector from "./ModuleSelector";
+import LaneContainer from "./LaneContainer";
 
 function App() {
   const [editorData, setEditorData] = useState<string>("");
@@ -49,6 +50,7 @@ function App() {
     let mp = new MarkdownParser();
     let slide = mp.parseMarkdown(editorData);
     return JSON.stringify(slide);
+    // <ModuleSelector moduleName={"preview"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>
   }
 
   return (
@@ -58,7 +60,7 @@ function App() {
           <ModuleSelector moduleName={"editor"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>
         </Grid>
         <Grid item xs={6}>
-          <ModuleSelector moduleName={"preview"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>
+          <LaneContainer />
         </Grid>
       </Grid>
     </div>
