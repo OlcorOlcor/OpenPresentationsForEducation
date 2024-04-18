@@ -1,21 +1,17 @@
 import React, { useState, useRef, ChangeEvent, useEffect, useContext } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
-import { MarkdownParser } from "../Model/MarkdownParser";
-import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
-import { PresentationParser } from "../Model/PresentationParser";
-import { Presentation, SlideElement } from "../Model/PresentationModel"
+import { Lane, Presentation, SlideElement } from "../Model/PresentationModel"
 import ModuleSelector from "./ModuleSelector";
 import LaneContainer from "./LaneContainer";
 
 function App() {
-  const [editorData, setEditorData] = useState<string>("");
-  const [speakerNoteData, setSpeakerNoteData] = useState<string>("");
-  const [slides, setSlides] = useState<SlideElement[]>([new SlideElement([])]);
-  const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
-  const [speakerNotes, setSpeakerNotes] = useState<string[]>([""]);
-  const [selectedSpeakerNoteIndex, setSelectedSpeakerNoteIndex] = useState<number>(0);
-  
+  const [lanes, setLanes] = useState<Lane[]>([new Lane([new SlideElement([])], "first"), new Lane([new SlideElement([])], "second")]);
+  const [selectedLeftLane, setSelectedLeftLane] = useState<Lane>(lanes[0]);
+  const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] = useState<number>(0);
+  const [selectedRightLane, setSelectedRightLane] = useState<Lane>(lanes[1]);
+  const [selectedRightLaneIndex, setSelectedRightLaneIndex] = useState<number>(1);
+
   // temp fix, error is likely caused by mui grid
   useEffect(() => {
     window.addEventListener('error', e => {
@@ -35,7 +31,7 @@ function App() {
       }
     });
   }, []);
-
+  /*
   function fetchHtml(): string {
     let mp = new MarkdownParser();
     let slides = mp.parseMarkdown(editorData);
@@ -50,17 +46,16 @@ function App() {
     let mp = new MarkdownParser();
     let slide = mp.parseMarkdown(editorData);
     return JSON.stringify(slide);
-    // <ModuleSelector moduleName={"preview"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>
   }
-
+  */
   return (
     <div className="container">
       <Grid container spacing={2} className="gridContainer">
         <Grid item xs={6}>
-          <ModuleSelector moduleName={"editor"} editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} fetchHtml={fetchHtml} fetchJson={fetchJson} speakerNoteData={speakerNoteData} setSpeakerNoteData={setSpeakerNoteData} speakerNotes={speakerNotes} setSpeakerNotes={setSpeakerNotes} selectedSpeakerNoteIndex={selectedSpeakerNoteIndex} setSelectedSpeakerNoteIndex={setSelectedSpeakerNoteIndex}/>
+          <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex}/>
         </Grid>
         <Grid item xs={6}>
-          <LaneContainer />
+          <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex}/>
         </Grid>
       </Grid>
     </div>

@@ -184,3 +184,12 @@ export class Presentation implements IVisitable {
         return this.slides;
     }
 }
+
+export class Lane {
+    slides: SlideElement[];
+    name: string;
+    constructor(slides: SlideElement[], name: string) {
+        this.slides = slides;
+        this.name = name;
+    }
+}
