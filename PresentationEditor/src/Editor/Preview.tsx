@@ -6,9 +6,7 @@ interface PreviewProps {
 
 const Preview: React.FC<PreviewProps> = ({data}) => {
   return (
-    <div>
-      {data && data}
-    </div>
+    <div dangerouslySetInnerHTML={{__html: data}}></div>
   );
 }
 

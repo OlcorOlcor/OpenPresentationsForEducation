@@ -188,6 +188,7 @@ export class Presentation implements IVisitable {
 export class Lane {
     slides: SlideElement[];
     name: string;
+    outputAsPresentation: boolean = true;
     constructor(slides: SlideElement[], name: string) {
         this.slides = slides;
         this.name = name;
