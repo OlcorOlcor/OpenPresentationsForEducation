@@ -1,10 +1,11 @@
-import { Dialog, Checkbox, Fab, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, DialogTitle } from "@mui/material";
+import { Dialog, Checkbox, Fab, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, DialogTitle, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
+import Preview from "./Preview";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -26,6 +27,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     const [switchedLane, setSwitchedLane] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [slideMode, setSlideMode] = useState<boolean>(selectedLane.outputAsPresentation);
+    const [dialogLane, setDialogLane] = useState<Lane>(selectedLane);
     useEffect(() => {
         if (switchedLane) {
             updateEditor();
@@ -63,16 +65,23 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     }
 
     function handleClose() {
+        setLanes(prev => {
+            let updated = prev;
+            updated[selectedLaneIndex] = dialogLane;
+            return updated;
+        });
+        setSlideMode(dialogLane.outputAsPresentation);
         setDialogOpen(false);
-        // set lane
     }
 
+    function handleNameChange(name: string) {
+        setDialogLane(prev => ({ ...prev, name: name }));
+    };
+
     function handleOutputTypeChange() {
-        setSelectedLane(prev => {
-            prev.outputAsPresentation = !selectedLane.outputAsPresentation;
-            return prev;
-        });
-        setSlideMode(!slideMode);
+        setDialogLane(prev => (
+            {...prev, outputAsPresentation: !prev.outputAsPresentation}
+        ));
     }
 
     return (
@@ -97,8 +106,12 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                             <Dialog open={dialogOpen} onClose={handleClose}>
                                 <DialogTitle>Lane settings</DialogTitle>
                                 <div>
-                                    {selectedLane.name}
-                                    <FormControlLabel control={<Checkbox checked={selectedLane.outputAsPresentation === true}/>} label="Output as presentation" onChange={handleOutputTypeChange}/>
+                                    <div>
+                                        <TextField id="Lane name" variant="standard" label="Name" value={dialogLane.name} onChange={(e) => handleNameChange(e.target.value)}/>
+                                    </div>
+                                    <div>
+                                        <FormControlLabel control={<Checkbox checked={dialogLane.outputAsPresentation}/>} label="Output as presentation" onChange={handleOutputTypeChange}/>
+                                    </div>
                                 </div>
                             </Dialog>
                         </Grid>
