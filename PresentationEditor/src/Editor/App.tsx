@@ -12,6 +12,14 @@ function App() {
   const [selectedRightLane, setSelectedRightLane] = useState<Lane>(lanes[1]);
   const [selectedRightLaneIndex, setSelectedRightLaneIndex] = useState<number>(1);
 
+  function AddLane() {
+    setLanes((oldLanes) => {
+        let updatedLanes = [...oldLanes];
+        updatedLanes.push(new Lane([new SlideElement([])], oldLanes.length.toString()));
+        return updatedLanes;
+    });
+  }
+
   // temp fix, error is likely caused by mui grid
   useEffect(() => {
     window.addEventListener('error', e => {
@@ -52,10 +60,10 @@ function App() {
     <div className="container">
       <Grid container spacing={2} className="gridContainer">
         <Grid item xs={6}>
-          <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex}/>
+          <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} AddLane={AddLane}/>
         </Grid>
         <Grid item xs={6}>
-          <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex}/>
+          <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} AddLane={AddLane}/>
         </Grid>
       </Grid>
     </div>

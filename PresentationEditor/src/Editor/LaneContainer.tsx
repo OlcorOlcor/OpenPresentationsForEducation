@@ -1,4 +1,4 @@
-import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
@@ -12,16 +12,21 @@ interface LaneContainerProps {
     selectedLaneIndex: number;
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
+    AddLane(): void;
 }
 
 
-const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedLane, setSelectedLane, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex}) => {
+const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedLane, setSelectedLane, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, AddLane}) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [editorData, setEditorData] = useState<string>("");
     const [slides, setSlides] = useState<SlideElement[]>(selectedLane.slides)
     const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
+    const [switchedLane, setSwitchedLane] = useState<boolean>(false);
     useEffect(() => {
-        setLanes([...lanes]);
+        if (switchedLane) {
+            updateEditor();
+        }
+        setSwitchedLane(false);
     }, [slides])
 
     useEffect(() => {
@@ -36,6 +41,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     useEffect(() => {
         setSlides(selectedLane.slides);
         setSelectedSlideIndex(0);
+        setSwitchedLane(true);
     }, [selectedLane]);
 
     function updateEditor() {
@@ -51,7 +57,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     return (
             <Grid container direction="column" style={{height: "100%"}}>
                 <Grid item xs={1} >
-                    <Grid container>
+                    <Grid container justifyContent="center" alignItems="center">
                         <Grid item xs={2}>
                             <FormControl fullWidth>
                                 <InputLabel id="laneSelectLabel">Select Lane</InputLabel>
@@ -62,7 +68,10 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid item xs={2}>
+                            <Button variant="contained" onClick={AddLane}>Add lane</Button>
+                        </Grid>
+                        <Grid item xs={8}>
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox />} label="Preview" onChange={() => { setEditorView(!editorView); }}/>
                             </FormGroup>
