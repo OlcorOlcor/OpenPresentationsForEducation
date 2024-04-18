@@ -1,4 +1,4 @@
-import { Dialog, Checkbox, Fab, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, DialogTitle, TextField } from "@mui/material";
+import { Dialog, Checkbox, Fab, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, DialogTitle, TextField, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
 import Preview from "./Preview";
+import { updateLanguageServiceSourceFile } from "typescript";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -48,6 +49,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
         setSlides(selectedLane.slides);
         setSelectedSlideIndex(0);
         setSwitchedLane(true);
+        setDialogLane(selectedLane);
     }, [selectedLane]);
 
     function updateEditor() {
@@ -66,7 +68,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
 
     function handleClose() {
         setLanes(prev => {
-            let updated = prev;
+            let updated = [...prev];
             updated[selectedLaneIndex] = dialogLane;
             return updated;
         });
@@ -82,6 +84,17 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
         setDialogLane(prev => (
             {...prev, outputAsPresentation: !prev.outputAsPresentation}
         ));
+    }
+
+    function deleteLane() {
+        setLanes(prev => {
+            let updated = [...prev];
+            updated.splice(selectedLaneIndex, 1);
+            // TODO: undefined behaviour, if all lanes get removed
+            setSelectedLaneIndex(selectedLaneIndex - 1);
+            setDialogOpen(false);
+            return updated;
+        })
     }
 
     return (
@@ -111,6 +124,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                                     </div>
                                     <div>
                                         <FormControlLabel control={<Checkbox checked={dialogLane.outputAsPresentation}/>} label="Output as presentation" onChange={handleOutputTypeChange}/>
+                                    </div>
+                                    <div>
+                                        <Button color="error" onClick={deleteLane}>Delete</Button>
                                     </div>
                                 </div>
                             </Dialog>
