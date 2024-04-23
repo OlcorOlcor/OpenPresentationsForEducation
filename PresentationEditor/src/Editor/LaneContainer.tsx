@@ -90,9 +90,20 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
         setLanes(prev => {
             let updated = [...prev];
             updated.splice(selectedLaneIndex, 1);
-            // TODO: undefined behaviour, if all lanes get removed
-            setSelectedLaneIndex(selectedLaneIndex - 1);
             setDialogOpen(false);
+            
+            if (updated.length <= 1) {
+                setSelectedLaneIndex(-1);
+            } else if (selectedLaneIndex - 1 === otherLaneIndex) {
+                if (selectedLaneIndex <= updated.length) {
+                    setSelectedLaneIndex(selectedLaneIndex);
+                } else {
+                    setSelectedLaneIndex(otherLaneIndex - 1);
+                }
+            } else {
+                setSelectedLaneIndex(selectedLaneIndex - 1);
+            }
+
             return updated;
         })
     }
