@@ -131,9 +131,14 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                                     <div>
                                         <FormControlLabel control={<Checkbox checked={dialogLane.outputAsPresentation}/>} label="Output as presentation" onChange={handleOutputTypeChange}/>
                                     </div>
-                                    <div>
-                                        <Button color="error" onClick={deleteLane}>Delete</Button>
-                                    </div>
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <Button color="primary" onClick={handleClose}>Confirm</Button>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Button color="error" onClick={deleteLane}>Delete</Button>
+                                        </Grid>
+                                    </Grid>
                                 </div>
                             </Dialog>
                         </Grid>
