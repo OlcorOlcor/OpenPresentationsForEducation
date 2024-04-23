@@ -1,12 +1,10 @@
 import { Dialog, Checkbox, Fab, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, DialogTitle, TextField, Button } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
-import Preview from "./Preview";
-import { updateLanguageServiceSourceFile } from "typescript";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -91,7 +89,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
             let updated = [...prev];
             updated.splice(selectedLaneIndex, 1);
             setDialogOpen(false);
-            
+
             if (updated.length <= 1) {
                 setSelectedLaneIndex(-1);
             } else if (selectedLaneIndex - 1 === otherLaneIndex) {
@@ -112,7 +110,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
             <Grid container direction="column" style={{height: "100%"}}>
                 <Grid item xs={1} >
                     <Grid container justifyContent="center" alignItems="center">
-                        <Grid item xs={3}>
+                        <Grid item xs={4}>
                             <FormControl fullWidth>
                                 <InputLabel id="laneSelectLabel">Select Lane</InputLabel>
                                 <Select labelId="laneSelectLabel" value={selectedLaneIndex} onChange={(e) => selectLane(e.target.value as number)}>
@@ -122,10 +120,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={3}>
-                            <Fab color="primary" onClick={AddLane}><AddIcon /></Fab>
-                        </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={4}>
                             <Fab color="secondary" onClick={showSettings}><EditIcon /></Fab>
                             <Dialog open={dialogOpen} onClose={handleClose}>
                                 <DialogTitle>Lane settings</DialogTitle>
@@ -142,7 +137,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                                 </div>
                             </Dialog>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={4}>
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox />} label="Preview" onChange={() => { setEditorView(!editorView); }}/>
                             </FormGroup>
