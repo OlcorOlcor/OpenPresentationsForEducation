@@ -129,8 +129,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     }
 
     return (
-            <Grid container direction="column" style={{height: "100%"}}>
-                <Grid item xs={1} >
+            <Grid container style={{height: "100%"}}>
+                <Grid item xs={12}>
                     <Grid container justifyContent="center" alignItems="center">
                         <Grid item xs={4}>
                             <FormControl fullWidth>
@@ -174,7 +174,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={11}>
+                <Grid item xs={12}>
                     <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} editorView={editorView} slideMode={slideMode}/>
                 </Grid>
             </Grid>
