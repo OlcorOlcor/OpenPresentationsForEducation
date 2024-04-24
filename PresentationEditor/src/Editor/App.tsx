@@ -4,6 +4,7 @@ import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel"
 import LaneContainer from "./LaneContainer";
 import { Button } from "@mui/material";
+import Menu from "./Menu";
 import AddIcon from "@mui/icons-material/Add";
 
 
@@ -58,14 +59,7 @@ function App() {
 
   return (
     <div style={{height: "100%"}}>
-      <div className="menu">
-        <div>
-          <Button color="primary" onClick={addLane}><AddIcon /></Button>
-        </div>
-        <div>
-          <Button color="primary" onClick={swapLane}>Swap</Button>
-        </div>
-      </div>
+      <Menu addLane={addLane} swapLane={swapLane} />
       <Grid container spacing={1} className="gridContainer" style={{height: "100%"}}>
         <Grid item xs={6} md={6}>
           {selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} AddLane={addLane}/>}          
