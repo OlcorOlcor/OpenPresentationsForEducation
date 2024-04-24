@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import "./css/SlideSelect.css";
 import { Button, Pagination } from "@mui/material";
 
@@ -16,14 +16,12 @@ const SelectContainer: React.FC<SelectContainerProps> = ({elements, onSelect, on
     function add() {
         onAdd();
     }
-    
+
     return (
-    <>
-        <div className="slide-select-container">
-            <Pagination count={elements.length} onChange={(_, number) => select(number - 1)}/>   
-            <Button variant="contained" onClick={add}>Add</Button>
-        </div>
-    </>
+    <div className="slide-select-container">
+        <Pagination count={elements.length} onChange={(_, number) => select(number - 1)}/>   
+        <Button variant="contained" onClick={add}>Add</Button>
+    </div>
     )
 }
 

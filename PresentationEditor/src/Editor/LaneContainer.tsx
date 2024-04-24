@@ -1,11 +1,8 @@
-import { Dialog, Checkbox, Fab, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, DialogTitle, TextField, Button } from "@mui/material";
-
-import EditIcon from "@mui/icons-material/Edit";
-import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
+import { Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
-import { Lane, Presentation, SlideElement } from "../Model/PresentationModel";
+import { Lane, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
-import { PresentationParser } from "../Model/PresentationParser";
 import LaneMenu from "./LaneMenu";
 
 interface LaneContainerProps {
@@ -56,14 +53,14 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     }
 
     return (
-            <Grid container style={{height: "100%"}}>
-                <Grid item xs={12}>
-                    <LaneMenu lanes={lanes} setLanes={setLanes} selectedLane={selectedLane} setSelectedLane={setSelectedLane} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
-                </Grid>
-                <Grid item xs={12}>
-                    <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} editorView={editorView} slideMode={slideMode}/>
-                </Grid>
+        <Grid container style={{height: "100%"}}>
+            <Grid item xs={12}>
+                <LaneMenu lanes={lanes} setLanes={setLanes} selectedLane={selectedLane} setSelectedLane={setSelectedLane} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
             </Grid>
+            <Grid item xs={12}>
+                <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} editorView={editorView} slideMode={slideMode}/>
+            </Grid>
+        </Grid>
     )
 }
 

@@ -1,11 +1,9 @@
-import React, { useState, useRef, ChangeEvent, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel"
 import LaneContainer from "./LaneContainer";
-import { Button } from "@mui/material";
 import Menu from "./Menu";
-import AddIcon from "@mui/icons-material/Add";
 
 
 function App() {

@@ -2,7 +2,6 @@ import { Button } from "@mui/material";
 import React from "react";
 import "./css/Menu.css";
 
-
 interface MenuProps {
     addLane(): void;
     swapLane(): void;

@@ -1,7 +1,6 @@
 import Grid from "@mui/material/Grid";
 import EditorContainer from "./EditorContainer";
-import MetadataContainer, { MetadataContainerMethods } from "./MetadataContainer";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
 import { Presentation, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
@@ -10,14 +9,14 @@ import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 
 interface EditorModuleProps {
-  editorData: string;
-  setEditorData: React.Dispatch<React.SetStateAction<string>>;
-  slides: SlideElement[];
-  setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
-  selectedSlideIndex: number;
-  setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
-  editorView: boolean;
-  slideMode: boolean;
+    editorData: string;
+    setEditorData: React.Dispatch<React.SetStateAction<string>>;
+    slides: SlideElement[];
+    setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
+    selectedSlideIndex: number;
+    setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
+    editorView: boolean;
+    slideMode: boolean;
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, editorView, slideMode: slideMode}) => {

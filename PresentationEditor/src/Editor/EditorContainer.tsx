@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
 import Editor from "@monaco-editor/react";
 interface EditorProps {
   data: string;
-  //setEditorData: React.Dispatch<React.SetStateAction<string>>;
   onEditorChange(timeout: NodeJS.Timeout, editor: any): void;
 }
 
