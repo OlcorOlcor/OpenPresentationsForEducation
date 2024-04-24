@@ -9,16 +9,14 @@ interface SelectContainerProps {
 }
 
 const SelectContainer: React.FC<SelectContainerProps> = ({elements, onSelect, onAdd}) => {
-    const [selectedElement, setSelectedElement] = useState<number>(0);
     function select(index: number) {
-        setSelectedElement(index);
         onSelect(index);
     }
 
     function add() {
-        setSelectedElement(elements.length);
         onAdd();
     }
+    
     return (
     <>
         <div className="slide-select-container">
