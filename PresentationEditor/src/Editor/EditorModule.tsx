@@ -111,7 +111,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
     return (
         <Grid container style={{ height: "100%" }}>
             <Grid item xs={12} md={12}>
-              <SelectContainer onAdd={addSlide} onAddAfter={addSlideAfter} onDelete={deleteSlide} elements={slides} onSelect={selectSlide}/>
+              <SelectContainer selectedSlideIndex={selectedSlideIndex} onAdd={addSlide} onAddAfter={addSlideAfter} onDelete={deleteSlide} elements={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={12} md={12}>
               {selectedView && selectedView}
