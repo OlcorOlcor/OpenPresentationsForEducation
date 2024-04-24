@@ -14,7 +14,7 @@ function App() {
   const [selectedRightLane, setSelectedRightLane] = useState<Lane>(lanes[1]);
   const [selectedRightLaneIndex, setSelectedRightLaneIndex] = useState<number>(1);
 
-  function AddLane() {
+  function addLane() {
     setLanes((oldLanes) => {
         let updatedLanes = [...oldLanes];
         updatedLanes.push(new Lane([new SlideElement([])], oldLanes.length.toString()));
@@ -25,6 +25,15 @@ function App() {
         }
         return updatedLanes;
     });
+  }
+
+  
+  function swapLane() {
+    const leftIndex = selectedLeftLaneIndex;
+    const rightIndex = selectedRightLaneIndex;
+    setSelectedLeftLaneIndex(rightIndex);
+    setSelectedRightLaneIndex(leftIndex);
+
   }
 
   // temp fix, error is likely caused by mui grid
@@ -46,37 +55,24 @@ function App() {
       }
     });
   }, []);
-  /*
-  function fetchHtml(): string {
-    let mp = new MarkdownParser();
-    let slides = mp.parseMarkdown(editorData);
-    let pp = new PresentationParser(slides);
-    let presentation = pp.GetPresentation();
-    let visitor = new HtmlVisitor();
-    visitor.visitPresentationNode(presentation as Presentation);
-    return visitor.getResult();
-  }
-
-  function fetchJson(): string {
-    let mp = new MarkdownParser();
-    let slide = mp.parseMarkdown(editorData);
-    return JSON.stringify(slide);
-  }
-  */
-
   return (
     
     <div>
-      <div>
-        <Button color="primary" onClick={AddLane}><AddIcon /></Button>
+      <div className="menu">
+        <div>
+          <Button color="primary" onClick={addLane}><AddIcon /></Button>
+        </div>
+        <div>
+          <Button color="primary" onClick={swapLane}>Swap</Button>
+        </div>
       </div>
       <div>
         <Grid container className="gridContainer">
           <Grid item xs={6}>
-            {selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} AddLane={AddLane}/>}          
+            {selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} AddLane={addLane}/>}          
           </Grid>
           <Grid item xs={6}>
-            {selectedRightLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} AddLane={AddLane}/>}
+            {selectedRightLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} AddLane={addLane}/>}
           </Grid>
         </Grid>
       </div>

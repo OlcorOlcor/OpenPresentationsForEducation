@@ -3,6 +3,10 @@ body {
   height: 100%;
 }
 
+.menu {
+  display: flex;
+}
+
 .container {
   height: 100%;
   display: flex;
