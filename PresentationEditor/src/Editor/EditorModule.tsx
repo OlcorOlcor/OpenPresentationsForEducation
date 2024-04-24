@@ -46,9 +46,20 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
           setSelectedSlideIndex(newSlides.length - 1);
           return newSlides;
         });
-      }
-    
-      function regenarateSlide(): void {
+    }
+    function deleteSlide(): void {
+      setSlides(prevSlides => {
+        if (prevSlides.length === 1) {
+          return prevSlides;
+        }
+        let updatedSlides = [...prevSlides];
+        updatedSlides.splice(selectedSlideIndex, 1);
+        setSelectedSlideIndex((selectedSlideIndex > 0) ? selectedSlideIndex - 1 : 0);
+        return updatedSlides;
+      })
+    }
+
+    function regenarateSlide(): void {
         let markdownParser = new MarkdownParser();
         let jsonSlides = markdownParser.parseMarkdown(editorData);
         let presentationParser = new PresentationParser(jsonSlides);
@@ -90,7 +101,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
     return (
         <Grid container style={{ height: "100%" }}>
             <Grid item xs={12} md={12}>
-              <SelectContainer onAdd={newSlide} elements={slides} onSelect={selectSlide}/>
+              <SelectContainer onAdd={newSlide} onDelete={deleteSlide} elements={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={12} md={12}>
               {selectedView && selectedView}
