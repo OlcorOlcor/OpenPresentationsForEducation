@@ -1,10 +1,11 @@
 import { Dialog, Checkbox, Fab, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, DialogTitle, TextField, Button } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
-import { Lane, SlideElement } from "../Model/PresentationModel";
+import { Lane, Presentation, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
+import { PresentationParser } from "../Model/PresentationParser";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -106,6 +107,27 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
         })
     }
 
+    const importFile = (event: ChangeEvent<HTMLInputElement>) => {
+        let element = event.target as HTMLInputElement;
+        let file = element.files?.[0];
+        if (!file) {
+          return;
+        }
+        let reader = new FileReader();
+    
+        reader.onload = (e) => {
+          let content = e.target?.result as string;
+          let pp = new PresentationParser(JSON.parse(content));
+          let presentation = pp.GetPresentation();
+          let parsedSlides = (presentation as Presentation).getSlides();
+          setSlides(parsedSlides);
+          let visitor = new MarkdownVisitor();
+          visitor.visitSlideNode((presentation as Presentation).getSlides()[0]);
+          setEditorData(visitor.getResult());
+        }
+        reader.readAsText(file);
+    }
+
     return (
             <Grid container direction="column" style={{height: "100%"}}>
                 <Grid item xs={1} >
@@ -125,6 +147,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                             <Dialog open={dialogOpen} onClose={handleClose}>
                                 <DialogTitle>Lane settings</DialogTitle>
                                 <div>
+                                    <div>
+                                        <input type="file" id="fileInput" onChange={importFile} />
+                                    </div>
                                     <div>
                                         <TextField id="Lane name" variant="standard" label="Name" value={dialogLane.name} onChange={(e) => handleNameChange(e.target.value)}/>
                                     </div>

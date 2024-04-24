@@ -40,27 +40,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
         setEditorData(visitor.getResult());
     }
 
-    const importFile = (event: ChangeEvent<HTMLInputElement>) => {
-        let element = event.target as HTMLInputElement;
-        let file = element.files?.[0];
-        if (!file) {
-          return;
-        }
-        let reader = new FileReader();
-    
-        reader.onload = (e) => {
-          let content = e.target?.result as string;
-          let pp = new PresentationParser(JSON.parse(content));
-          let presentation = pp.GetPresentation();
-          let parsedSlides = (presentation as Presentation).getSlides();
-          setSlides(parsedSlides);
-          let visitor = new MarkdownVisitor();
-          visitor.visitSlideNode((presentation as Presentation).getSlides()[0]);
-          setEditorData(visitor.getResult());
-        }
-        reader.readAsText(file);
-    }
-
     function newSlide(): void {
         setSlides(prevSlides => {
           let newSlide = new SlideElement([]);
@@ -111,13 +90,10 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
     }
     return (
         <Grid container direction="column" spacing={1} style={{ height: "100%" }}>
-            <Grid item xs={1}>
-              <input type="file" id="fileInput" onChange={importFile} />
-            </Grid>
             <Grid item xs={2}>
               <SelectContainer onAdd={newSlide} elements={slides} onSelect={selectSlide}/>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={10}>
               {selectedView && selectedView}
             </Grid>
       </Grid>
