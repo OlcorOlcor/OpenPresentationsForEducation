@@ -39,7 +39,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
         setEditorData(visitor.getResult());
     }
 
-    function newSlide(): void {
+    function addSlide(): void {
         setSlides(prevSlides => {
           let newSlide = new SlideElement([]);
           const newSlides = [...prevSlides, newSlide];
@@ -47,6 +47,16 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
           return newSlides;
         });
     }
+
+    function addSlideAfter(): void {
+      setSlides(prevSlides => {
+        let newSlide = new SlideElement([]);
+        const newSlides = [...prevSlides.slice(0, selectedSlideIndex + 1), newSlide, ...prevSlides.slice(selectedSlideIndex + 1)];
+        setSelectedSlideIndex(selectedSlideIndex + 1);
+        return newSlides;
+      });
+    }
+
     function deleteSlide(): void {
       setSlides(prevSlides => {
         if (prevSlides.length === 1) {
@@ -101,7 +111,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
     return (
         <Grid container style={{ height: "100%" }}>
             <Grid item xs={12} md={12}>
-              <SelectContainer onAdd={newSlide} onDelete={deleteSlide} elements={slides} onSelect={selectSlide}/>
+              <SelectContainer onAdd={addSlide} onAddAfter={addSlideAfter} onDelete={deleteSlide} elements={slides} onSelect={selectSlide}/>
             </Grid>
             <Grid item xs={12} md={12}>
               {selectedView && selectedView}
