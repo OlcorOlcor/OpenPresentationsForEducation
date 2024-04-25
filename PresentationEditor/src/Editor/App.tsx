@@ -26,6 +26,26 @@ function App() {
 		});
 	}
 
+	function AddToLanes() {
+		setLanes(oldLanes => {
+			let updatedLanes = [...oldLanes];
+			updatedLanes.forEach(lane => {
+				lane.slides = [...lane.slides, new SlideElement([])];
+			});
+			return updatedLanes;
+		});
+	}
+
+	function RemoveFromLanes() {
+		setLanes(oldLanes => {
+			let updatedLanes = [...oldLanes];
+			updatedLanes.forEach(lane => {
+				lane.slides.splice(lane.slides.length - 1, 1);
+			});
+			return updatedLanes;
+		});
+	}
+
 	function swapLane() {
 		const leftIndex = selectedLeftLaneIndex;
 		const rightIndex = selectedRightLaneIndex;
