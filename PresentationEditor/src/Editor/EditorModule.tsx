@@ -32,7 +32,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 		}, [editorData]);
 
 		useEffect(() => {
-			SwitchView();
+			switchView();
 		}, [editorView, slides, selectedSlideIndex, editorData]);
 
 		function updateEditor() {
@@ -76,7 +76,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 			}, 1000);
 		}
 
-		function SwitchView() {
+		function switchView() {
 			if (editorView) {
 				setSelectedView(<EditorContainer data={editorData} onEditorChange={editorChange} />);
 			} else {
@@ -92,7 +92,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 			}
 		}
 
-		function ActivateSlide() {
+		function activateSlide() {
 			setSlides(prevSlides => {
 				let newSlides = [...prevSlides];
 				newSlides[selectedSlideIndex].active = !newSlides[selectedSlideIndex].active;
@@ -103,7 +103,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 		return (
 			<Grid container style={{ height: "100%" }}>
 				<Grid item xs={12} md={12}>
-					<SelectContainer selectedSlideIndex={selectedSlideIndex} onAdd={addSlide} onAddAfter={() => addSlideAt(selectedSlideIndex)} onDelete={deleteSlide} elements={slides} onSelect={selectSlide} onActivate={ActivateSlide}/>
+					<SelectContainer selectedSlideIndex={selectedSlideIndex} onAdd={addSlide} onAddAfter={() => addSlideAt(selectedSlideIndex)} onDelete={deleteSlide} elements={slides} onSelect={selectSlide} onActivate={activateSlide}/>
 				</Grid>
 				<Grid item xs={12} md={12}>
 					{(selectedView && slides[selectedSlideIndex].active) && selectedView}
