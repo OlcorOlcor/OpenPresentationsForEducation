@@ -26,3 +26,11 @@
 .selected {
     background-color: gray;
 }
+
+.active {
+    background-color: lightgray;
+}
+
+.inactive {
+    background-color: darkgray;
+}

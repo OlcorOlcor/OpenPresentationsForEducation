@@ -1,9 +1,10 @@
 import React from "react";
 import "./css/SlideSelect.css";
-import { Button, Pagination } from "@mui/material";
+import { Button, Pagination, PaginationItem } from "@mui/material";
+import { SlideElement } from "../Model/PresentationModel";
 
 interface SelectContainerProps {
-    elements: any[];
+    elements: SlideElement[];
     selectedSlideIndex: number;
     onSelect: (index: number) => void;
     onAdd: () => void;
@@ -17,7 +18,15 @@ const SelectContainer: React.FC<SelectContainerProps> = ({elements, selectedSlid
     }
     return (
     <div className="slide-select-container">
-        <Pagination count={elements.length} page={selectedSlideIndex + 1} onChange={(_, number) => select(number - 1)}/>   
+        <Pagination count={elements.length} shape="rounded" variant="outlined" page={selectedSlideIndex + 1} onChange={(_, number) => select(number - 1)}
+            renderItem={(item) => { 
+                if (item.type === 'start-ellipsis' || item.type === 'end-ellipsis' || item.type === 'previous' || item.type === 'next') {
+                    return <PaginationItem {...item} />;
+                }
+                return <PaginationItem {...item} className={(elements[item.page as number - 1]?.active) ? "active" : "inactive" } />
+            }
+        }
+        />   
         <Button variant="contained" onClick={onAdd}>Add</Button>
         <Button variant="contained" onClick={onAddAfter}>Add after</Button>
         <Button variant="contained" color="error" onClick={onDelete}>Delete</Button>
