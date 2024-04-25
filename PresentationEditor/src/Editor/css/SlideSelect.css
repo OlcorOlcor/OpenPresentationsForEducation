@@ -28,9 +28,10 @@
 }
 
 .active {
-    background-color: lightgray;
+    background-color: lightgray !important;
 }
 
 .inactive {
-    background-color: darkgray;
+    color: lightgray !important;
+    background-color: rgb(34, 34, 34) !important;
 }

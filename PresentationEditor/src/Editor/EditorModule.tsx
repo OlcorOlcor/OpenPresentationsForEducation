@@ -91,13 +91,22 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 					}
 			}
 		}
+
+		function ActivateSlide() {
+			setSlides(prevSlides => {
+				let newSlides = [...prevSlides];
+				newSlides[selectedSlideIndex].active = !newSlides[selectedSlideIndex].active;
+				return newSlides;
+			})
+		}
+
 		return (
 			<Grid container style={{ height: "100%" }}>
 				<Grid item xs={12} md={12}>
-					<SelectContainer selectedSlideIndex={selectedSlideIndex} onAdd={addSlide} onAddAfter={() => addSlideAt(selectedSlideIndex)} onDelete={deleteSlide} elements={slides} onSelect={selectSlide}/>
+					<SelectContainer selectedSlideIndex={selectedSlideIndex} onAdd={addSlide} onAddAfter={() => addSlideAt(selectedSlideIndex)} onDelete={deleteSlide} elements={slides} onSelect={selectSlide} onActivate={ActivateSlide}/>
 				</Grid>
 				<Grid item xs={12} md={12}>
-					{selectedView && selectedView}
+					{(selectedView && slides[selectedSlideIndex].active) && selectedView}
 				</Grid>
 			</Grid>
 		)

@@ -10,12 +10,14 @@ interface SelectContainerProps {
     onAdd: () => void;
     onAddAfter: () => void;
     onDelete: () => void;
+    onActivate: () => void;
 }
 
-const SelectContainer: React.FC<SelectContainerProps> = ({elements, selectedSlideIndex, onSelect, onAdd, onDelete, onAddAfter}) => {
+const SelectContainer: React.FC<SelectContainerProps> = ({elements, selectedSlideIndex, onSelect, onAdd, onDelete, onAddAfter, onActivate}) => {
     function select(index: number) {
         onSelect(index);
     }
+
     return (
     <div className="slide-select-container">
         <Pagination count={elements.length} shape="rounded" variant="outlined" page={selectedSlideIndex + 1} onChange={(_, number) => select(number - 1)}
@@ -27,6 +29,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({elements, selectedSlid
             }
         }
         />   
+        <Button variant="contained" onClick={onActivate}>{!elements[selectedSlideIndex].active ? "Activate" : "Deactivate"}</Button>
         <Button variant="contained" onClick={onAdd}>Add</Button>
         <Button variant="contained" onClick={onAddAfter}>Add after</Button>
         <Button variant="contained" color="error" onClick={onDelete}>Delete</Button>
