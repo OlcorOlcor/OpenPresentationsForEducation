@@ -15,36 +15,21 @@ function App() {
 
 	function addLane() {
 		setLanes((oldLanes) => {
-				let updatedLanes = [...oldLanes];
-				updatedLanes.push(new Lane([new SlideElement([])], oldLanes.length.toString()));
-				if (selectedLeftLaneIndex === -1) {
-					setSelectedLeftLaneIndex(updatedLanes.length - 1);
-				} else if (selectedRightLaneIndex === -1) {
-					setSelectedRightLaneIndex(updatedLanes.length - 1);
-				}
-				return updatedLanes;
-		});
-	}
-
-	function AddToLanes() {
-		setLanes(oldLanes => {
 			let updatedLanes = [...oldLanes];
-			updatedLanes.forEach(lane => {
-				lane.slides = [...lane.slides, new SlideElement([])];
-			});
+			let slides = [];
+			for (let i = 0; i < selectedLeftLane.slides.length; ++i) {
+				slides.push(new SlideElement([]));
+			}
+			updatedLanes.push(new Lane(slides, oldLanes.length.toString()));
+			if (selectedLeftLaneIndex === -1) {
+				setSelectedLeftLaneIndex(updatedLanes.length - 1);
+			} else if (selectedRightLaneIndex === -1) {
+				setSelectedRightLaneIndex(updatedLanes.length - 1);
+			}
 			return updatedLanes;
 		});
 	}
 
-	function RemoveFromLanes() {
-		setLanes(oldLanes => {
-			let updatedLanes = [...oldLanes];
-			updatedLanes.forEach(lane => {
-				lane.slides.splice(lane.slides.length - 1, 1);
-			});
-			return updatedLanes;
-		});
-	}
 
 	function swapLane() {
 		const leftIndex = selectedLeftLaneIndex;
@@ -79,10 +64,10 @@ function App() {
 			<Menu addLane={addLane} swapLane={swapLane} />
 			<Grid container spacing={1} className="gridContainer" style={{height: "100%"}}>
 				<Grid item xs={6} md={6}>
-					{selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} AddLane={addLane}/>}          
+					{selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} addLane={addLane} />}          
 				</Grid>
 				<Grid item xs={6} md={6}>
-					{selectedRightLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} AddLane={addLane}/>}
+					{selectedRightLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} addLane={addLane} />}
 				</Grid>
 			</Grid>
 		</div>

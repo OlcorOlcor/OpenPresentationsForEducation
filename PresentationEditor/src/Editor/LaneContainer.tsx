@@ -13,11 +13,11 @@ interface LaneContainerProps {
     selectedLaneIndex: number;
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
-    AddLane(): void;
+    addLane(): void;
 }
 
 
-const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedLane, setSelectedLane, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, AddLane}) => {
+const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedLane, setSelectedLane, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [editorData, setEditorData] = useState<string>("");
     const [slides, setSlides] = useState<SlideElement[]>(selectedLane.slides)
@@ -46,6 +46,31 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
         setSwitchedLane(true);
     }, [selectedLane]);
 
+    useEffect(() => {
+        setSlides(lanes[selectedLaneIndex].slides);
+    }, [lanes])
+
+	function addSlide() {
+		setLanes(oldLanes => {
+			let updatedLanes = [...oldLanes];
+			updatedLanes.forEach(lane => {
+				lane.slides = [...lane.slides, new SlideElement([])];
+			});
+			return updatedLanes;
+		});
+	}
+
+	function addSlideAt(index: number) {
+		setLanes(oldLanes => {
+			let updatedLanes = [...oldLanes];
+			updatedLanes.forEach(lane => {
+				let newSlide = new SlideElement([]);
+				lane.slides = [...lane.slides.slice(0, index + 1), newSlide, ...lane.slides.slice(index + 1)];
+			})
+			return updatedLanes;
+		});
+	}
+
     function updateEditor() {
         const visitor = new MarkdownVisitor();
         visitor.visitSlideNode(slides[selectedSlideIndex]);
@@ -58,7 +83,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                 <LaneMenu lanes={lanes} setLanes={setLanes} selectedLane={selectedLane} setSelectedLane={setSelectedLane} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
             </Grid>
             <Grid item xs={12}>
-                <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} editorView={editorView} slideMode={slideMode}/>
+                <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} editorView={editorView} slideMode={slideMode} addSlide={addSlide} addSlideAt={addSlideAt} />
             </Grid>
         </Grid>
     )
