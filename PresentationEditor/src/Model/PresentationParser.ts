@@ -134,7 +134,9 @@ export class PresentationParser {
 
     private CreateSlide(jsonSlide: pt.Slide): pm.SlideElement {
         let elements = this.GetOuterElementContent(jsonSlide.content);
-        return new pm.SlideElement(elements);
+        let slide = new pm.SlideElement(elements);
+        slide.active = true;
+        return slide;
     }
 
     private GetSlides(): pm.SlideElement[] {
