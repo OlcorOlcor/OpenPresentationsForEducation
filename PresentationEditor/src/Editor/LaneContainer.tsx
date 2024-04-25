@@ -82,7 +82,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
             <Grid item xs={12}>
                 <LaneMenu lanes={lanes} setLanes={setLanes} selectedLane={selectedLane} setSelectedLane={setSelectedLane} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ height: "100%" }}>
                 <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} editorView={editorView} slideMode={slideMode} addSlide={addSlide} addSlideAt={addSlideAt} />
             </Grid>
         </Grid>

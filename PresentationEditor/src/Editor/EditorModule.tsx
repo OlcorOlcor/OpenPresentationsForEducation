@@ -105,7 +105,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 				<Grid item xs={12} md={12}>
 					<SelectContainer selectedSlideIndex={selectedSlideIndex} onAdd={addSlide} onAddAfter={() => addSlideAt(selectedSlideIndex)} onDelete={deleteSlide} elements={slides} onSelect={selectSlide} onActivate={activateSlide}/>
 				</Grid>
-				<Grid item xs={12} md={12}>
+				<Grid item xs={12} md={12} style={{ height: "100%" }}>
 					{(selectedView && slides[selectedSlideIndex].active) && selectedView}
 				</Grid>
 			</Grid>
