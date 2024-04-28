@@ -31,6 +31,22 @@
                         ]
                     }
                 ]
+            },
+            {
+                "type": "slide",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": [
+                                    "second paragraph"
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "attributes": {
