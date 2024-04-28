@@ -19,7 +19,7 @@ export class MarkdownParser {
     }
 
     private handleArray(array: Token[]): pt.Slide {
-        let slide: pt.Slide = { type: "slide", content: []};
+        let slide: pt.Slide = { type: "slide", content: [], attributes: {active: true}};
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
                 case "bullet_list_open":

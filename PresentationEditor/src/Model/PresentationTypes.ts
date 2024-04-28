@@ -56,6 +56,7 @@ export type BlockQuote = {
 export type Slide = {
     type: string;
     content: OuterElement[];
+    attributes: { active: boolean }
 };
 
 export type Lane = {

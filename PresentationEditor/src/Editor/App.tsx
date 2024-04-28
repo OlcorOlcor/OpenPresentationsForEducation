@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
-import { Lane, SlideElement } from "../Model/PresentationModel"
+import { Lane, Presentation, SlideElement } from "../Model/PresentationModel"
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import Menu from "./Menu";
+import { MarkdownParser } from "../Model/MarkdownParser";
+import { MarkdownVisitor } from "../Model/Visitors";
+import * as pt from "../Model/PresentationTypes";
+import { saveAs } from "file-saver";
 
 function App() {
 	const [lanes, setLanes] = useState<Lane[]>([new Lane([new SlideElement([])], "first"), new Lane([new SlideElement([])], "second")]);
@@ -57,6 +61,33 @@ function App() {
 		reader.readAsText(file);
 	}
 
+	function exportPresentation() {
+		let parser = new MarkdownParser();
+		let jsonLanes: pt.Lane[] = [];
+		console.log(selectedLeftLane.slides);
+		lanes.forEach((lane, i) => {
+			// TODO: awfully complicated, redo
+			let currentLane: Lane;
+			if (i === selectedLeftLaneIndex) {
+				currentLane = selectedLeftLane;
+			} else if (i === selectedRightLaneIndex) {
+				currentLane = selectedRightLane;
+			} else {
+				currentLane = lane;
+			}
+			let visitor = new MarkdownVisitor();
+			let jsonSlides: pt.Slide[] = [];
+			lane.slides.forEach((slide, i) => {
+				visitor.visitSlideNode(slide);
+				jsonSlides.push({type: "slide", content: parser.parseMarkdown(visitor.getResult()), attributes: {active: slide.active}});
+			});
+			jsonLanes.push({ type: "lane", content: jsonSlides, attributes: {name: lane.name, compile: lane.outputAsPresentation}});
+			visitor.visitPresentationNode(new Presentation(lane.slides));
+		});
+		const blob = new Blob([JSON.stringify(jsonLanes)], {type: "json"});
+		saveAs(blob, "output.json");
+	}
+
 	// temp fix, error is likely caused by mui grid
 	useEffect(() => {
 		window.addEventListener('error', e => {
@@ -79,7 +110,7 @@ function App() {
 
 	return (
 		<div style={{height: "100%"}}>
-			<Menu addLane={addLane} swapLane={swapLane} importPresentation={importPresentation}/>
+			<Menu addLane={addLane} swapLane={swapLane} importPresentation={importPresentation} exportPresentation={exportPresentation}/>
 			<Grid container spacing={1} className="gridContainer" style={{height: "100%"}}>
 				<Grid item xs={6} md={6}>
 					{selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} addLane={addLane} />}          
