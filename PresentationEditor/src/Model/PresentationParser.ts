@@ -1,6 +1,8 @@
 import * as pt from "./PresentationTypes";
 import * as pm from "./PresentationModel";
 import { Checker, Result } from "./StructureChecker";
+import { isEmptyBindingElement } from "typescript";
+import { Slide } from "@mui/material";
 
 export class PresentationParser {
     private slides: pt.Slide[];
@@ -139,12 +141,28 @@ export class PresentationParser {
         return slide;
     }
 
-    private GetSlides(): pm.SlideElement[] {
-        let slides: pm.SlideElement[] = [];
-        this.slides.forEach(slide => {
-            slides.push(this.CreateSlide(slide));
+    private GetSlides(slides: pt.Slide[]): pm.SlideElement[] {
+        let object_slides: pm.SlideElement[] = [];
+        slides.forEach(slide => {
+            // slide is empty (this lane doesn't have it defined)
+            if (Object.keys(slide).length === 0) {
+                let s = new pm.SlideElement([])
+                s.active = false;
+                object_slides.push(s);
+                return;
+            }
+            object_slides.push(this.CreateSlide(slide));
         });
-        return slides;
+        return object_slides;
+    }
+
+    public GetLanes(lanes: pt.Lane[]): pm.Lane[] {
+        // TODO: properly return result
+        let object_lanes: pm.Lane[] = [];
+        lanes.forEach(lane => {
+            object_lanes.push(new pm.Lane(this.GetSlides(lane.content), lane.attributes.name, lane.attributes.compile));
+        });
+        return object_lanes;
     }
 
     public GetPresentation(): pm.Presentation | Result {
@@ -152,6 +170,6 @@ export class PresentationParser {
             return this.checkerResult;
         }
 
-        return new pm.Presentation(this.GetSlides());
+        return new pm.Presentation(this.GetSlides(this.slides));
     }
 }

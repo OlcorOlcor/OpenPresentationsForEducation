@@ -57,3 +57,9 @@ export type Slide = {
     type: string;
     content: OuterElement[];
 };
+
+export type Lane = {
+    type: string;
+    content: Slide[];
+    attributes: {name: string; compile: boolean; }
+}

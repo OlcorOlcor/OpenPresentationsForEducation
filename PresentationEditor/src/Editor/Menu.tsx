@@ -5,9 +5,10 @@ import "./css/Menu.css";
 interface MenuProps {
     addLane(): void;
     swapLane(): void;
+    importPresentation(file: File): void;
 }
 
-const Menu: React.FC<MenuProps> = ({addLane, swapLane}) => {
+const Menu: React.FC<MenuProps> = ({addLane, swapLane, importPresentation}) => {
     return (
         <div className="menu">
             <div>
@@ -15,6 +16,9 @@ const Menu: React.FC<MenuProps> = ({addLane, swapLane}) => {
             </div>
             <div>
                 <Button variant="contained" onClick={swapLane}>Swap Lanes</Button>
+            </div>
+            <div>
+                <input type="file" id="fileInput" onChange={(e) => importPresentation(e.target.files?.[0]!)} />
             </div>
         </div>
     )

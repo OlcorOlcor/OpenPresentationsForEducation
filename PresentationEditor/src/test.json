@@ -1,103 +1,67 @@
 [
     {
-        "type": "slide",
+        "type": "lane",
         "content": [
             {
-                "type": "heading",
+                "type": "slide",
                 "content": [
                     {
-                        "type": "text",
-                        "content": [
-                            "heading"
-                        ]
-                    }
-                ],
-                "attributes": {
-                    "level": 1
-                }
-            },
-            {
-                "type": "paragraph",
-                "content": [
-                    {
-                        "type": "text",
-                        "content": [
-                            "paragraph"
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "list",
-                "content": [
-                    {
-                        "type": "listItem",
+                        "type": "heading",
                         "content": [
                             {
                                 "type": "text",
                                 "content": [
-                                    "list"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "type": "list",
-                        "content": [
-                            {
-                                "type": "listItem",
-                                "content": [
-                                    {
-                                        "type": "text",
-                                        "content": [
-                                            "num"
-                                        ]
-                                    }
+                                    "text in heading"
                                 ]
                             }
                         ],
                         "attributes": {
-                            "listType": "ordered"
+                            "level": 1
                         }
-                    }
-                ],
-                "attributes": {
-                    "listType": "unordered"
-                }
-            }
-        ]
-    },
-    {
-        "type": "slide",
-        "content": [
-            {
-                "type": "paragraph",
-                "content": [
+                    },
                     {
-                        "type": "text",
-                        "content": ["second slide"]
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "type": "slide",
-        "content": [
-            {
-                "type": "paragraph",
-                "content": [
-                    {
-                        "type": "bold",
+                        "type": "paragraph",
                         "content": [
                             {
                                 "type": "text",
-                                "content": ["third slide"]
+                                "content": [
+                                    "text in paragraph"
+                                ]
                             }
                         ]
                     }
                 ]
             }
-        ]
+        ],
+        "attributes": {
+            "name": "first",
+            "compile": true
+        }
+    },
+    {
+        "type": "lane",
+        "content": [
+            {
+
+            },
+            {
+                "type": "slide",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "content": ["speaker notes for second paragraph"]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "attributes": {
+            "name": "second",
+            "compile": false
+        }
     }
 ]

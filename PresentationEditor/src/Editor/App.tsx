@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel"
+import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import Menu from "./Menu";
-
 
 function App() {
 	const [lanes, setLanes] = useState<Lane[]>([new Lane([new SlideElement([])], "first"), new Lane([new SlideElement([])], "second")]);
@@ -39,6 +39,24 @@ function App() {
 
 	}
 
+	function importPresentation(file: File) {
+		
+		let reader = new FileReader();
+		reader.onload = (e) => {
+			let content = e.target?.result as string;
+			let parser = new PresentationParser([]);
+			let lanes = parser.GetLanes(JSON.parse(content));
+			setLanes(lanes);
+			setSelectedLeftLaneIndex(0);
+			setSelectedLeftLane(lanes[0]);
+			if (lanes.length > 1) {
+				setSelectedRightLaneIndex(1);
+				setSelectedRightLane(lanes[1]);
+			}
+		}
+		reader.readAsText(file);
+	}
+
 	// temp fix, error is likely caused by mui grid
 	useEffect(() => {
 		window.addEventListener('error', e => {
@@ -61,7 +79,7 @@ function App() {
 
 	return (
 		<div style={{height: "100%"}}>
-			<Menu addLane={addLane} swapLane={swapLane} />
+			<Menu addLane={addLane} swapLane={swapLane} importPresentation={importPresentation}/>
 			<Grid container spacing={1} className="gridContainer" style={{height: "100%"}}>
 				<Grid item xs={6} md={6}>
 					{selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} addLane={addLane} />}          
