@@ -64,6 +64,7 @@ function App() {
 	function exportPresentation() {
 		let parser = new MarkdownParser();
 		let jsonLanes: pt.Lane[] = [];
+		console.log(lanes);
 		console.log(selectedLeftLane.slides);
 		lanes.forEach((lane, i) => {
 			// TODO: awfully complicated, redo

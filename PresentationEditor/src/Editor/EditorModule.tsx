@@ -13,6 +13,8 @@ interface EditorModuleProps {
 	setEditorData: React.Dispatch<React.SetStateAction<string>>;
 	slides: SlideElement[];
 	setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
+	selectedSlide: SlideElement;
+	setSelectedSlide: React.Dispatch<React.SetStateAction<SlideElement>>;
 	selectedSlideIndex: number;
 	setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
 	editorView: boolean;
@@ -21,11 +23,8 @@ interface EditorModuleProps {
 	addSlideAt(index: number): void; 
 }
 
-const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, editorView, slideMode, addSlide, addSlideAt}) => {
+const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, selectedSlide, setSelectedSlide, editorView, slideMode, addSlide, addSlideAt}) => {
 		const [selectedView, setSelectedView] = useState<any>(null);
-		useEffect(() => {
-			updateEditor();
-		}, [selectedSlideIndex]);
 
 		useEffect(() => {
 			regenarateSlide();
@@ -33,7 +32,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 
 		useEffect(() => {
 			switchView();
-		}, [editorView, slides, selectedSlideIndex, editorData]);
+		}, [editorView]);
 
 		function updateEditor() {
 			const visitor = new MarkdownVisitor();
@@ -58,11 +57,9 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 			let jsonSlides = markdownParser.parseMarkdown(editorData);
 			let presentationParser = new PresentationParser(jsonSlides);
 			// TODO: check result
-			setSlides(prevSlides => {
-				const updatedSlides = [...prevSlides];
-				updatedSlides[selectedSlideIndex] = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
-				return updatedSlides;
-			});
+			console.log("Regenerate slide: ")
+			console.log((presentationParser.GetPresentation() as Presentation).getSlides()[0]);
+			setSelectedSlide((presentationParser.GetPresentation() as Presentation).getSlides()[0]);
 		}
 
 		function selectSlide(slideIndex: number): void {
@@ -77,7 +74,9 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 		}
 
 		function switchView() {
+			console.log(slides);
 			if (editorView) {
+				updateEditor();
 				setSelectedView(<EditorContainer data={editorData} onEditorChange={editorChange} />);
 			} else {
 					if (!slideMode) {
@@ -96,6 +95,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 			setSlides(prevSlides => {
 				let newSlides = [...prevSlides];
 				newSlides[selectedSlideIndex].active = !newSlides[selectedSlideIndex].active;
+				switchView();
 				return newSlides;
 			})
 		}

@@ -22,8 +22,10 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     const [editorData, setEditorData] = useState<string>("");
     const [slides, setSlides] = useState<SlideElement[]>(selectedLane.slides)
     const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
+    const [selectedSlide, setSelectedSlide] = useState<SlideElement>(slides[selectedSlideIndex]);
     const [switchedLane, setSwitchedLane] = useState<boolean>(false);
     const [slideMode, setSlideMode] = useState<boolean>(selectedLane.outputAsPresentation);
+
     useEffect(() => {
         if (switchedLane) {
             updateEditor();
@@ -32,7 +34,14 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
     }, [slides])
 
     useEffect(() => {
+        console.log("SELECTED SLIDE HAS BEEN CHANGED TO");
+        console.log(selectedSlide);
         updateEditor();
+    }, [selectedSlide]);
+
+    useEffect(() => {
+        console.log("CHANGING SLIDE INDEX")
+        setSelectedSlide(slides[selectedSlideIndex]);
     }, [selectedSlideIndex]);
 
     useEffect(() => {
@@ -73,7 +82,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
 
     function updateEditor() {
         const visitor = new MarkdownVisitor();
-        visitor.visitSlideNode(slides[selectedSlideIndex]);
+        visitor.visitSlideNode(selectedSlide);
+        console.log("SETTING EDITOR DATA");
         setEditorData(visitor.getResult());
     }
 
@@ -83,7 +93,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({lanes, setLanes, selectedL
                 <LaneMenu lanes={lanes} setLanes={setLanes} selectedLane={selectedLane} setSelectedLane={setSelectedLane} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
             </Grid>
             <Grid item xs={12} style={{ height: "100%" }}>
-                <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} editorView={editorView} slideMode={slideMode} addSlide={addSlide} addSlideAt={addSlideAt} />
+                <EditorModule editorData={editorData} setEditorData={setEditorData} slides={slides} setSlides={setSlides} selectedSlideIndex={selectedSlideIndex} setSelectedSlideIndex={setSelectedSlideIndex} selectedSlide={selectedSlide} setSelectedSlide={setSelectedSlide} editorView={editorView} slideMode={slideMode} addSlide={addSlide} addSlideAt={addSlideAt} />
             </Grid>
         </Grid>
     )
