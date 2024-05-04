@@ -12,16 +12,14 @@ import { saveAs } from "file-saver";
 
 function App() {
 	const [lanes, setLanes] = useState<Lane[]>([new Lane([new SlideElement([])], "first"), new Lane([new SlideElement([])], "second")]);
-	const [selectedLeftLane, setSelectedLeftLane] = useState<Lane>(lanes[0]);
 	const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] = useState<number>(0);
-	const [selectedRightLane, setSelectedRightLane] = useState<Lane>(lanes[1]);
 	const [selectedRightLaneIndex, setSelectedRightLaneIndex] = useState<number>(1);
 
 	function addLane() {
 		setLanes((oldLanes) => {
 			let updatedLanes = [...oldLanes];
 			let slides = [];
-			for (let i = 0; i < selectedLeftLane.slides.length; ++i) {
+			for (let i = 0; i < lanes[selectedLeftLaneIndex].slides.length; ++i) {
 				slides.push(new SlideElement([]));
 			}
 			updatedLanes.push(new Lane(slides, oldLanes.length.toString()));
@@ -52,10 +50,8 @@ function App() {
 			let lanes = parser.GetLanes(JSON.parse(content));
 			setLanes(lanes);
 			setSelectedLeftLaneIndex(0);
-			setSelectedLeftLane(lanes[0]);
 			if (lanes.length > 1) {
 				setSelectedRightLaneIndex(1);
-				setSelectedRightLane(lanes[1]);
 			}
 		}
 		reader.readAsText(file);
@@ -65,14 +61,14 @@ function App() {
 		let parser = new MarkdownParser();
 		let jsonLanes: pt.Lane[] = [];
 		console.log(lanes);
-		console.log(selectedLeftLane.slides);
+		console.log(lanes[selectedLeftLaneIndex].slides);
 		lanes.forEach((lane, i) => {
 			// TODO: awfully complicated, redo
 			let currentLane: Lane;
 			if (i === selectedLeftLaneIndex) {
-				currentLane = selectedLeftLane;
+				currentLane = lanes[selectedLeftLaneIndex];
 			} else if (i === selectedRightLaneIndex) {
-				currentLane = selectedRightLane;
+				currentLane = lanes[selectedRightLaneIndex];
 			} else {
 				currentLane = lane;
 			}
@@ -114,10 +110,10 @@ function App() {
 			<Menu addLane={addLane} swapLane={swapLane} importPresentation={importPresentation} exportPresentation={exportPresentation}/>
 			<Grid container spacing={1} className="gridContainer" style={{height: "100%"}}>
 				<Grid item xs={6} md={6}>
-					{selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedLeftLane} setSelectedLane={setSelectedLeftLane} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} addLane={addLane} />}          
+					{selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} addLane={addLane} />}          
 				</Grid>
 				<Grid item xs={6} md={6}>
-					{selectedRightLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLane={selectedRightLane} setSelectedLane={setSelectedRightLane} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} addLane={addLane} />}
+					{selectedRightLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} addLane={addLane} />}
 				</Grid>
 			</Grid>
 		</div>

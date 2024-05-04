@@ -7,8 +7,6 @@ import EditLaneDialog from "./EditLaneDialog";
 interface LaneMenuProps {
     lanes: Lane[];
     setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
-    selectedLane: Lane;
-    setSelectedLane: React.Dispatch<React.SetStateAction<Lane>>;
     selectedLaneIndex: number;
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
@@ -20,7 +18,7 @@ interface LaneMenuProps {
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const LaneMenu: React.FC<LaneMenuProps> = ({lanes, setLanes, selectedLane, setSelectedLane, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, slides, setSlides, setEditorData, editorView, setEditorView}) => {
+const LaneMenu: React.FC<LaneMenuProps> = ({lanes, setLanes, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, slides, setSlides, setEditorData, editorView, setEditorView}) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     function showSettings() {
         setDialogOpen(true);
@@ -49,7 +47,7 @@ return (
                 <FormControlLabel control={<Checkbox />} label="Preview" onChange={() => { setEditorView(!editorView); }}/>
             </FormGroup>
         </Grid>
-        <EditLaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} selectedLane={selectedLane} setSelectedLane={setSelectedLane} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
+        <EditLaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
     </Grid>
 )
 }

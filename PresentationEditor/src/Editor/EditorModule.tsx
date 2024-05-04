@@ -13,8 +13,6 @@ interface EditorModuleProps {
 	setEditorData: React.Dispatch<React.SetStateAction<string>>;
 	slides: SlideElement[];
 	setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
-	selectedSlide: SlideElement;
-	setSelectedSlide: React.Dispatch<React.SetStateAction<SlideElement>>;
 	selectedSlideIndex: number;
 	setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
 	editorView: boolean;
@@ -23,7 +21,7 @@ interface EditorModuleProps {
 	addSlideAt(index: number): void; 
 }
 
-const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, selectedSlide, setSelectedSlide, editorView, slideMode, addSlide, addSlideAt}) => {
+const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, editorView, slideMode, addSlide, addSlideAt}) => {
 		const [selectedView, setSelectedView] = useState<any>(null);
 
 		useEffect(() => {
@@ -57,9 +55,11 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 			let jsonSlides = markdownParser.parseMarkdown(editorData);
 			let presentationParser = new PresentationParser(jsonSlides);
 			// TODO: check result
-			console.log("Regenerate slide: ")
-			console.log((presentationParser.GetPresentation() as Presentation).getSlides()[0]);
-			setSelectedSlide((presentationParser.GetPresentation() as Presentation).getSlides()[0]);
+			setSlides(old => {
+				let newSlides = [...old];
+				newSlides[selectedSlideIndex] = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
+				return newSlides;
+			});
 		}
 
 		function selectSlide(slideIndex: number): void {

@@ -9,8 +9,6 @@ interface EditLaneDialogProps {
     setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
     lanes: Lane[];
     setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
-    selectedLane: Lane;
-    setSelectedLane: React.Dispatch<React.SetStateAction<Lane>>;
     selectedLaneIndex: number;
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
@@ -22,13 +20,13 @@ interface EditLaneDialogProps {
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditLaneDialog: React.FC<EditLaneDialogProps> = ({dialogOpen, setDialogOpen, setLanes, selectedLane, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, setSlides, setEditorData}) => {
+const EditLaneDialog: React.FC<EditLaneDialogProps> = ({dialogOpen, setDialogOpen, lanes, setLanes, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, setSlides, setEditorData}) => {
     
-    const [dialogLane, setDialogLane] = useState<Lane>(selectedLane);
+    const [dialogLane, setDialogLane] = useState<Lane>(lanes[selectedLaneIndex]);
     
     useEffect(() => {
-        setDialogLane(selectedLane);
-    }, [selectedLane])
+        setDialogLane(lanes[selectedLaneIndex]);
+    }, [selectedLaneIndex])
 
     function deleteLane() {
         setLanes(prev => {
