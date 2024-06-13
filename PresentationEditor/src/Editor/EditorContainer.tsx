@@ -5,7 +5,7 @@ interface EditorProps {
   onEditorChange(timeout: NodeJS.Timeout, editor: any): void;
 }
 
-const EditorContainer: React.FC<EditorProps> =({data, onEditorChange}) => {
+const EditorContainer: React.FC<EditorProps> = ({ data, onEditorChange }) => {
   let timeout: NodeJS.Timeout;
   function handleMount(editor: any) {
     editor.onDidChangeModelContent(() => {
@@ -14,8 +14,13 @@ const EditorContainer: React.FC<EditorProps> =({data, onEditorChange}) => {
   }
 
   return (
-      <Editor height="100%" value={data} defaultLanguage="Markdown" onMount={handleMount} />
-    );
+    <Editor
+      height="100%"
+      value={data}
+      defaultLanguage="Markdown"
+      onMount={handleMount}
+    />
+  );
 };
 
 export default EditorContainer;
