@@ -13,14 +13,12 @@ interface EditLaneDialogProps {
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
     setSlideMode: React.Dispatch<React.SetStateAction<boolean>>;
-    slides: SlideElement[];
-    setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
     editorView: boolean;
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditLaneDialog: React.FC<EditLaneDialogProps> = ({dialogOpen, setDialogOpen, lanes, setLanes, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, setSlides, setEditorData}) => {
+const EditLaneDialog: React.FC<EditLaneDialogProps> = ({dialogOpen, setDialogOpen, lanes, setLanes, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, setEditorData}) => {
     
     const [dialogLane, setDialogLane] = useState<Lane>(lanes[selectedLaneIndex]);
     
@@ -83,7 +81,7 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({dialogOpen, setDialogOpe
           let pp = new PresentationParser(JSON.parse(content));
           let presentation = pp.GetPresentation();
           let parsedSlides = (presentation as Presentation).getSlides();
-          setSlides(parsedSlides);
+          lanes[selectedLaneIndex].slides = parsedSlides;
           let visitor = new MarkdownVisitor();
           visitor.visitSlideNode((presentation as Presentation).getSlides()[0]);
           setEditorData(visitor.getResult());

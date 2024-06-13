@@ -11,14 +11,12 @@ interface LaneMenuProps {
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
     setSlideMode: React.Dispatch<React.SetStateAction<boolean>>;
-    slides: SlideElement[];
-    setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
     editorView: boolean;
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const LaneMenu: React.FC<LaneMenuProps> = ({lanes, setLanes, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, slides, setSlides, setEditorData, editorView, setEditorView}) => {
+const LaneMenu: React.FC<LaneMenuProps> = ({lanes, setLanes, selectedLaneIndex, setSelectedLaneIndex, otherLaneIndex, setSlideMode, setEditorData, editorView, setEditorView}) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     function showSettings() {
         setDialogOpen(true);
@@ -47,7 +45,7 @@ return (
                 <FormControlLabel control={<Checkbox />} label="Preview" onChange={() => { setEditorView(!editorView); }}/>
             </FormGroup>
         </Grid>
-        <EditLaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} slides={slides} setSlides={setSlides} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
+        <EditLaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} selectedLaneIndex={selectedLaneIndex} setSelectedLaneIndex={setSelectedLaneIndex} otherLaneIndex={otherLaneIndex} setSlideMode={setSlideMode} setEditorData={setEditorData} editorView={editorView} setEditorView={setEditorView} />
     </Grid>
 )
 }

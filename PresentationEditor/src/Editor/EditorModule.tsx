@@ -12,25 +12,26 @@ interface EditorModuleProps {
 	editorData: string;
 	setEditorData: React.Dispatch<React.SetStateAction<string>>;
 	slides: SlideElement[];
-	setSlides: React.Dispatch<React.SetStateAction<SlideElement[]>>;
 	selectedSlideIndex: number;
 	setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
 	editorView: boolean;
 	slideMode: boolean;
 	addSlide(): void;
 	addSlideAt(index: number): void; 
+	setSlideActive(index: number): void;
+	deleteSlideAt(index: number): void;
 }
 
-const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, setSlides, selectedSlideIndex, setSelectedSlideIndex, editorView, slideMode, addSlide, addSlideAt}) => {
-		const [selectedView, setSelectedView] = useState<any>(null);
+const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, slides, selectedSlideIndex, setSelectedSlideIndex, editorView, slideMode, addSlide, addSlideAt, setSlideActive, deleteSlideAt}) => {
+		// const [selectedView, setSelectedView] = useState<any>(null);
 
 		useEffect(() => {
 			regenarateSlide();
 		}, [editorData]);
 
-		useEffect(() => {
-			switchView();
-		}, [editorView]);
+		//useEffect(() => {
+			//getView();
+		//}, [editorView]);
 
 		function updateEditor() {
 			const visitor = new MarkdownVisitor();
@@ -39,15 +40,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 		}
 
 		function deleteSlide(): void {
-			setSlides(prevSlides => {
-				if (prevSlides.length === 1) {
-					return prevSlides;
-				}
-				let updatedSlides = [...prevSlides];
-				updatedSlides.splice(selectedSlideIndex, 1);
-				setSelectedSlideIndex((selectedSlideIndex > 0) ? selectedSlideIndex - 1 : 0);
-				return updatedSlides;
-			});
+			deleteSlideAt(selectedSlideIndex);
 		}
 
 		function regenarateSlide(): void {
@@ -55,11 +48,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 			let jsonSlides = markdownParser.parseMarkdown(editorData);
 			let presentationParser = new PresentationParser(jsonSlides);
 			// TODO: check result
-			setSlides(old => {
-				let newSlides = [...old];
-				newSlides[selectedSlideIndex] = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
-				return newSlides;
-			});
+			slides[selectedSlideIndex] = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
 		}
 
 		function selectSlide(slideIndex: number): void {
@@ -73,31 +62,29 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 			}, 1000);
 		}
 
-		function switchView() {
-			console.log(slides);
+		function getView(): any {
 			if (editorView) {
 				updateEditor();
-				setSelectedView(<EditorContainer data={editorData} onEditorChange={editorChange} />);
+				if (slides[selectedSlideIndex].active) {
+					return <EditorContainer data={editorData} onEditorChange={editorChange} />
+				} else {
+					return <div></div>
+				}
 			} else {
-					if (!slideMode) {
-						const data = editorData;
-						setSelectedView(<Preview data={data} />);
-					} else {
-						let visitor = new HtmlVisitor();
-						visitor.visitSlideNode(slides[selectedSlideIndex]);
-						const data = visitor.getResult();
-						setSelectedView(<Preview data={data} />);
-					}
+				if (!slideMode) {
+					const data = editorData;
+					return <Preview data={data} />
+				} else {
+					let visitor = new HtmlVisitor();
+					visitor.visitSlideNode(slides[selectedSlideIndex]);
+					const data = visitor.getResult();
+					return <Preview data={data} />;
+				}
 			}
 		}
 
 		function activateSlide() {
-			setSlides(prevSlides => {
-				let newSlides = [...prevSlides];
-				newSlides[selectedSlideIndex].active = !newSlides[selectedSlideIndex].active;
-				switchView();
-				return newSlides;
-			})
+			setSlideActive(selectedSlideIndex);
 		}
 
 		return (
@@ -106,7 +93,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({editorData, setEditorData, s
 					<SelectContainer selectedSlideIndex={selectedSlideIndex} onAdd={addSlide} onAddAfter={() => addSlideAt(selectedSlideIndex)} onDelete={deleteSlide} elements={slides} onSelect={selectSlide} onActivate={activateSlide}/>
 				</Grid>
 				<Grid item xs={12} md={12} style={{ height: "100%" }}>
-					{(selectedView && slides[selectedSlideIndex].active) && selectedView}
+					{getView()}
 				</Grid>
 			</Grid>
 		)

@@ -14,8 +14,8 @@ const EditorContainer: React.FC<EditorProps> =({data, onEditorChange}) => {
   }
 
   return (
-    <Editor height="100%" value={data} defaultLanguage="Markdown" onMount={handleMount} />
-  );
+      <Editor height="100%" value={data} defaultLanguage="Markdown" onMount={handleMount} />
+    );
 };
 
 export default EditorContainer;

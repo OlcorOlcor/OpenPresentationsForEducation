@@ -109,10 +109,10 @@ function App() {
 		<div style={{height: "100%"}}>
 			<Menu addLane={addLane} swapLane={swapLane} importPresentation={importPresentation} exportPresentation={exportPresentation}/>
 			<Grid container spacing={1} className="gridContainer" style={{height: "100%"}}>
-				<Grid item xs={6} md={6}>
+				<Grid item xs={6} md={6} style={{height: "100%"}}>
 					{selectedLeftLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLaneIndex={selectedLeftLaneIndex} setSelectedLaneIndex={setSelectedLeftLaneIndex} otherLaneIndex={selectedRightLaneIndex} addLane={addLane} />}          
 				</Grid>
-				<Grid item xs={6} md={6}>
+				<Grid item xs={6} md={6} style={{height: "100%"}}>
 					{selectedRightLaneIndex !== -1 && <LaneContainer lanes={lanes} setLanes={setLanes} selectedLaneIndex={selectedRightLaneIndex} setSelectedLaneIndex={setSelectedRightLaneIndex} otherLaneIndex={selectedLeftLaneIndex} addLane={addLane} />}
 				</Grid>
 			</Grid>
