@@ -9,118 +9,121 @@ import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 
 interface EditorModuleProps {
-  editorData: string;
-  setEditorData: React.Dispatch<React.SetStateAction<string>>;
-  slides: SlideElement[];
-  selectedSlideIndex: number;
-  setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
-  editorView: boolean;
-  slideMode: boolean;
-  addSlide(): void;
-  addSlideAt(index: number): void;
-  setSlideActive(index: number): void;
-  deleteSlideAt(index: number): void;
+    editorData: string;
+    setEditorData: React.Dispatch<React.SetStateAction<string>>;
+    slides: SlideElement[];
+    selectedSlideIndex: number;
+    setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
+    editorView: boolean;
+    slideMode: boolean;
+    addSlide(): void;
+    addSlideAt(index: number): void;
+    setSlideActive(index: number): void;
+    deleteSlideAt(index: number): void;
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
-  editorData,
-  setEditorData,
-  slides,
-  selectedSlideIndex,
-  setSelectedSlideIndex,
-  editorView,
-  slideMode,
-  addSlide,
-  addSlideAt,
-  setSlideActive,
-  deleteSlideAt,
+    editorData,
+    setEditorData,
+    slides,
+    selectedSlideIndex,
+    setSelectedSlideIndex,
+    editorView,
+    slideMode,
+    addSlide,
+    addSlideAt,
+    setSlideActive,
+    deleteSlideAt,
 }) => {
-  // const [selectedView, setSelectedView] = useState<any>(null);
+    // const [selectedView, setSelectedView] = useState<any>(null);
 
-  useEffect(() => {
-    regenarateSlide();
-  }, [editorData]);
+    useEffect(() => {
+        regenarateSlide();
+    }, [editorData]);
 
-  //useEffect(() => {
-  //getView();
-  //}, [editorView]);
+    //useEffect(() => {
+    //getView();
+    //}, [editorView]);
 
-  function updateEditor() {
-    const visitor = new MarkdownVisitor();
-    visitor.visitSlideNode(slides[selectedSlideIndex]);
-    setEditorData(visitor.getResult());
-  }
-
-  function deleteSlide(): void {
-    deleteSlideAt(selectedSlideIndex);
-  }
-
-  function regenarateSlide(): void {
-    let markdownParser = new MarkdownParser();
-    let jsonSlides = markdownParser.parseMarkdown(editorData);
-    let presentationParser = new PresentationParser(jsonSlides);
-    // TODO: check result
-    slides[selectedSlideIndex] = (
-      presentationParser.GetPresentation() as Presentation
-    ).getSlides()[0];
-  }
-
-  function selectSlide(slideIndex: number): void {
-    setSelectedSlideIndex(slideIndex);
-  }
-
-  function editorChange(timeout: NodeJS.Timeout, editor: any): void {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      setEditorData(editor.getValue());
-    }, 1000);
-  }
-
-  function getView(): any {
-    if (editorView) {
-      updateEditor();
-      if (slides[selectedSlideIndex].active) {
-        return (
-          <EditorContainer data={editorData} onEditorChange={editorChange} />
-        );
-      } else {
-        return <div></div>;
-      }
-    } else {
-      if (!slideMode) {
-        const data = editorData;
-        return <Preview data={data} />;
-      } else {
-        let visitor = new HtmlVisitor();
+    function updateEditor() {
+        const visitor = new MarkdownVisitor();
         visitor.visitSlideNode(slides[selectedSlideIndex]);
-        const data = visitor.getResult();
-        return <Preview data={data} />;
-      }
+        setEditorData(visitor.getResult());
     }
-  }
 
-  function activateSlide() {
-    setSlideActive(selectedSlideIndex);
-  }
+    function deleteSlide(): void {
+        deleteSlideAt(selectedSlideIndex);
+    }
 
-  return (
-    <Grid container style={{ height: "100%" }}>
-      <Grid item xs={12} md={12}>
-        <SelectContainer
-          selectedSlideIndex={selectedSlideIndex}
-          onAdd={addSlide}
-          onAddAfter={() => addSlideAt(selectedSlideIndex)}
-          onDelete={deleteSlide}
-          elements={slides}
-          onSelect={selectSlide}
-          onActivate={activateSlide}
-        />
-      </Grid>
-      <Grid item xs={12} md={12} style={{ height: "100%" }}>
-        {getView()}
-      </Grid>
-    </Grid>
-  );
+    function regenarateSlide(): void {
+        let markdownParser = new MarkdownParser();
+        let jsonSlides = markdownParser.parseMarkdown(editorData);
+        let presentationParser = new PresentationParser(jsonSlides);
+        // TODO: check result
+        slides[selectedSlideIndex] = (
+            presentationParser.GetPresentation() as Presentation
+        ).getSlides()[0];
+    }
+
+    function selectSlide(slideIndex: number): void {
+        setSelectedSlideIndex(slideIndex);
+    }
+
+    function editorChange(timeout: NodeJS.Timeout, editor: any): void {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            setEditorData(editor.getValue());
+        }, 1000);
+    }
+
+    function getView(): any {
+        if (editorView) {
+            updateEditor();
+            if (slides[selectedSlideIndex].active) {
+                return (
+                    <EditorContainer
+                        data={editorData}
+                        onEditorChange={editorChange}
+                    />
+                );
+            } else {
+                return <div></div>;
+            }
+        } else {
+            if (!slideMode) {
+                const data = editorData;
+                return <Preview data={data} />;
+            } else {
+                let visitor = new HtmlVisitor();
+                visitor.visitSlideNode(slides[selectedSlideIndex]);
+                const data = visitor.getResult();
+                return <Preview data={data} />;
+            }
+        }
+    }
+
+    function activateSlide() {
+        setSlideActive(selectedSlideIndex);
+    }
+
+    return (
+        <Grid container style={{ height: "100%" }}>
+            <Grid item xs={12} md={12}>
+                <SelectContainer
+                    selectedSlideIndex={selectedSlideIndex}
+                    onAdd={addSlide}
+                    onAddAfter={() => addSlideAt(selectedSlideIndex)}
+                    onDelete={deleteSlide}
+                    elements={slides}
+                    onSelect={selectSlide}
+                    onActivate={activateSlide}
+                />
+            </Grid>
+            <Grid item xs={12} md={12} style={{ height: "100%" }}>
+                {getView()}
+            </Grid>
+        </Grid>
+    );
 };
 
 export default EditorModule;
