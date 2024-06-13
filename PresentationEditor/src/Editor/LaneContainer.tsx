@@ -1,9 +1,11 @@
 import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
-import { Lane, SlideElement } from "../Model/PresentationModel";
+import { Lane, Presentation, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
 import LaneMenu from "./LaneMenu";
+import { MarkdownParser } from "../Model/MarkdownParser";
+import { PresentationParser } from "../Model/PresentationParser";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -78,6 +80,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     function setSlideActive(index: number) {
+        console.log(index);
+        console.log(selectedLaneIndex);
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
@@ -85,6 +89,23 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             updatedSlide.active = !updatedSlides[index].active;
             updatedSlides[index] = updatedSlide;
             updatedLanes[selectedLaneIndex].slides = updatedSlides;
+            return updatedLanes;
+        });
+    }
+
+    function regenerateSlide(index: number) {
+        console.log("regenerating");
+        let markdownParser = new MarkdownParser();
+        let jsonSlides = markdownParser.parseMarkdown(editorData);
+        let presentationParser = new PresentationParser(jsonSlides);
+        setLanes((oldLanes) => {
+            let updatedLanes = [...oldLanes];
+            let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
+            let updatedSlide = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
+            console.log(updatedSlide);
+            updatedSlides[index] = updatedSlide;
+            updatedLanes[selectedLaneIndex].slides = updatedSlides;
+            console.log(updatedLanes);
             return updatedLanes;
         });
     }
@@ -125,6 +146,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     addSlideAt={addSlideAt}
                     setSlideActive={setSlideActive}
                     deleteSlideAt={deleteSlideAt}
+                    regenerateSlide={regenerateSlide}
                 />
             </Grid>
         </Grid>

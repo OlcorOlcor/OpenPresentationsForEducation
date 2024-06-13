@@ -20,6 +20,7 @@ interface EditorModuleProps {
     addSlideAt(index: number): void;
     setSlideActive(index: number): void;
     deleteSlideAt(index: number): void;
+    regenerateSlide(index: number): void;
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
@@ -34,12 +35,9 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     addSlideAt,
     setSlideActive,
     deleteSlideAt,
+    regenerateSlide
 }) => {
     // const [selectedView, setSelectedView] = useState<any>(null);
-
-    useEffect(() => {
-        regenarateSlide();
-    }, [editorData]);
 
     //useEffect(() => {
     //getView();
@@ -55,30 +53,18 @@ const EditorModule: React.FC<EditorModuleProps> = ({
         deleteSlideAt(selectedSlideIndex);
     }
 
-    function regenarateSlide(): void {
-        let markdownParser = new MarkdownParser();
-        let jsonSlides = markdownParser.parseMarkdown(editorData);
-        let presentationParser = new PresentationParser(jsonSlides);
-        // TODO: check result
-        slides[selectedSlideIndex] = (
-            presentationParser.GetPresentation() as Presentation
-        ).getSlides()[0];
-    }
-
     function selectSlide(slideIndex: number): void {
         setSelectedSlideIndex(slideIndex);
     }
 
-    function editorChange(timeout: NodeJS.Timeout, editor: any): void {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            setEditorData(editor.getValue());
-        }, 1000);
+    function editorChange(editorData: string): void {
+        setEditorData(editorData);
+        regenerateSlide(selectedSlideIndex);
     }
 
     function getView(): any {
         if (editorView) {
-            updateEditor();
+            //updateEditor();
             if (slides[selectedSlideIndex].active) {
                 return (
                     <EditorContainer

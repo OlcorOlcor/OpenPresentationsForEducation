@@ -24,11 +24,7 @@ function App() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let slides = [];
-            for (
-                let i = 0;
-                i < lanes[selectedLeftLaneIndex].slides.length;
-                ++i
-            ) {
+            for (let i = 0; i < lanes[selectedLeftLaneIndex].slides.length; ++i) {
                 slides.push(new SlideElement([]));
             }
             updatedLanes.push(new Lane(slides, oldLanes.length.toString()));
