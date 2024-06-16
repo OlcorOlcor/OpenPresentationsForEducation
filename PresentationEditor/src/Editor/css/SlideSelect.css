@@ -24,7 +24,8 @@
 }
 
 .selected {
-    background-color: gray;
+    text-decoration: underline !important;
+    font-weight: bold !important;
 }
 
 .active {

@@ -46,11 +46,10 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                     return (
                         <PaginationItem
                             {...item}
-                            className={
-                                elements[(item.page as number) - 1]?.active
-                                    ? "active"
-                                    : "inactive"
-                            }
+                            className={`
+                                ${elements[(item.page as number) - 1]?.active ? "active" : "inactive"} 
+                                ${((item.page as number) - 1) === selectedSlideIndex ? "selected" : ""}
+                              `}
                         />
                     );
                 }}
