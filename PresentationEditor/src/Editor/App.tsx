@@ -6,7 +6,7 @@ import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import Menu from "./Menu";
 import { MarkdownParser } from "../Model/MarkdownParser";
-import { MarkdownVisitor } from "../Model/Visitors";
+import { JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
 
@@ -60,39 +60,11 @@ function App() {
     }
 
     function exportPresentation() {
-        let parser = new MarkdownParser();
+        let visitor = new JsonVisitor();
         let jsonLanes: pt.Lane[] = [];
-        console.log(lanes);
-        console.log(lanes[selectedLeftLaneIndex].slides);
-        lanes.forEach((lane, i) => {
-            // TODO: awfully complicated, redo
-            let currentLane: Lane;
-            if (i === selectedLeftLaneIndex) {
-                currentLane = lanes[selectedLeftLaneIndex];
-            } else if (i === selectedRightLaneIndex) {
-                currentLane = lanes[selectedRightLaneIndex];
-            } else {
-                currentLane = lane;
-            }
-            let visitor = new MarkdownVisitor();
-            let jsonSlides: pt.Slide[] = [];
-            lane.slides.forEach((slide, i) => {
-                visitor.visitSlideNode(slide);
-                jsonSlides.push({
-                    type: "slide",
-                    content: parser.parseMarkdown(visitor.getResult()),
-                    attributes: { active: slide.active },
-                });
-            });
-            jsonLanes.push({
-                type: "lane",
-                content: jsonSlides,
-                attributes: {
-                    name: lane.name,
-                    compile: lane.outputAsPresentation,
-                },
-            });
-            visitor.visitPresentationNode(new Presentation(lane.slides));
+        lanes.forEach(lane => {
+            visitor.visitLaneNode(lane);
+            jsonLanes.push(visitor.getResult());
         });
         const blob = new Blob([JSON.stringify(jsonLanes)], { type: "json" });
         saveAs(blob, "output.json");

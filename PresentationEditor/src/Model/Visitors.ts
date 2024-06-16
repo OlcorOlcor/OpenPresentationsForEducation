@@ -1,4 +1,5 @@
 import * as pm from "./PresentationModel";
+import * as pt from "./PresentationTypes";
 
 export interface IVisitor {
     visitTextNode(element: pm.TextElement): void;
@@ -210,5 +211,130 @@ export class MarkdownVisitor implements IVisitor {
 
     getResult(): string {
         return this.result;
+    }
+}
+
+export class JsonVisitor implements IVisitor {
+    private lane: pt.Lane = {type: "lane", content: [], attributes: {name: "", compile: true} };
+    private stack: any[] = [];
+    visitTextNode(element: pm.TextElement): void {
+        let text: pt.Text = {type: "text", content: [element.content]};
+        this.stack.push(text);
+    }
+
+    visitBoldNode(element: pm.BoldElement): void {
+        let bold: pt.TextAnnotation = {type: "bold", content: []};
+        element.content.forEach(c => {
+            c.accept(this);
+            bold.content.push(this.stack.pop()!);
+        });
+        this.stack.push(bold);
+    }
+
+    visitItalicNode(element: pm.ItalicElement): void {
+        let italic: pt.TextAnnotation = {type: "italic", content: []};
+        element.content.forEach(c => {
+            c.accept(this);
+            italic.content.push(this.stack.pop()!);
+        });
+        this.stack.push(italic);
+    }
+
+    visitBoldItalicNode(element: pm.BoldItalicElement): void {
+        let bi: pt.TextAnnotation = {type: "boldItalic", content: []};
+        element.content.forEach(c => {
+            c.accept(this);
+            bi.content.push(this.stack.pop()!);
+        });
+        this.stack.push(bi);
+    }
+
+    visitCodeNode(element: pm.CodeElement): void {
+        let code: pt.TextAnnotation = {type: "code", content: []};
+        element.content.forEach(c => {
+            c.accept(this);
+            code.content.push(this.stack.pop()!);
+        });
+        this.stack.push(code);
+    }
+
+    visitImageNode(element: pm.ImageElement): void {
+        let image: pt.Image = {type: "images", content: [element.content], attributes: { alias: element.alias }}
+        this.stack.push(image);
+    }
+
+    visitLinkNode(element: pm.LinkElement): void {
+        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }};
+        this.stack.push(link);
+    }
+
+    visitParagraphNode(element: pm.ParagraphElement): void {
+        let paragraph: pt.Paragraph = {type: "paragraph", content: [] };
+        element.content.forEach(c => {
+            c.accept(this);
+            paragraph.content.push(this.stack.pop()!);
+        });
+        this.stack.push(paragraph);
+    }
+
+    visitHeadingNode(element: pm.HeadingElement): void {
+       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level }};
+       element.content.forEach(c => {
+            c.accept(this);
+            heading.content.push(this.stack.pop()!);
+       });
+       this.stack.push(heading);
+    }
+
+    visitListNode(element: pm.ListElement): void {
+        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType }};
+        element.content.forEach(c => {
+            c.accept(this);
+            list.content.push(this.stack.pop()!);
+        });
+        this.stack.push(list);
+    }
+
+    visitListItemNode(element: pm.ListItemElement): void {
+        let item: pt.ListItem = {type: "listItem", content: []};
+        element.content.forEach(c => {
+            c.accept(this);
+            item.content.push(this.stack.pop()!);
+        });
+        this.stack.push(item);
+    }
+
+    visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
+        let bq: pt.BlockQuote = {type: "blockquote", content: []};
+        element.content.forEach(c => {
+            c.accept(this);
+            bq.content.push(this.stack.pop()!);
+        });
+        this.stack.push(bq);
+    }
+
+    visitSlideNode(element: pm.SlideElement): void {
+        let slide: pt.Slide = {type: "slide", content: [], attributes: {active: element.active}};
+        element.content.forEach(c => {
+            c.accept(this);
+            slide.content.push(this.stack.pop()!);
+        });
+        this.stack.push(slide);
+    }
+
+    visitPresentationNode(element: pm.Presentation): void {
+        throw new Error("Method not implemented.");
+    }
+
+    visitLaneNode(element: pm.Lane): void {
+        this.lane = {type: "lane", content: [], attributes: {name: element.name, compile: element.outputAsPresentation} };
+        element.slides.forEach(slide => {
+            slide.accept(this);
+            this.lane.content.push(this.stack.pop()!);
+        });
+    }
+
+    getResult(): pt.Lane {
+        return this.lane;
     }
 }
