@@ -38,6 +38,10 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         setSelectedSlideIndex(0);
     }, [selectedLaneIndex]);
 
+    useEffect(() => {
+        regenerateSlide(selectedSlideIndex);
+    }, [editorData])
+
     function addSlide() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
@@ -94,7 +98,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     function regenerateSlide(index: number) {
-        console.log("regenerating");
         let markdownParser = new MarkdownParser();
         let jsonSlides = markdownParser.parseMarkdown(editorData);
         let presentationParser = new PresentationParser(jsonSlides);
@@ -102,10 +105,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
             let updatedSlide = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
-            console.log(updatedSlide);
             updatedSlides[index] = updatedSlide;
             updatedLanes[selectedLaneIndex].slides = updatedSlides;
-            console.log(updatedLanes);
             return updatedLanes;
         });
     }

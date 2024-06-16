@@ -59,7 +59,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
 
     function editorChange(editorData: string): void {
         setEditorData(editorData);
-        regenerateSlide(selectedSlideIndex);
+        //regenerateSlide(selectedSlideIndex);
     }
 
     function getView(): any {
