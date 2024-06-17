@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
-import { Lane, Presentation, SlideElement } from "../Model/PresentationModel";
+import { Lane, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import Menu from "./Menu";

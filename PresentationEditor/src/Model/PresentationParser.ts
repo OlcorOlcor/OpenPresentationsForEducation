@@ -1,8 +1,6 @@
 import * as pt from "./PresentationTypes";
 import * as pm from "./PresentationModel";
 import { Checker, Result } from "./StructureChecker";
-import { isEmptyBindingElement } from "typescript";
-import { Slide } from "@mui/material";
 
 export class PresentationParser {
     private slides: pt.Slide[];
@@ -165,7 +163,7 @@ export class PresentationParser {
         return slide;
     }
 
-    private GetSlides(slides: (pt.Slide | null)[]): (pm.SlideElement | null)[] {
+    public GetSlides(slides: (pt.Slide | null)[]): (pm.SlideElement | null)[] {
         let object_slides: (pm.SlideElement | null)[] = [];
         slides.forEach((slide) => {
             // slide is empty (this lane doesn't have it defined)
@@ -197,13 +195,5 @@ export class PresentationParser {
             );
         });
         return object_lanes;
-    }
-    
-    public GetPresentation(): pm.Presentation | Result {
-        if (!this.checkerResult.success) {
-            return this.checkerResult;
-        }
-
-        return new pm.Presentation(this.GetSlides(this.slides));
     }
 }

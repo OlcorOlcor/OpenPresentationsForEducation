@@ -8,9 +8,7 @@ import {
     TextField,
 } from "@mui/material";
 import React, { ChangeEvent, FC, useEffect, useState } from "react";
-import { PresentationParser } from "../Model/PresentationParser";
-import { Lane, Presentation, SlideElement } from "../Model/PresentationModel";
-import { MarkdownVisitor } from "../Model/Visitors";
+import { Lane } from "../Model/PresentationModel";
 
 interface EditLaneDialogProps {
     dialogOpen: boolean;

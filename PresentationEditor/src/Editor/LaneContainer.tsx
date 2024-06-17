@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
-import { Lane, Presentation, SlideElement } from "../Model/PresentationModel";
+import { Lane, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
 import LaneMenu from "./LaneMenu";
 import { MarkdownParser } from "../Model/MarkdownParser";
@@ -104,7 +104,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
-            let updatedSlide = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
+            let updatedSlide = presentationParser.GetSlides(jsonSlides)[0];
+            //let updatedSlide = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
             updatedSlides[index] = updatedSlide;
             updatedLanes[selectedLaneIndex].slides = updatedSlides;
             return updatedLanes;

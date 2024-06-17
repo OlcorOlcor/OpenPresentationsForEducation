@@ -1,10 +1,7 @@
 import Grid from "@mui/material/Grid";
 import EditorContainer from "./EditorContainer";
-import { useEffect, useState } from "react";
 import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
-import { Presentation, SlideElement } from "../Model/PresentationModel";
-import { PresentationParser } from "../Model/PresentationParser";
-import { MarkdownParser } from "../Model/MarkdownParser";
+import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 

@@ -16,7 +16,6 @@ export interface IVisitor {
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void;
     visitSlideNode(element: pm.SlideElement): void;
     visitLaneNode(element: pm.Lane): void;
-    visitPresentationNode(element: pm.Presentation): void;
 }
 
 export interface IVisitable {
@@ -116,17 +115,6 @@ export class HtmlVisitor implements IVisitor {
         });  
     }
 
-    visitPresentationNode(element: pm.Presentation): void {
-        this.result = "";
-        element.slides.forEach((slide) => {
-            if (slide == null) {
-                return;
-            }
-            slide.accept(this);
-        });
-    }
-
-
     getResult(): string {
         return this.result;
     }
@@ -223,16 +211,6 @@ export class MarkdownVisitor implements IVisitor {
            }
            slide.accept(this);
         });  
-    }
-
-    visitPresentationNode(element: pm.Presentation): void {
-        this.result = "";
-        element.slides.forEach((slide) => {
-            if (slide == null) {
-                return;
-            }
-            slide.accept(this);
-        });
     }
 
     getResult(): string {
@@ -359,11 +337,6 @@ export class JsonVisitor implements IVisitor {
             this.lane.content.push(this.stack.pop()!);
         });
     }
-    
-    visitPresentationNode(element: pm.Presentation): void {
-        throw new Error("Method not implemented.");
-    }
-
 
     getResult(): pt.Lane {
         return this.lane;
