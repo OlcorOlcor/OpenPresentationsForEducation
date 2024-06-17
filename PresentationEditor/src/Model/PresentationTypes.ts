@@ -45,7 +45,7 @@ export type Paragraph = {
 export type HeadingElement = {
     type: string;
     content: (Text | InlineElement)[];
-    attributes: {level: number}
+    attributes: { level: number };
 };
 
 export type BlockQuote = {
@@ -56,4 +56,11 @@ export type BlockQuote = {
 export type Slide = {
     type: string;
     content: OuterElement[];
+    attributes: { active: boolean };
+};
+
+export type Lane = {
+    type: string;
+    content: (Slide | null)[];
+    attributes: { name: string; compile: boolean };
 };

@@ -1,6 +1,6 @@
 import { IVisitor, IVisitable } from "./Visitors";
 
-class BaseElement { }
+class BaseElement {}
 
 export class ListItemElement extends BaseElement implements IVisitable {
     content: (TextElement | InlineElement)[];
@@ -31,7 +31,7 @@ export abstract class InlineElement extends BaseElement implements IVisitable {
 
 export abstract class InlineWrapperElement extends InlineElement {
     content: (TextElement | InlineElement)[];
-    
+
     public constructor(content: (TextElement | InlineElement)[]) {
         super();
         this.content = content;
@@ -48,19 +48,11 @@ export class BoldElement extends InlineWrapperElement implements IVisitable {
     accept(visitor: IVisitor): void {
         visitor.visitBoldNode(this);
     }
-    
 }
 
 export class ItalicElement extends InlineWrapperElement implements IVisitable {
     accept(visitor: IVisitor): void {
         visitor.visitItalicNode(this);
-    }
-
-}
-
-export class BoldItalicElement extends InlineWrapperElement implements IVisitable {
-    accept(visitor: IVisitor): void {
-        visitor.visitBoldItalicNode(this);
     }
 }
 
@@ -88,7 +80,7 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
 export class ImageElement extends InlineLeafElement implements IVisitable {
     content: string;
     alias: string;
-    
+
     public constructor(content: string, alias: string) {
         super();
         this.content = content;
@@ -110,7 +102,7 @@ export class ParagraphElement extends OuterElement implements IVisitable {
         super();
         this.content = content;
     }
-    
+
     accept(visitor: IVisitor): void {
         visitor.visitParagraphNode(this);
     }
@@ -120,7 +112,10 @@ export class HeadingElement extends OuterElement implements IVisitable {
     content: (TextElement | InlineElement)[];
     level: number;
 
-    public constructor(level: number, content: (TextElement | InlineElement)[]) {
+    public constructor(
+        level: number,
+        content: (TextElement | InlineElement)[],
+    ) {
         super();
         this.content = content;
         this.level = level;
@@ -135,7 +130,10 @@ export class ListElement extends OuterElement implements IVisitable {
     content: (ListItemElement | ListElement)[];
     listType: string;
 
-    public constructor(listType: string, content: (ListItemElement | ListElement)[]) {
+    public constructor(
+        listType: string,
+        content: (ListItemElement | ListElement)[],
+    ) {
         super();
         this.content = content;
         this.listType = listType;
@@ -161,6 +159,7 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
 
 export class SlideElement extends BaseElement implements IVisitable {
     content: OuterElement[];
+    active: boolean = false;
     public constructor(content: OuterElement[]) {
         super();
         this.content = content;
@@ -171,16 +170,13 @@ export class SlideElement extends BaseElement implements IVisitable {
     }
 }
 
-export class Presentation implements IVisitable {
-    slides: SlideElement[];
-    constructor(slides: SlideElement[]) {
+export class Lane {
+    slides: (SlideElement | null)[];
+    name: string;
+    outputAsPresentation: boolean;
+    constructor(slides: (SlideElement | null)[], name: string, output: boolean = true) {
         this.slides = slides;
-    }
-    accept(visitor: IVisitor): void {
-        visitor.visitPresentationNode(this);
-    }
-
-    public getSlides(): SlideElement[] {
-        return this.slides;
+        this.name = name;
+        this.outputAsPresentation = output;
     }
 }
