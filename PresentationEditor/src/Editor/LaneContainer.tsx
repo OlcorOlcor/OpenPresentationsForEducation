@@ -31,6 +31,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     );
 
     useEffect(() => {
+        console.log(selectedSlideIndex);
+        console.log(lanes[selectedLaneIndex].slides[selectedSlideIndex]);
         updateEditor();
     }, [selectedSlideIndex, selectedLaneIndex]);
     useEffect(() => {
@@ -45,7 +47,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             updatedLanes.forEach((lane) => {
-                lane.slides = [...lane.slides, new SlideElement([])];
+                lane.slides = [...lane.slides, null];
             });
             return updatedLanes;
         });
@@ -55,10 +57,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             updatedLanes.forEach((lane) => {
-                let newSlide = new SlideElement([]);
                 lane.slides = [
                     ...lane.slides.slice(0, index + 1),
-                    newSlide,
+                    null,
                     ...lane.slides.slice(index + 1),
                 ];
             });
@@ -88,8 +89,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
-            let updatedSlide = new SlideElement(updatedSlides[index].content);
-            updatedSlide.active = !updatedSlides[index].active;
+            let updatedSlide = (updatedSlides[index] == null) ? new SlideElement([]) : new SlideElement(updatedSlides[index]!.content);
+            updatedSlide.active = (updatedSlides[index] == null) ? true : !updatedSlides[index]!.active;
             updatedSlides[index] = updatedSlide;
             updatedLanes[selectedLaneIndex].slides = updatedSlides;
             return updatedLanes;
@@ -111,9 +112,12 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     function updateEditor() {
+        if (lanes[selectedLaneIndex].slides[selectedSlideIndex] == null) {
+            return;
+        }
         const visitor = new MarkdownVisitor();
         visitor.visitSlideNode(
-            lanes[selectedLaneIndex].slides[selectedSlideIndex],
+            lanes[selectedLaneIndex].slides[selectedSlideIndex]!,
         );
         setEditorData(visitor.getResult());
     }

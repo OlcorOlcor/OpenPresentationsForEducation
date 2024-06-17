@@ -180,24 +180,24 @@ export class SlideElement extends BaseElement implements IVisitable {
 }
 
 export class Presentation implements IVisitable {
-    slides: SlideElement[];
-    constructor(slides: SlideElement[]) {
+    slides: (SlideElement | null)[];
+    constructor(slides: (SlideElement | null)[]) {
         this.slides = slides;
     }
     accept(visitor: IVisitor): void {
         visitor.visitPresentationNode(this);
     }
 
-    public getSlides(): SlideElement[] {
+    public getSlides(): (SlideElement | null)[] {
         return this.slides;
     }
 }
 
 export class Lane {
-    slides: SlideElement[];
+    slides: (SlideElement | null)[];
     name: string;
     outputAsPresentation: boolean;
-    constructor(slides: SlideElement[], name: string, output: boolean = true) {
+    constructor(slides: (SlideElement | null)[], name: string, output: boolean = true) {
         this.slides = slides;
         this.name = name;
         this.outputAsPresentation = output;

@@ -4,7 +4,7 @@ import { Button, Pagination, PaginationItem } from "@mui/material";
 import { SlideElement } from "../Model/PresentationModel";
 
 interface SelectContainerProps {
-    elements: SlideElement[];
+    elements: (SlideElement | null)[];
     selectedSlideIndex: number;
     onSelect: (index: number) => void;
     onAdd: () => void;
@@ -55,7 +55,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                 }}
             />
             <Button variant="contained" onClick={onActivate}>
-                {!elements[selectedSlideIndex].active
+                {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.active
                     ? "Activate"
                     : "Deactivate"}
             </Button>

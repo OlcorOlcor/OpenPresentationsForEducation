@@ -87,7 +87,7 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
             outputAsPresentation: !prev.outputAsPresentation,
         }));
     }
-
+    /*
     const importFile = (event: ChangeEvent<HTMLInputElement>) => {
         let element = event.target as HTMLInputElement;
         let file = element.files?.[0];
@@ -111,14 +111,11 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
         reader.readAsText(file);
         setDialogOpen(false);
     };
-
+    */
     return (
         <Dialog open={dialogOpen} onClose={handleClose}>
             <DialogTitle>Lane settings</DialogTitle>
             <div>
-                <div>
-                    <input type="file" id="fileInput" onChange={importFile} />
-                </div>
                 <div>
                     <TextField
                         id="Lane name"

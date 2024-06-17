@@ -165,10 +165,14 @@ export class PresentationParser {
         return slide;
     }
 
-    private GetSlides(slides: pt.Slide[]): pm.SlideElement[] {
-        let object_slides: pm.SlideElement[] = [];
+    private GetSlides(slides: (pt.Slide | null)[]): (pm.SlideElement | null)[] {
+        let object_slides: (pm.SlideElement | null)[] = [];
         slides.forEach((slide) => {
             // slide is empty (this lane doesn't have it defined)
+            if (slide == null) {
+                object_slides.push(null);
+                return;
+            }
             if (Object.keys(slide).length === 0) {
                 let s = new pm.SlideElement([]);
                 s.active = false;
@@ -194,7 +198,7 @@ export class PresentationParser {
         });
         return object_lanes;
     }
-
+    
     public GetPresentation(): pm.Presentation | Result {
         if (!this.checkerResult.success) {
             return this.checkerResult;

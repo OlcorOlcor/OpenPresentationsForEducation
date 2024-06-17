@@ -109,6 +109,9 @@ export class HtmlVisitor implements IVisitor {
     visitPresentationNode(element: pm.Presentation): void {
         this.result = "";
         element.slides.forEach((slide) => {
+            if (slide == null) {
+                return;
+            }
             slide.accept(this);
         });
     }
@@ -205,6 +208,9 @@ export class MarkdownVisitor implements IVisitor {
     visitPresentationNode(element: pm.Presentation): void {
         this.result = "";
         element.slides.forEach((slide) => {
+            if (slide == null) {
+                return;
+            }
             slide.accept(this);
         });
     }
@@ -329,6 +335,10 @@ export class JsonVisitor implements IVisitor {
     visitLaneNode(element: pm.Lane): void {
         this.lane = {type: "lane", content: [], attributes: {name: element.name, compile: element.outputAsPresentation} };
         element.slides.forEach(slide => {
+            if (slide == null) {
+                this.lane.content.push(null);
+                return;
+            }
             slide.accept(this);
             this.lane.content.push(this.stack.pop()!);
         });

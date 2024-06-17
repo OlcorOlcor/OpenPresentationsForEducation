@@ -61,6 +61,6 @@ export type Slide = {
 
 export type Lane = {
     type: string;
-    content: Slide[];
+    content: (Slide | null)[];
     attributes: { name: string; compile: boolean };
 };

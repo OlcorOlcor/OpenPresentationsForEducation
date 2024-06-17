@@ -11,7 +11,7 @@ import Preview from "./Preview";
 interface EditorModuleProps {
     editorData: string;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
-    slides: SlideElement[];
+    slides: (SlideElement | null)[];
     selectedSlideIndex: number;
     setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
     editorView: boolean;
@@ -42,13 +42,13 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     //useEffect(() => {
     //getView();
     //}, [editorView]);
-
+    /*
     function updateEditor() {
         const visitor = new MarkdownVisitor();
         visitor.visitSlideNode(slides[selectedSlideIndex]);
         setEditorData(visitor.getResult());
     }
-
+    */
     function deleteSlide(): void {
         deleteSlideAt(selectedSlideIndex);
     }
@@ -65,7 +65,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     function getView(): any {
         if (editorView) {
             //updateEditor();
-            if (slides[selectedSlideIndex].active) {
+            if (slides[selectedSlideIndex] != null && slides[selectedSlideIndex]!.active) {
                 return (
                     <EditorContainer
                         data={editorData}
@@ -80,8 +80,11 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                 const data = editorData;
                 return <Preview data={data} />;
             } else {
+                if (slides[selectedSlideIndex] == null) {
+                    return <Preview data={""} />;
+                }
                 let visitor = new HtmlVisitor();
-                visitor.visitSlideNode(slides[selectedSlideIndex]);
+                visitor.visitSlideNode(slides[selectedSlideIndex]!);
                 const data = visitor.getResult();
                 return <Preview data={data} />;
             }
