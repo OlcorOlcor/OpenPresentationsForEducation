@@ -196,9 +196,16 @@ export class MarkdownParser {
         inline.children?.forEach((child) => {
             switch (child.type) {
                 case "text":
+                case "softbreak":
+                    if (child.type === "softbreak") {
+                        child.content = "\n";
+                    }
                     if (child.content === "") {
                         break;
                     }
+
+                    // TODO: detect custom tag
+
                     if (stack.length === 0) {
                         inlineElements.push({
                             type: "text",
@@ -274,7 +281,9 @@ export class MarkdownParser {
                 case "link_close":
                     break;
                 default:
-                    throw "unexpected";
+                    // console.log("unexpected");
+                    // console.log(child);
+                    // throw "unexpected";
             }
         });
 
