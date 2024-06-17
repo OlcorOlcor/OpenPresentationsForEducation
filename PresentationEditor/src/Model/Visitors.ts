@@ -5,7 +5,6 @@ export interface IVisitor {
     visitTextNode(element: pm.TextElement): void;
     visitBoldNode(element: pm.BoldElement): void;
     visitItalicNode(element: pm.ItalicElement): void;
-    visitBoldItalicNode(element: pm.BoldItalicElement): void;
     visitCodeNode(element: pm.CodeElement): void;
     visitImageNode(element: pm.ImageElement): void;
     visitLinkNode(element: pm.LinkElement): void;
@@ -39,12 +38,6 @@ export class HtmlVisitor implements IVisitor {
         this.result += "<em>";
         element.content.forEach((c) => c.accept(this));
         this.result += "</em>";
-    }
-
-    visitBoldItalicNode(element: pm.BoldItalicElement): void {
-        this.result += "<strong><em>";
-        element.content.forEach((c) => c.accept(this));
-        this.result += "</em></strong>";
     }
 
     visitCodeNode(element: pm.CodeElement): void {
@@ -137,11 +130,7 @@ export class MarkdownVisitor implements IVisitor {
         element.content.forEach((c) => c.accept(this));
         this.result += "*";
     }
-    visitBoldItalicNode(element: pm.BoldItalicElement): void {
-        this.result += "***";
-        element.content.forEach((c) => c.accept(this));
-        this.result += "***";
-    }
+
     visitCodeNode(element: pm.CodeElement): void {
         this.result += "`";
         element.content.forEach((c) => c.accept(this));
@@ -243,16 +232,7 @@ export class JsonVisitor implements IVisitor {
         });
         this.stack.push(italic);
     }
-
-    visitBoldItalicNode(element: pm.BoldItalicElement): void {
-        let bi: pt.TextAnnotation = {type: "boldItalic", content: []};
-        element.content.forEach(c => {
-            c.accept(this);
-            bi.content.push(this.stack.pop()!);
-        });
-        this.stack.push(bi);
-    }
-
+    
     visitCodeNode(element: pm.CodeElement): void {
         let code: pt.TextAnnotation = {type: "code", content: []};
         element.content.forEach(c => {

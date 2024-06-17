@@ -27,11 +27,6 @@ export class PresentationParser {
                 case "italic":
                     content.push(this.GetItalicElement(c as pt.TextAnnotation));
                     break;
-                case "boldItalic":
-                    content.push(
-                        this.GetBoldItalicElement(c as pt.TextAnnotation),
-                    );
-                    break;
                 case "code":
                     content.push(this.GetCodeElement(c as pt.TextAnnotation));
                     break;
@@ -55,14 +50,6 @@ export class PresentationParser {
 
     private GetItalicElement(italicJson: pt.TextAnnotation): pm.ItalicElement {
         return new pm.ItalicElement(this.GetInlineContent(italicJson.content));
-    }
-
-    private GetBoldItalicElement(
-        boldItalicElement: pt.TextAnnotation,
-    ): pm.BoldItalicElement {
-        return new pm.BoldItalicElement(
-            this.GetInlineContent(boldItalicElement.content),
-        );
     }
 
     private GetCodeElement(codeJson: pt.TextAnnotation): pm.CodeElement {

@@ -56,15 +56,6 @@ export class ItalicElement extends InlineWrapperElement implements IVisitable {
     }
 }
 
-export class BoldItalicElement
-    extends InlineWrapperElement
-    implements IVisitable
-{
-    accept(visitor: IVisitor): void {
-        visitor.visitBoldItalicNode(this);
-    }
-}
-
 export class CodeElement extends InlineWrapperElement implements IVisitable {
     accept(visitor: IVisitor): void {
         visitor.visitCodeNode(this);
