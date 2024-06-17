@@ -15,6 +15,7 @@ export interface IVisitor {
     visitListItemNode(element: pm.ListItemElement): void;
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void;
     visitSlideNode(element: pm.SlideElement): void;
+    visitLaneNode(element: pm.Lane): void;
     visitPresentationNode(element: pm.Presentation): void;
 }
 
@@ -105,6 +106,15 @@ export class HtmlVisitor implements IVisitor {
             c.accept(this);
         });
     }
+    
+    visitLaneNode(element: pm.Lane): void {
+        element.slides.forEach((slide) => {
+           if (slide == null) {
+                return;
+           }
+           slide.accept(this);
+        });  
+    }
 
     visitPresentationNode(element: pm.Presentation): void {
         this.result = "";
@@ -115,6 +125,7 @@ export class HtmlVisitor implements IVisitor {
             slide.accept(this);
         });
     }
+
 
     getResult(): string {
         return this.result;
@@ -203,6 +214,15 @@ export class MarkdownVisitor implements IVisitor {
 
     visitSlideNode(element: pm.SlideElement): void {
         element.content.forEach((c) => c.accept(this));
+    }
+
+    visitLaneNode(element: pm.Lane): void {
+        element.slides.forEach((slide) => {
+           if (slide == null) {
+                return;
+           }
+           slide.accept(this);
+        });  
     }
 
     visitPresentationNode(element: pm.Presentation): void {
@@ -327,11 +347,7 @@ export class JsonVisitor implements IVisitor {
         });
         this.stack.push(slide);
     }
-
-    visitPresentationNode(element: pm.Presentation): void {
-        throw new Error("Method not implemented.");
-    }
-
+    
     visitLaneNode(element: pm.Lane): void {
         this.lane = {type: "lane", content: [], attributes: {name: element.name, compile: element.outputAsPresentation} };
         element.slides.forEach(slide => {
@@ -343,6 +359,11 @@ export class JsonVisitor implements IVisitor {
             this.lane.content.push(this.stack.pop()!);
         });
     }
+    
+    visitPresentationNode(element: pm.Presentation): void {
+        throw new Error("Method not implemented.");
+    }
+
 
     getResult(): pt.Lane {
         return this.lane;
