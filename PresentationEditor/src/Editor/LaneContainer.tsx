@@ -34,7 +34,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
 
     useEffect(() => {
         updateEditor();
-    }, [selectedSlideIndex, selectedLaneIndex]);
+    }, [selectedSlideIndex, selectedLaneIndex, lanes]);
     useEffect(() => {
         setSelectedSlideIndex(0);
     }, [selectedLaneIndex]);
