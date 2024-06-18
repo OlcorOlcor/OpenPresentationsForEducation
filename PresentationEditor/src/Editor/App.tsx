@@ -37,6 +37,30 @@ function App() {
         });
     }
 
+    function deleteLane(index: number): void {
+        setLanes((oldLanes) => {
+            let leftLane = index === selectedLeftLaneIndex;
+            let updatedLanes = oldLanes.filter((_, laneIndex) => laneIndex !== index);
+            if (updatedLanes.length >= 2) {
+                index = updatedLanes.length - 1;
+                if ((leftLane && index === selectedRightLaneIndex) || (!leftLane && index === selectedLeftLaneIndex)) {
+                    --index;
+                }
+            } else {
+                index = -1;
+            }
+            if (leftLane) {
+                setSelectedLeftLaneIndex(index);
+                if (index === -1) {
+                    setSelectedRightLaneIndex(0);
+                }
+            } else {
+                setSelectedRightLaneIndex(index);
+            }
+            return updatedLanes;
+        });
+    }
+
     function swapLane() {
         const leftIndex = selectedLeftLaneIndex;
         const rightIndex = selectedRightLaneIndex;
@@ -108,7 +132,7 @@ function App() {
                 style={{ height: "100%" }}
             >
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedLeftLaneIndex !== -1 && (
+                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
@@ -116,11 +140,12 @@ function App() {
                             setSelectedLaneIndex={setSelectedLeftLaneIndex}
                             otherLaneIndex={selectedRightLaneIndex}
                             addLane={addLane}
+                            deleteLane={deleteLane}
                         />
                     )}
                 </Grid>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedRightLaneIndex !== -1 && (
+                    {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
@@ -128,6 +153,7 @@ function App() {
                             setSelectedLaneIndex={setSelectedRightLaneIndex}
                             otherLaneIndex={selectedLeftLaneIndex}
                             addLane={addLane}
+                            deleteLane={deleteLane}
                         />
                     )}
                 </Grid>

@@ -24,6 +24,7 @@ interface LaneMenuProps {
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
     editorView: boolean;
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
+    deleteLane(index: number): void; 
 }
 
 const LaneMenu: React.FC<LaneMenuProps> = ({
@@ -36,6 +37,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     setEditorData,
     editorView,
     setEditorView,
+    deleteLane
 }) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     function showSettings() {
@@ -95,6 +97,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                 setEditorData={setEditorData}
                 editorView={editorView}
                 setEditorView={setEditorView}
+                deleteLane={deleteLane}
             />
         </Grid>
     );

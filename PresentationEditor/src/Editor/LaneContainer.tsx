@@ -14,6 +14,7 @@ interface LaneContainerProps {
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
     addLane(): void;
+    deleteLane(index: number): void;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -22,6 +23,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     selectedLaneIndex,
     setSelectedLaneIndex,
     otherLaneIndex,
+    deleteLane
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [editorData, setEditorData] = useState<string>("");
@@ -31,7 +33,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     );
 
     useEffect(() => {
-        console.log(lanes);
         updateEditor();
     }, [selectedSlideIndex, selectedLaneIndex]);
     useEffect(() => {
@@ -83,8 +84,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     function setSlideActive(index: number) {
-        console.log(index);
-        console.log(selectedLaneIndex);
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
@@ -99,7 +98,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     function regenerateSlide(index: number) {
         let markdownParser = new MarkdownParser();
         let jsonSlides = markdownParser.parseMarkdown(editorData);
-        console.log(jsonSlides);
         let presentationParser = new PresentationParser(jsonSlides);
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
@@ -136,6 +134,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     setEditorData={setEditorData}
                     editorView={editorView}
                     setEditorView={setEditorView}
+                    deleteLane={deleteLane}
                 />
             </Grid>
             <Grid item xs={12} style={{ height: "100%" }}>
