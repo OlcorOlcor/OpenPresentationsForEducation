@@ -23,11 +23,7 @@ export class MarkdownParser {
             content: [],
             attributes: { active: true },
         };
-        for (
-            let index: RefIndex = new RefIndex();
-            index.index < array.length;
-            ++index.index
-        ) {
+        for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
                 case "bullet_list_open":
                     index.index += 1;
@@ -113,8 +109,10 @@ export class MarkdownParser {
                 break;
             }
             if (array[index.index].type === "inline") {
-                this.getInline(array[index.index]).forEach((item) =>
-                    paragraph.content.push(item),
+                this.getInline(array[index.index]).forEach((item) => {
+                    console.log(item);
+                    paragraph.content.push(item);
+                }
                 );
             }
         }
@@ -204,19 +202,15 @@ export class MarkdownParser {
                         break;
                     }
 
-                    // TODO: detect custom tag
-
+                    let element = { type: (child.content[0] === "%") ? "customTag" : "text", content: [child.content] };
+                    if (child.content[0] === "%") {
+                        element.content[0] = element.content[0].substring(1).trim();
+                    }
                     if (stack.length === 0) {
-                        inlineElements.push({
-                            type: "text",
-                            content: [child.content],
-                        });
+                        inlineElements.push(element);
                         break;
                     }
-                    stack[stack.length - 1].content.push({
-                        type: "text",
-                        content: [child.content],
-                    });
+                    stack[stack.length - 1].content.push(element);
                     break;
                 case "strong_open":
                     current = { type: "bold", content: [] };

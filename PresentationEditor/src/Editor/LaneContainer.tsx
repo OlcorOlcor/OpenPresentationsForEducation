@@ -31,8 +31,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     );
 
     useEffect(() => {
-        console.log(selectedSlideIndex);
-        console.log(lanes[selectedLaneIndex].slides[selectedSlideIndex]);
+        console.log(lanes);
         updateEditor();
     }, [selectedSlideIndex, selectedLaneIndex]);
     useEffect(() => {
@@ -100,6 +99,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     function regenerateSlide(index: number) {
         let markdownParser = new MarkdownParser();
         let jsonSlides = markdownParser.parseMarkdown(editorData);
+        console.log(jsonSlides);
         let presentationParser = new PresentationParser(jsonSlides);
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];

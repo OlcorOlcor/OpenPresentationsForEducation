@@ -92,6 +92,20 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
     }
 }
 
+export class CustomTag extends InlineLeafElement implements IVisitable {
+    content: string;
+
+    public constructor(content: string) {
+        super();
+        this.content = content;
+    }
+
+    accept(visitor: IVisitor): void {
+        visitor.visitCustomTagNode(this);
+    }
+
+}
+
 export abstract class OuterElement extends BaseElement implements IVisitable {
     abstract accept(visitor: IVisitor): void;
 }

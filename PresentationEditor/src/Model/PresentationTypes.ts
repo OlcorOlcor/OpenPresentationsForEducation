@@ -2,7 +2,7 @@ export type Element = InlineElement | OuterElement | Slide | Text;
 
 export type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
 
-export type InlineElement = TextAnnotation | Link | Image;
+export type InlineElement = TextAnnotation | Link | Image | CustomTag;
 
 export type Text = {
     type: string;
@@ -19,6 +19,11 @@ export type Link = {
     content: string[];
     attributes: { alias: string };
 };
+
+export type CustomTag = {
+    type: string;
+    content: [string];
+}
 
 export type Image = {
     type: string;

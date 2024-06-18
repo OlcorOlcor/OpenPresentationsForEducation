@@ -11,6 +11,12 @@ export class PresentationParser {
         this.slides = slides;
     }
 
+    private GetCustomTagElement(customTagJson: pt.CustomTag): pm.CustomTag {
+        let content: string = "";
+        customTagJson.content.forEach((t) => (content += t));
+        return new pm.CustomTag(content);
+    }
+
     private GetTextElement(textJson: pt.Text): pm.TextElement {
         let content: string = "";
         textJson.content.forEach((t) => (content += t));
@@ -38,6 +44,9 @@ export class PresentationParser {
                     break;
                 case "text":
                     content.push(this.GetTextElement(c as pt.Text));
+                    break;
+                case "customTag":
+                    content.push(this.GetCustomTagElement(c as pt.CustomTag));
                     break;
             }
         });

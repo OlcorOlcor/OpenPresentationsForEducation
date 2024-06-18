@@ -15,6 +15,7 @@ export interface IVisitor {
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void;
     visitSlideNode(element: pm.SlideElement): void;
     visitLaneNode(element: pm.Lane): void;
+    visitCustomTagNode(element: pm.CustomTag): void;
 }
 
 export interface IVisitable {
@@ -106,6 +107,10 @@ export class HtmlVisitor implements IVisitor {
            }
            slide.accept(this);
         });  
+    }
+
+    visitCustomTagNode(element: pm.CustomTag): void {
+        
     }
 
     getResult(): string {
@@ -200,6 +205,10 @@ export class MarkdownVisitor implements IVisitor {
            }
            slide.accept(this);
         });  
+    }
+
+    visitCustomTagNode(element: pm.CustomTag): void {
+        this.result += "% " + element.content + "\n";
     }
 
     getResult(): string {
@@ -316,6 +325,12 @@ export class JsonVisitor implements IVisitor {
             slide.accept(this);
             this.lane.content.push(this.stack.pop()!);
         });
+    }
+
+    visitCustomTagNode(element: pm.CustomTag): void {
+        console.log("VISITOR CUSTOM TAG");
+        let customTag: pt.CustomTag = { type: "customTag", content: [element.content] }
+        this.stack.push(customTag);
     }
 
     getResult(): pt.Lane {
