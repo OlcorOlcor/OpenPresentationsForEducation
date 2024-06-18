@@ -24,8 +24,14 @@ function App() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let slides = [];
-            for (let i = 0; i < lanes[selectedLeftLaneIndex].slides.length; ++i) {
-                slides.push(new SlideElement([]));
+            let numberOfSlides = 1;
+            if (selectedLeftLaneIndex !== -1) {
+                numberOfSlides = lanes[selectedLeftLaneIndex].slides.length;
+            } else if (selectedRightLaneIndex !== -1) {
+                numberOfSlides = lanes[selectedRightLaneIndex].slides.length;
+            }
+            for (let i = 0; i < numberOfSlides; ++i) {
+                slides.push(null);
             }
             updatedLanes.push(new Lane(slides, oldLanes.length.toString()));
             if (selectedLeftLaneIndex === -1) {
