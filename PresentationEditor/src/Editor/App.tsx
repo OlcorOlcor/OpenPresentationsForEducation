@@ -19,7 +19,7 @@ function App() {
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
         useState<number>(1);
-
+    const [imported, setImported] = useState<boolean>(false);
     function addLane() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
@@ -85,6 +85,7 @@ function App() {
             if (lanes.length > 1) {
                 setSelectedRightLaneIndex(1);
             }
+            setImported(true);
         };
         reader.readAsText(file);
     }
@@ -147,6 +148,8 @@ function App() {
                             otherLaneIndex={selectedRightLaneIndex}
                             addLane={addLane}
                             deleteLane={deleteLane}
+                            imported={imported}
+                            setImported={setImported}
                         />
                     )}
                 </Grid>
@@ -160,6 +163,8 @@ function App() {
                             otherLaneIndex={selectedLeftLaneIndex}
                             addLane={addLane}
                             deleteLane={deleteLane}
+                            imported={imported}
+                            setImported={setImported}
                         />
                     )}
                 </Grid>

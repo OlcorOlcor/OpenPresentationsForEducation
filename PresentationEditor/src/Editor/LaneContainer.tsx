@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
@@ -15,6 +15,8 @@ interface LaneContainerProps {
     otherLaneIndex: number;
     addLane(): void;
     deleteLane(index: number): void;
+    imported: boolean;
+    setImported: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -23,7 +25,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     selectedLaneIndex,
     setSelectedLaneIndex,
     otherLaneIndex,
-    deleteLane
+    deleteLane,
+    imported,
+    setImported
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [editorData, setEditorData] = useState<string>("");
@@ -33,8 +37,15 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     );
 
     useEffect(() => {
+        if (imported) {
+            updateEditor();
+            setImported(false);
+        }
+    }, [imported]);
+
+    useEffect(() => {
         updateEditor();
-    }, [selectedSlideIndex, selectedLaneIndex, lanes]);
+    }, [selectedSlideIndex, selectedLaneIndex]);
     useEffect(() => {
         setSelectedSlideIndex(0);
     }, [selectedLaneIndex]);
