@@ -1,17 +1,37 @@
 import * as pt from "./PresentationTypes";
 import markdownit, { Token } from "markdown-it";
-
 class RefIndex {
     public index: number = 0;
 }
 
-// TODO: Whole class needs refactoring
 export class MarkdownParser {
+    metadataTags: string[] = [];
+    metadata_rule(state: any, startLine: any, endLine: any, silent: any) {
+        const startPos = state.bMarks[startLine] + state.tShift[startLine];
+        const max = state.eMarks[startLine];
+        if (state.src.slice(startPos, startPos + 2) !== '#[') {
+            return false;
+        }
+        const match = state.src.slice(startPos, max).match(/^#\[(.*)\]$/);
+        if (!match) {
+            return false;
+        }
+        if (silent) {
+            return true;
+        }
+        const name = match[1];
+        state.line = startLine + 1;
+        let token = state.push('metadata', '', 0);
+        token.hidden = true;
+        token.meta = { name: name };
+        return true;
+    }
+
     public parseMarkdown(markdown: string): pt.Slide[] {
         let slides: pt.Slide[] = [];
 
         let mdit = markdownit();
-
+        mdit.block.ruler.before('paragraph', 'metadata', this.metadata_rule);
         let array = mdit.parse(markdown, {});
         slides.push(this.handleArray(array));
         return slides;
@@ -37,17 +57,14 @@ export class MarkdownParser {
                     slide.content.push(this.handleParagraph(array, index));
                     break;
                 case "heading_open":
-                    slide.content.push(
-                        this.handleHeading(
-                            array,
-                            index,
-                            array[index.index].markup.length,
-                        ),
-                    );
+                    slide.content.push(this.handleHeading(array, index, array[index.index].markup.length));
                     break;
                 case "blockquote_open":
                     index.index += 1;
                     slide.content.push(this.handleBlockQuote(array, index));
+                    break;
+                case "metadata":
+                    this.metadataTags.push(array[index.index].meta["name"]);
                     break;
                 default:
                     break;
@@ -57,7 +74,8 @@ export class MarkdownParser {
     }
 
     private handleBlockQuote(array: Token[], index: RefIndex): pt.BlockQuote {
-        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [] };
+        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], metadataTags: this.metadataTags };
+        this.metadataTags = [];
         let done: boolean = false;
         for (; index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
@@ -103,14 +121,14 @@ export class MarkdownParser {
     }
 
     private handleParagraph(array: Token[], index: RefIndex): pt.Paragraph {
-        let paragraph: pt.Paragraph = { type: "paragraph", content: [] };
+        let paragraph: pt.Paragraph = { type: "paragraph", content: [], metadataTags: this.metadataTags };
+        this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
             if (array[index.index].type === "paragraph_close") {
                 break;
             }
             if (array[index.index].type === "inline") {
                 this.getInline(array[index.index]).forEach((item) => {
-                    console.log(item);
                     paragraph.content.push(item);
                 }
                 );
@@ -119,16 +137,14 @@ export class MarkdownParser {
         return paragraph;
     }
 
-    private handleHeading(
-        array: Token[],
-        index: RefIndex,
-        level: number,
-    ): pt.HeadingElement {
+    private handleHeading(array: Token[], index: RefIndex, level: number): pt.HeadingElement {
         let heading: pt.HeadingElement = {
             type: "heading",
             content: [],
             attributes: { level: level },
+            metadataTags: this.metadataTags
         };
+        this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
             if (array[index.index].type === "heading_close") {
                 break;
@@ -151,7 +167,9 @@ export class MarkdownParser {
             type: "list",
             content: [],
             attributes: { listType: ordered ? "ordered" : "unordered" },
+            metadataTags: this.metadataTags
         };
+        this.metadataTags = [];
         let done: boolean = false;
         for (index.index + 1; index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
@@ -202,10 +220,7 @@ export class MarkdownParser {
                         break;
                     }
 
-                    let element = { type: (child.content[0] === "%") ? "customTag" : "text", content: [child.content] };
-                    if (child.content[0] === "%") {
-                        element.content[0] = element.content[0].substring(1).trim();
-                    }
+                    let element = { type: "text", content: [child.content] };
                     if (stack.length === 0) {
                         inlineElements.push(element);
                         break;
@@ -234,7 +249,9 @@ export class MarkdownParser {
                             type: "link",
                             content: [link_href],
                             attributes: { alias: child.content },
+                            metadataTags: this.metadataTags
                         };
+                        this.metadataTags = [];
                         if (stack.length === 0) {
                             inlineElements.push(link);
                             break;
@@ -249,7 +266,9 @@ export class MarkdownParser {
                             type: "image",
                             content: [img_href],
                             attributes: { alias: child.content },
+                            metadataTags: this.metadataTags
                         };
+                        this.metadataTags = [];
                         if (stack.length === 0) {
                             inlineElements.push(image);
                             break;
