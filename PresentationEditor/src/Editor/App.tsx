@@ -100,7 +100,8 @@ function App() {
             visitor.visitLaneNode(lane);
             jsonLanes.push(visitor.getResult());
         });
-        const blob = new Blob([JSON.stringify(jsonLanes)], { type: "json" });
+        let exportJson = {lanes: jsonLanes, metadata: metadata};
+        const blob = new Blob([JSON.stringify(exportJson)], { type: "json" });
         saveAs(blob, "output.json");
     }
 
