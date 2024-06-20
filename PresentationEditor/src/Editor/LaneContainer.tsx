@@ -109,7 +109,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     function regenerateSlide(index: number) {
         let markdownParser = new MarkdownParser();
         let jsonSlides = markdownParser.parseMarkdown(editorData);
-        let presentationParser = new PresentationParser(jsonSlides);
+        let presentationParser = new PresentationParser();
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];

@@ -79,10 +79,10 @@ function App() {
         let reader = new FileReader();
         reader.onload = (e) => {
             let content = e.target?.result as string;
-            let parser = new PresentationParser([]);
+            let parser = new PresentationParser();
             let json = JSON.parse(content);
+            setMetadata(json.metadata);
             let lanes = parser.getLanes(json.lanes);
-
             setLanes(lanes);
             setSelectedLeftLaneIndex(0);
             if (lanes.length > 1) {
