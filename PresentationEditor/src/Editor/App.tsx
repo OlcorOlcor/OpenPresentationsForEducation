@@ -15,6 +15,7 @@ function App() {
         new Lane([new SlideElement([])], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
+    const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
@@ -131,6 +132,8 @@ function App() {
                 swapLane={swapLane}
                 importPresentation={importPresentation}
                 exportPresentation={exportPresentation}
+                metadata={metadata}
+                setMetadata={setMetadata}
             />
             <Grid
                 container
