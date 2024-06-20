@@ -80,7 +80,9 @@ function App() {
         reader.onload = (e) => {
             let content = e.target?.result as string;
             let parser = new PresentationParser([]);
-            let lanes = parser.GetLanes(JSON.parse(content));
+            let json = JSON.parse(content);
+            let lanes = parser.getLanes(json.lanes);
+
             setLanes(lanes);
             setSelectedLeftLaneIndex(0);
             if (lanes.length > 1) {
