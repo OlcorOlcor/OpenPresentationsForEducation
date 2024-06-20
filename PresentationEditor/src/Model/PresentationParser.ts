@@ -3,11 +3,6 @@ import * as pm from "./PresentationModel";
 import { Checker, Result } from "./StructureChecker";
 
 export class PresentationParser {
-    private getCustomTagElement(customTagJson: pt.CustomTag): pm.CustomTag {
-        let content: string = "";
-        customTagJson.content.forEach((t) => (content += t));
-        return new pm.CustomTag(content);
-    }
 
     private getTextElement(textJson: pt.Text): pm.TextElement {
         let content: string = "";
@@ -37,9 +32,6 @@ export class PresentationParser {
                 case "text":
                     content.push(this.getTextElement(c as pt.Text));
                     break;
-                case "customTag":
-                    content.push(this.getCustomTagElement(c as pt.CustomTag));
-                    break;
             }
         });
         return content;
@@ -66,18 +58,18 @@ export class PresentationParser {
     private getImageElement(imageJson: pt.Image): pm.ImageElement {
         let content: string = "";
         imageJson.content.forEach((c) => (content += c));
-        return new pm.ImageElement(content, imageJson.attributes.alias);
+        return new pm.ImageElement(content, imageJson.attributes.alias, imageJson.metadataTags);
     }
 
-    private getParagraphElement(jsonParagraph: pt.Paragraph): pm.ParagraphElement {
-        let elements = this.getInlineContent(jsonParagraph.content);
-        return new pm.ParagraphElement(elements);
+    private getParagraphElement(paragraphJson: pt.Paragraph): pm.ParagraphElement {
+        let elements = this.getInlineContent(paragraphJson.content);
+        return new pm.ParagraphElement(elements, paragraphJson.metadataTags);
     }
 
     private getHeadingElement(headingJson: pt.HeadingElement): pm.HeadingElement {
         let level: number = headingJson.attributes.level;
         let content = this.getInlineContent(headingJson.content);
-        return new pm.HeadingElement(level, content);
+        return new pm.HeadingElement(level, content, headingJson.metadataTags);
     }
 
     private getListItemElement(listItemJson: pt.ListItem): pm.ListItemElement {
@@ -99,7 +91,7 @@ export class PresentationParser {
                     break;
             }
         });
-        return new pm.ListElement(listType, content);
+        return new pm.ListElement(listType, content, listJson.metadataTags);
     }
 
     private getOuterElementContent(contentJson: pt.OuterElement[]): pm.OuterElement[] {
@@ -133,7 +125,7 @@ export class PresentationParser {
 
     private getBlockQuoteElement(blockQuoteJson: pt.BlockQuote): pm.BlockQuoteElement {
         let content = this.getOuterElementContent(blockQuoteJson.content);
-        return new pm.BlockQuoteElement(content);
+        return new pm.BlockQuoteElement(content, blockQuoteJson.metadataTags);
     }
 
     private createSlide(jsonSlide: pt.Slide): pm.SlideElement {

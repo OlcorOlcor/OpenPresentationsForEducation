@@ -31,7 +31,6 @@ export abstract class InlineElement extends BaseElement implements IVisitable {
 
 export abstract class InlineWrapperElement extends InlineElement {
     content: (TextElement | InlineElement)[];
-
     public constructor(content: (TextElement | InlineElement)[]) {
         super();
         this.content = content;
@@ -63,6 +62,7 @@ export class CodeElement extends InlineWrapperElement implements IVisitable {
 }
 
 export class LinkElement extends InlineLeafElement implements IVisitable {
+    metadata: string[] = [];
     content: string;
     alias: string;
 
@@ -80,30 +80,18 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
 export class ImageElement extends InlineLeafElement implements IVisitable {
     content: string;
     alias: string;
+    metadata: string[];
 
-    public constructor(content: string, alias: string) {
+    public constructor(content: string, alias: string, metadata: string[]) {
         super();
         this.content = content;
         this.alias = alias;
+        this.metadata = metadata;
     }
 
     accept(visitor: IVisitor): void {
         visitor.visitImageNode(this);
     }
-}
-
-export class CustomTag extends InlineLeafElement implements IVisitable {
-    content: string;
-
-    public constructor(content: string) {
-        super();
-        this.content = content;
-    }
-
-    accept(visitor: IVisitor): void {
-        visitor.visitCustomTagNode(this);
-    }
-
 }
 
 export abstract class OuterElement extends BaseElement implements IVisitable {
@@ -112,9 +100,11 @@ export abstract class OuterElement extends BaseElement implements IVisitable {
 
 export class ParagraphElement extends OuterElement implements IVisitable {
     content: (TextElement | InlineElement)[];
-    public constructor(content: (TextElement | InlineElement)[]) {
+    metadata: string[];
+    public constructor(content: (TextElement | InlineElement)[], metadata: string[]) {
         super();
         this.content = content;
+        this.metadata = metadata;
     }
 
     accept(visitor: IVisitor): void {
@@ -125,14 +115,12 @@ export class ParagraphElement extends OuterElement implements IVisitable {
 export class HeadingElement extends OuterElement implements IVisitable {
     content: (TextElement | InlineElement)[];
     level: number;
-
-    public constructor(
-        level: number,
-        content: (TextElement | InlineElement)[],
-    ) {
+    metadata: string[];
+    public constructor(level: number, content: (TextElement | InlineElement)[], metadata: string[]) {
         super();
         this.content = content;
         this.level = level;
+        this.metadata = metadata;
     }
 
     accept(visitor: IVisitor): void {
@@ -143,14 +131,13 @@ export class HeadingElement extends OuterElement implements IVisitable {
 export class ListElement extends OuterElement implements IVisitable {
     content: (ListItemElement | ListElement)[];
     listType: string;
+    metadata: string[];
 
-    public constructor(
-        listType: string,
-        content: (ListItemElement | ListElement)[],
-    ) {
+    public constructor(listType: string, content: (ListItemElement | ListElement)[], metadata: string[]) {
         super();
         this.content = content;
         this.listType = listType;
+        this.metadata = metadata;
     }
 
     accept(visitor: IVisitor): void {
@@ -160,10 +147,12 @@ export class ListElement extends OuterElement implements IVisitable {
 
 export class BlockQuoteElement extends OuterElement implements IVisitable {
     content: OuterElement[];
+    metadata: string[] = [];
 
-    public constructor(content: OuterElement[]) {
+    public constructor(content: OuterElement[], metadata: string[]) {
         super();
         this.content = content;
+        this.metadata = metadata;
     }
 
     accept(visitor: IVisitor): void {
