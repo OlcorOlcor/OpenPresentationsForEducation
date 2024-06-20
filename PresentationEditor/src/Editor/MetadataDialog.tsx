@@ -40,13 +40,23 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
     }
 
     function deleteMetadata() {
-        
+       setMetadata(old => {
+            let newMetadata = old.filter((_, index) => selectedMetadataIndex !== index);
+            if (selectedMetadataIndex > 0) {
+                setSelectedMetadataIndex(selectedMetadataIndex - 1);
+            }
+            if (newMetadata.length === 0) {
+                setSelectedMetadataIndex(-1);
+            }
+            return newMetadata;
+       });
     }
+
     return (
         <Dialog open={dialogOpen} onClose={handleClose}>
             <Grid container>
                 <Grid item xs={6}>
-                    <MetadataListContainer metadata={metadata} selectMetadata={selectMetadata} addMetadata={addMetadata} />
+                    <MetadataListContainer metadata={metadata} selectMetadata={selectMetadata} addMetadata={addMetadata} deleteMetadata={deleteMetadata} />
                 </Grid>
                 <Grid item xs={6}>
                     <MetadataFormContainer metadata={metadata} selectedMetadataIndex={selectedMetadataIndex} selectMetadata={selectMetadata} handleSubmit={handleSubmit} />
