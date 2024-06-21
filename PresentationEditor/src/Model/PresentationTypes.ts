@@ -2,7 +2,7 @@ export type Element = InlineElement | OuterElement | Slide | Text;
 
 export type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
 
-export type InlineElement = TextAnnotation | Link | Image;
+export type InlineElement = TextAnnotation | Link | Image | CustomTag;
 
 export type Text = {
     type: string;
@@ -18,12 +18,19 @@ export type Link = {
     type: string;
     content: string[];
     attributes: { alias: string };
+    metadataTags: string[]
 };
+
+export type CustomTag = {
+    type: string;
+    content: [string];
+}
 
 export type Image = {
     type: string;
     content: string[];
     attributes: { alias: string };
+    metadataTags: string[]
 };
 
 export type ListItem = {
@@ -35,22 +42,26 @@ export type List = {
     type: string;
     content: (List | ListItem)[];
     attributes: { listType: string };
+    metadataTags: string[]
 };
 
 export type Paragraph = {
     type: string;
     content: (Text | InlineElement)[];
+    metadataTags: string[]
 };
 
 export type HeadingElement = {
     type: string;
     content: (Text | InlineElement)[];
     attributes: { level: number };
+    metadataTags: string[]
 };
 
 export type BlockQuote = {
     type: string;
     content: OuterElement[];
+    metadataTags: string[]
 };
 
 export type Slide = {
@@ -64,3 +75,8 @@ export type Lane = {
     content: (Slide | null)[];
     attributes: { name: string; compile: boolean };
 };
+
+export type Metadata = {
+    name: string;
+    source: string;
+}

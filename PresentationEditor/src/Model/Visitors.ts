@@ -143,10 +143,20 @@ export class MarkdownVisitor implements IVisitor {
         this.result += "[" + element.alias + "](" + element.content + ")";
     }
     visitParagraphNode(element: pm.ParagraphElement): void {
+        if (element.metadata.length !== 0) {
+            element.metadata.forEach(m => {
+                this.result += `#[${m}]\n`;
+            });
+        }
         element.content.forEach((c) => c.accept(this));
         this.result += "\n\n";
     }
     visitHeadingNode(element: pm.HeadingElement): void {
+        if (element.metadata.length !== 0) {
+            element.metadata.forEach(m => {
+                this.result += `#[${m}]\n`;
+            });
+        }
         for (let i = 0; i < element.level; ++i) {
             this.result += "#";
         }
@@ -156,6 +166,11 @@ export class MarkdownVisitor implements IVisitor {
     }
 
     visitListNode(element: pm.ListElement): void {
+        if (element.metadata.length !== 0) {
+            element.metadata.forEach(m => {
+                this.result += `#[${m}]\n`;
+            });
+        }
         let counter = 1;
         this.listLevel++;
         element.content.forEach((c) => {
@@ -183,6 +198,11 @@ export class MarkdownVisitor implements IVisitor {
     }
 
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
+        if (element.metadata.length !== 0) {
+            element.metadata.forEach(m => {
+                this.result += `#[${m}]\n`;
+            });
+        }
         element.content.forEach((c) => {
             this.result += "> ";
             c.accept(this);
@@ -243,17 +263,17 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitImageNode(element: pm.ImageElement): void {
-        let image: pt.Image = {type: "images", content: [element.content], attributes: { alias: element.alias }}
+        let image: pt.Image = {type: "images", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata}
         this.stack.push(image);
     }
 
     visitLinkNode(element: pm.LinkElement): void {
-        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }};
+        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata};
         this.stack.push(link);
     }
 
     visitParagraphNode(element: pm.ParagraphElement): void {
-        let paragraph: pt.Paragraph = {type: "paragraph", content: [] };
+        let paragraph: pt.Paragraph = {type: "paragraph", content: [], metadataTags: element.metadata};
         element.content.forEach(c => {
             c.accept(this);
             paragraph.content.push(this.stack.pop()!);
@@ -262,7 +282,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitHeadingNode(element: pm.HeadingElement): void {
-       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level }};
+       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level }, metadataTags: element.metadata};
        element.content.forEach(c => {
             c.accept(this);
             heading.content.push(this.stack.pop()!);
@@ -271,7 +291,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitListNode(element: pm.ListElement): void {
-        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType }};
+        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType }, metadataTags: element.metadata};
         element.content.forEach(c => {
             c.accept(this);
             list.content.push(this.stack.pop()!);
@@ -289,7 +309,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        let bq: pt.BlockQuote = {type: "blockquote", content: []};
+        let bq: pt.BlockQuote = {type: "blockquote", content: [], metadataTags: element.metadata};
         element.content.forEach(c => {
             c.accept(this);
             bq.content.push(this.stack.pop()!);

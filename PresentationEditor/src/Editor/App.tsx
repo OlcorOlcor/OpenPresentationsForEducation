@@ -15,23 +15,54 @@ function App() {
         new Lane([new SlideElement([])], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
+    const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
         useState<number>(1);
-
+    const [imported, setImported] = useState<boolean>(false);
     function addLane() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let slides = [];
-            for (let i = 0; i < lanes[selectedLeftLaneIndex].slides.length; ++i) {
-                slides.push(new SlideElement([]));
+            let numberOfSlides = 1;
+            if (selectedLeftLaneIndex !== -1) {
+                numberOfSlides = lanes[selectedLeftLaneIndex].slides.length;
+            } else if (selectedRightLaneIndex !== -1) {
+                numberOfSlides = lanes[selectedRightLaneIndex].slides.length;
+            }
+            for (let i = 0; i < numberOfSlides; ++i) {
+                slides.push(null);
             }
             updatedLanes.push(new Lane(slides, oldLanes.length.toString()));
             if (selectedLeftLaneIndex === -1) {
                 setSelectedLeftLaneIndex(updatedLanes.length - 1);
             } else if (selectedRightLaneIndex === -1) {
                 setSelectedRightLaneIndex(updatedLanes.length - 1);
+            }
+            return updatedLanes;
+        });
+    }
+
+    function deleteLane(index: number): void {
+        setLanes((oldLanes) => {
+            let leftLane = index === selectedLeftLaneIndex;
+            let updatedLanes = oldLanes.filter((_, laneIndex) => laneIndex !== index);
+            if (updatedLanes.length >= 2) {
+                index = updatedLanes.length - 1;
+                if ((leftLane && index === selectedRightLaneIndex) || (!leftLane && index === selectedLeftLaneIndex)) {
+                    --index;
+                }
+            } else {
+                index = -1;
+            }
+            if (leftLane) {
+                setSelectedLeftLaneIndex(index);
+                if (index === -1) {
+                    setSelectedRightLaneIndex(0);
+                }
+            } else {
+                setSelectedRightLaneIndex(index);
             }
             return updatedLanes;
         });
@@ -48,13 +79,16 @@ function App() {
         let reader = new FileReader();
         reader.onload = (e) => {
             let content = e.target?.result as string;
-            let parser = new PresentationParser([]);
-            let lanes = parser.GetLanes(JSON.parse(content));
+            let parser = new PresentationParser();
+            let json = JSON.parse(content);
+            setMetadata(json.metadata);
+            let lanes = parser.getLanes(json.lanes);
             setLanes(lanes);
             setSelectedLeftLaneIndex(0);
             if (lanes.length > 1) {
                 setSelectedRightLaneIndex(1);
             }
+            setImported(true);
         };
         reader.readAsText(file);
     }
@@ -66,7 +100,8 @@ function App() {
             visitor.visitLaneNode(lane);
             jsonLanes.push(visitor.getResult());
         });
-        const blob = new Blob([JSON.stringify(jsonLanes)], { type: "json" });
+        let exportJson = {lanes: jsonLanes, metadata: metadata};
+        const blob = new Blob([JSON.stringify(exportJson)], { type: "json" });
         saveAs(blob, "output.json");
     }
 
@@ -100,6 +135,8 @@ function App() {
                 swapLane={swapLane}
                 importPresentation={importPresentation}
                 exportPresentation={exportPresentation}
+                metadata={metadata}
+                setMetadata={setMetadata}
             />
             <Grid
                 container
@@ -108,7 +145,7 @@ function App() {
                 style={{ height: "100%" }}
             >
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedLeftLaneIndex !== -1 && (
+                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
@@ -116,11 +153,14 @@ function App() {
                             setSelectedLaneIndex={setSelectedLeftLaneIndex}
                             otherLaneIndex={selectedRightLaneIndex}
                             addLane={addLane}
+                            deleteLane={deleteLane}
+                            imported={imported}
+                            setImported={setImported}
                         />
                     )}
                 </Grid>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedRightLaneIndex !== -1 && (
+                    {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
@@ -128,6 +168,9 @@ function App() {
                             setSelectedLaneIndex={setSelectedRightLaneIndex}
                             otherLaneIndex={selectedLeftLaneIndex}
                             addLane={addLane}
+                            deleteLane={deleteLane}
+                            imported={imported}
+                            setImported={setImported}
                         />
                     )}
                 </Grid>

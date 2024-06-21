@@ -22,6 +22,7 @@ interface EditLaneDialogProps {
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
     editorView: boolean;
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
+    deleteLane(index: number): void; 
 }
 
 const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
@@ -34,6 +35,7 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
     otherLaneIndex,
     setSlideMode,
     setEditorData,
+    deleteLane
 }) => {
     const [dialogLane, setDialogLane] = useState<Lane>(
         lanes[selectedLaneIndex],
@@ -42,28 +44,6 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
     useEffect(() => {
         setDialogLane(lanes[selectedLaneIndex]);
     }, [selectedLaneIndex]);
-
-    function deleteLane() {
-        setLanes((prev) => {
-            let updated = [...prev];
-            updated.splice(selectedLaneIndex, 1);
-            setDialogOpen(false);
-
-            if (updated.length <= 1) {
-                setSelectedLaneIndex(-1);
-            } else if (selectedLaneIndex - 1 === otherLaneIndex) {
-                if (selectedLaneIndex <= updated.length) {
-                    setSelectedLaneIndex(selectedLaneIndex);
-                } else {
-                    setSelectedLaneIndex(otherLaneIndex - 1);
-                }
-            } else {
-                setSelectedLaneIndex(selectedLaneIndex - 1);
-            }
-
-            return updated;
-        });
-    }
 
     function handleClose() {
         setLanes((prev) => {
@@ -141,7 +121,7 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
                         </Button>
                     </Grid>
                     <Grid item xs={6}>
-                        <Button color="error" onClick={deleteLane}>
+                        <Button color="error" onClick={() => {deleteLane(selectedLaneIndex); setDialogOpen(false)}}>
                             Delete
                         </Button>
                     </Grid>

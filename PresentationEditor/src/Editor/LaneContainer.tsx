@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { MarkdownVisitor } from "../Model/Visitors";
@@ -14,6 +14,9 @@ interface LaneContainerProps {
     setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
     otherLaneIndex: number;
     addLane(): void;
+    deleteLane(index: number): void;
+    imported: boolean;
+    setImported: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -22,6 +25,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     selectedLaneIndex,
     setSelectedLaneIndex,
     otherLaneIndex,
+    deleteLane,
+    imported,
+    setImported
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [editorData, setEditorData] = useState<string>("");
@@ -31,8 +37,13 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     );
 
     useEffect(() => {
-        console.log(selectedSlideIndex);
-        console.log(lanes[selectedLaneIndex].slides[selectedSlideIndex]);
+        if (imported) {
+            updateEditor();
+            setImported(false);
+        }
+    }, [imported]);
+
+    useEffect(() => {
         updateEditor();
     }, [selectedSlideIndex, selectedLaneIndex]);
     useEffect(() => {
@@ -84,8 +95,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     function setSlideActive(index: number) {
-        console.log(index);
-        console.log(selectedLaneIndex);
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
@@ -100,11 +109,11 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     function regenerateSlide(index: number) {
         let markdownParser = new MarkdownParser();
         let jsonSlides = markdownParser.parseMarkdown(editorData);
-        let presentationParser = new PresentationParser(jsonSlides);
+        let presentationParser = new PresentationParser();
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].slides];
-            let updatedSlide = presentationParser.GetSlides(jsonSlides)[0];
+            let updatedSlide = presentationParser.getSlides(jsonSlides)[0];
             //let updatedSlide = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
             updatedSlides[index] = updatedSlide;
             updatedLanes[selectedLaneIndex].slides = updatedSlides;
@@ -136,6 +145,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     setEditorData={setEditorData}
                     editorView={editorView}
                     setEditorView={setEditorView}
+                    deleteLane={deleteLane}
                 />
             </Grid>
             <Grid item xs={12} style={{ height: "100%" }}>

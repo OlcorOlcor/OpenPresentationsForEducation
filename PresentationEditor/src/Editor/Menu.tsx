@@ -1,12 +1,17 @@
 import { Button } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import "./css/Menu.css";
+import MetadataDialog from "./MetadataDialog";
+import { Metadata } from "../Model/PresentationTypes";
 
 interface MenuProps {
     addLane(): void;
     swapLane(): void;
     importPresentation(file: File): void;
     exportPresentation(): void;
+    metadata: Metadata[];
+    setMetadata: React.Dispatch<React.SetStateAction<Metadata[]>>;
+
 }
 
 const Menu: React.FC<MenuProps> = ({
@@ -14,7 +19,13 @@ const Menu: React.FC<MenuProps> = ({
     swapLane,
     importPresentation,
     exportPresentation,
+    metadata,
+    setMetadata
 }) => {
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    function openMetadata() {
+        setDialogOpen(true);
+    }
     return (
         <div className="menu">
             <div>
@@ -25,6 +36,11 @@ const Menu: React.FC<MenuProps> = ({
             <div>
                 <Button variant="contained" onClick={swapLane}>
                     Swap Lanes
+                </Button>
+            </div>
+            <div>
+                <Button variant="contained" onClick={openMetadata}>
+                    Manage metadata
                 </Button>
             </div>
             <div>
@@ -40,6 +56,7 @@ const Menu: React.FC<MenuProps> = ({
                     Export
                 </Button>
             </div>
+            <MetadataDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} metadata={metadata} setMetadata={setMetadata} />
         </div>
     );
 };
