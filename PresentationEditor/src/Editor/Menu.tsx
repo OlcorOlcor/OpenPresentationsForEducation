@@ -9,7 +9,8 @@ interface MenuProps {
     addLane(): void;
     swapLane(): void;
     importPresentation(file: File): void;
-    exportPresentation(): void;
+    exportPresentationAsJson(): void;
+    exportPresentationAsReveal(): void;
     metadata: Metadata[];
     setMetadata: React.Dispatch<React.SetStateAction<Metadata[]>>;
 
@@ -19,7 +20,8 @@ const Menu: React.FC<MenuProps> = ({
     addLane,
     swapLane,
     importPresentation,
-    exportPresentation,
+    exportPresentationAsJson,
+    exportPresentationAsReveal,
     metadata,
     setMetadata
 }) => {
@@ -100,8 +102,8 @@ const Menu: React.FC<MenuProps> = ({
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList autoFocusItem={exportOpen} id="composition-menu" aria-labelledby="composition-button">
-                    <MenuItem onClick={exportPresentation}>Export JSON</MenuItem>
-                    <MenuItem onClick={handleClose}>Export Reveal</MenuItem>
+                    <MenuItem onClick={exportPresentationAsJson}>Export JSON</MenuItem>
+                    <MenuItem onClick={exportPresentationAsReveal}>Export Reveal</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
