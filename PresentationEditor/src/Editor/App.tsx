@@ -6,7 +6,7 @@ import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import Menu from "./Menu";
 import { MarkdownParser } from "../Model/MarkdownParser";
-import { JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
+import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
 
@@ -93,7 +93,7 @@ function App() {
         reader.readAsText(file);
     }
 
-    function exportPresentation() {
+    function exportPresentationAsJSON() {
         let visitor = new JsonVisitor();
         let jsonLanes: pt.Lane[] = [];
         lanes.forEach(lane => {
@@ -103,6 +103,19 @@ function App() {
         let exportJson = {lanes: jsonLanes, metadata: metadata};
         const blob = new Blob([JSON.stringify(exportJson)], { type: "json" });
         saveAs(blob, "output.json");
+    }
+
+    function exportPresentationAsReveal() {
+        let visitor = new HtmlVisitor(true);
+        // TODO only works on the first lane for now
+        if (lanes.length === 0) {
+            return;
+        }
+        let lane = lanes[0];
+        visitor.visitLaneNode(lane);
+        let res = visitor.getResult();
+        const blob = new Blob([res], {type: "html"});
+        saveAs(blob, "output.html");
     }
 
     // temp fix, error is likely caused by mui grid
@@ -134,7 +147,8 @@ function App() {
                 addLane={addLane}
                 swapLane={swapLane}
                 importPresentation={importPresentation}
-                exportPresentation={exportPresentation}
+                exportPresentationAsJson={exportPresentationAsJSON}
+                exportPresentationAsReveal={exportPresentationAsReveal}
                 metadata={metadata}
                 setMetadata={setMetadata}
             />

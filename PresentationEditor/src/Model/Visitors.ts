@@ -23,7 +23,10 @@ export interface IVisitable {
 
 export class HtmlVisitor implements IVisitor {
     result: string = "";
-
+    reveal_output: boolean;
+    constructor(reveal_output: boolean = false) {
+        this.reveal_output = reveal_output;
+    }
     visitTextNode(element: pm.TextElement): void {
         this.result += element.content;
     }
@@ -94,21 +97,35 @@ export class HtmlVisitor implements IVisitor {
     }
 
     visitSlideNode(element: pm.SlideElement): void {
+        if (this.reveal_output) {
+            this.result += "<section>";
+        }
         element.content.forEach((c) => {
             c.accept(this);
         });
+        if (this.reveal_output) {
+            this.result += "</section>";
+        }
     }
     
     visitLaneNode(element: pm.Lane): void {
+        this.result = "";
+        if (this.reveal_output) {
+            this.result += "<div class=\"reveal\"><div class=\"slides\">";
+        }
         element.slides.forEach((slide) => {
            if (slide == null) {
                 return;
            }
            slide.accept(this);
         });  
+        if (this.reveal_output) {
+            this.result += "</div></div>";
+        }
     }
 
     getResult(): string {
+        console.log(this.result);
         return this.result;
     }
 }
