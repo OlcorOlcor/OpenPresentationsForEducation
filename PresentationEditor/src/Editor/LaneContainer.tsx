@@ -123,6 +123,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
 
     function updateEditor() {
         if (lanes[selectedLaneIndex].slides[selectedSlideIndex] == null) {
+            setEditorData("");
             return;
         }
         const visitor = new MarkdownVisitor();
