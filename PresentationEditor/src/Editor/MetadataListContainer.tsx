@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, List, ListItem, ListItemButton, ListItemText, Paper } from "@mui/material";
 import { Metadata } from "../Model/PresentationTypes";
 
 interface MetadataListContainerProps {
@@ -6,25 +6,29 @@ interface MetadataListContainerProps {
     selectMetadata(index: number): void;
     addMetadata(): void;
     deleteMetadata(): void;
+    selectedMetadataIndex: number;
 }
 
-const MetadataListContainer: React.FC<MetadataListContainerProps>  = ({metadata, selectMetadata, addMetadata, deleteMetadata}) => {
+const MetadataListContainer: React.FC<MetadataListContainerProps>  = ({metadata, selectMetadata, addMetadata, deleteMetadata, selectedMetadataIndex}) => {
     return (
-        <Grid container style={{height: "100%"}}>
-            <Grid item xs={12} style={{height: "75%"}}>
-                {metadata.map((item, index) => (
-                    <div
-                        key={index}
-                        onClick={() => selectMetadata(index)}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        {item.name}
-                    </div>
-                ))}
+        <Grid container direction="column" style={{height: "100%"}}>
+            <Grid item xs style={{ height: "90%", overflowY: 'auto'}}>
+                <List>
+                    {metadata.map((item, index) => (
+                        <ListItemButton
+                            key={index} 
+                            onClick={() => selectMetadata(index)}
+                            style={{ padding: '4px 8px' }}
+                            selected={index === selectedMetadataIndex}
+                        >
+                        <ListItemText primary={item.name} />
+                        </ListItemButton>
+                    ))}
+                </List>
             </Grid>
-            <Grid item xs={12}>
-                <Grid container>
-                    <Grid item xs={6}>
+            <Grid item>
+                <Grid container spacing="20px">
+                    <Grid item>
                         <Button 
                             onClick={addMetadata} 
                             variant="contained" 
@@ -33,8 +37,8 @@ const MetadataListContainer: React.FC<MetadataListContainerProps>  = ({metadata,
                             Add
                         </Button>
                     </Grid>
-                    <Grid item xs={6}>
-                    <Button 
+                    <Grid item xs>
+                        <Button 
                             onClick={deleteMetadata} 
                             variant="contained" 
                             color="error" 

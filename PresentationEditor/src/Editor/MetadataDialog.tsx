@@ -53,12 +53,12 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
     }
 
     return (
-        <Dialog open={dialogOpen} onClose={handleClose}>
-            <Grid container>
-                <Grid item xs={6}>
-                    <MetadataListContainer metadata={metadata} selectMetadata={selectMetadata} addMetadata={addMetadata} deleteMetadata={deleteMetadata} />
+        <Dialog open={dialogOpen} onClose={handleClose} maxWidth="md" fullWidth>
+            <Grid container style={{height: "500px"}}>
+                <Grid item xs={6} style={{overflowY: "auto" , height: "100%"}}>
+                    <MetadataListContainer metadata={metadata} selectMetadata={selectMetadata} addMetadata={addMetadata} deleteMetadata={deleteMetadata} selectedMetadataIndex={selectedMetadataIndex}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} style={{height: "100%"}}>
                     <MetadataFormContainer metadata={metadata} selectedMetadataIndex={selectedMetadataIndex} selectMetadata={selectMetadata} handleSubmit={handleSubmit} />
                 </Grid>
             </Grid>
