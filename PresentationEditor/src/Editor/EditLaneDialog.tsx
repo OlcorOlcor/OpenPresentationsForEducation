@@ -6,6 +6,7 @@ import {
     FormControlLabel,
     Grid,
     TextField,
+    Typography,
 } from "@mui/material";
 import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import { Lane } from "../Model/PresentationModel";
@@ -65,45 +66,27 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
             outputAsPresentation: !prev.outputAsPresentation,
         }));
     }
-    /*
-    const importFile = (event: ChangeEvent<HTMLInputElement>) => {
-        let element = event.target as HTMLInputElement;
-        let file = element.files?.[0];
-        if (!file) {
-            return;
-        }
-        let reader = new FileReader();
-
-        reader.onload = (e) => {
-            let content = e.target?.result as string;
-            let pp = new PresentationParser(JSON.parse(content));
-            let presentation = pp.GetPresentation();
-            let parsedSlides = (presentation as Presentation).getSlides();
-            lanes[selectedLaneIndex].slides = parsedSlides;
-            let visitor = new MarkdownVisitor();
-            visitor.visitSlideNode(
-                (presentation as Presentation).getSlides()[0],
-            );
-            setEditorData(visitor.getResult());
-        };
-        reader.readAsText(file);
-        setDialogOpen(false);
-    };
-    */
+    
     return (
-        <Dialog open={dialogOpen} onClose={handleClose}>
-            <DialogTitle>Lane settings</DialogTitle>
-            <div>
-                <div>
+        <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
+            <DialogTitle>
+                <Typography variant="h6" align="center">
+                    Lane settings
+                </Typography>
+            </DialogTitle>
+            
+            <Grid container direction="column">
+                <Grid item style={{marginLeft: 10, marginRight: 10}}>
                     <TextField
                         id="Lane name"
-                        variant="standard"
+                        variant="outlined"
                         label="Name"
                         value={dialogLane.name}
                         onChange={(e) => handleNameChange(e.target.value)}
+                        fullWidth
                     />
-                </div>
-                <div>
+                </Grid>
+                <Grid item style={{marginLeft: 10, marginRight: 10}}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -113,20 +96,20 @@ const EditLaneDialog: React.FC<EditLaneDialogProps> = ({
                         label="Output as presentation"
                         onChange={handleOutputTypeChange}
                     />
-                </div>
-                <Grid container>
-                    <Grid item xs={6}>
-                        <Button color="primary" onClick={handleClose}>
+                </Grid>
+                <Grid container spacing={4}>
+                    <Grid item>
+                        <Button color="primary" variant="contained" onClick={handleClose}>
                             Confirm
                         </Button>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Button color="error" onClick={() => {deleteLane(selectedLaneIndex); setDialogOpen(false)}}>
+                    <Grid item xs>
+                        <Button color="error" variant="contained" onClick={() => {deleteLane(selectedLaneIndex); setDialogOpen(false)}}>
                             Delete
                         </Button>
                     </Grid>
                 </Grid>
-            </div>
+            </Grid>
         </Dialog>
     );
 };
