@@ -1,6 +1,6 @@
 import {
+    Button,
     Checkbox,
-    Fab,
     FormControl,
     FormControlLabel,
     FormGroup,
@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import React, { useState } from "react";
-import EditIcon from "@mui/icons-material/Edit";
 import EditLaneDialog from "./EditLaneDialog";
 
 interface LaneMenuProps {
@@ -48,7 +47,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
         setSelectedLaneIndex(index);
     }
     return (
-        <Grid container justifyContent="center" alignItems="center">
+        <Grid container justifyContent="center" alignItems="center" spacing={4}>
             <Grid item xs={4}>
                 <FormControl fullWidth>
                     <InputLabel id="laneSelectLabel">Select Lane</InputLabel>
@@ -70,9 +69,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                 </FormControl>
             </Grid>
             <Grid item xs={4}>
-                <Fab color="secondary" onClick={showSettings}>
-                    <EditIcon />
-                </Fab>
+                <Button color="primary" variant="contained" onClick={showSettings}>Edit Lane</Button>
             </Grid>
             <Grid item xs={4}>
                 <FormGroup>

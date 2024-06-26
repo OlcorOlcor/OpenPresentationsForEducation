@@ -28,6 +28,7 @@ const Menu: React.FC<MenuProps> = ({
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [exportOpen, setExportOpen] = useState(false);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
     const prevExportOpen = React.useRef(exportOpen);
     React.useEffect(() => {
       if (prevExportOpen.current === true && exportOpen === false) {
@@ -52,6 +53,19 @@ const Menu: React.FC<MenuProps> = ({
         setExportOpen(false);
     };
 
+    function handleFileChange(event: any) {
+        const file = event.target.files[0];
+        if (file) {
+            importPresentation(file);
+        }
+    }
+
+    function handleImportClick() {
+        if (fileInputRef.current != null) {
+           fileInputRef.current.click();
+        }
+    }
+
     return (
         <div className="menu">
             <div>
@@ -70,47 +84,55 @@ const Menu: React.FC<MenuProps> = ({
                 </Button>
             </div>
             <div>
-                <label htmlFor="fileInput">Import Lanes: </label>
                 <input
                     type="file"
                     id="fileInput"
-                    onChange={(e) => importPresentation(e.target.files?.[0]!)}
+                    style={{display: "none"}}
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
                 />
-            </div>
-            <div>
-        <Button
-          ref={anchorRef}
-          variant="contained"
-          id="composition-button"
-          aria-controls={exportOpen ? 'composition-menu' : undefined}
-          aria-expanded={exportOpen ? 'true' : undefined}
-          aria-haspopup="true"
-          onClick={handleExportToggle}
-          endIcon={<KeyboardArrowDownIcon />}
-        >
-          Export
-        </Button>
-        <Popper open={exportOpen} anchorEl={anchorRef.current} role={undefined} placement="bottom-start" transition disablePortal style={{zIndex: 2}}>
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin:
-                  placement === 'bottom-start' ? 'left top' : 'left bottom',
-              }}
+                <Button 
+                    variant="contained" 
+                    color="primary"
+                    onClick={handleImportClick}
+                >
+                    Import
+                </Button>
+        </div>
+        <div>
+            <Button
+            ref={anchorRef}
+            variant="contained"
+            id="composition-button"
+            aria-controls={exportOpen ? 'composition-menu' : undefined}
+            aria-expanded={exportOpen ? 'true' : undefined}
+            aria-haspopup="true"
+            onClick={handleExportToggle}
+            endIcon={<KeyboardArrowDownIcon />}
             >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList autoFocusItem={exportOpen} id="composition-menu" aria-labelledby="composition-button">
-                    <MenuItem onClick={exportPresentationAsJson}>Export JSON</MenuItem>
-                    <MenuItem onClick={exportPresentationAsReveal}>Export Reveal</MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </div>
+            Export
+            </Button>
+            <Popper open={exportOpen} anchorEl={anchorRef.current} role={undefined} placement="bottom-start" transition disablePortal style={{zIndex: 2}}>
+            {({ TransitionProps, placement }) => (
+                <Grow
+                {...TransitionProps}
+                style={{
+                    transformOrigin:
+                    placement === 'bottom-start' ? 'left top' : 'left bottom',
+                }}
+                >
+                <Paper>
+                    <ClickAwayListener onClickAway={handleClose}>
+                    <MenuList autoFocusItem={exportOpen} id="composition-menu" aria-labelledby="composition-button">
+                        <MenuItem onClick={exportPresentationAsJson}>Export JSON</MenuItem>
+                        <MenuItem onClick={exportPresentationAsReveal}>Export Reveal</MenuItem>
+                    </MenuList>
+                    </ClickAwayListener>
+                </Paper>
+                </Grow>
+            )}
+            </Popper>
+        </div>
             <MetadataDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} metadata={metadata} setMetadata={setMetadata} />
     </div>
     );

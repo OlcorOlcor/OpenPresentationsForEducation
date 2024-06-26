@@ -134,6 +134,19 @@ export class MarkdownVisitor implements IVisitor {
     result: string = "";
     listLevel: number = 0;
 
+    addMetadata(element: pm.BlockQuoteElement | pm.ParagraphElement | pm.HeadingElement | pm.ListElement): void {
+        this.result += "#[";
+        let first = true;
+        element.metadata.forEach(m => {
+            if (!first) {
+                this.result += ", ";
+            }
+            this.result += `${m}`;
+            first = false;
+        });
+        this.result += "]\n";
+    }
+
     visitTextNode(element: pm.TextElement): void {
         this.result += element.content;
     }
@@ -161,18 +174,14 @@ export class MarkdownVisitor implements IVisitor {
     }
     visitParagraphNode(element: pm.ParagraphElement): void {
         if (element.metadata.length !== 0) {
-            element.metadata.forEach(m => {
-                this.result += `#[${m}]\n`;
-            });
+            this.addMetadata(element);
         }
         element.content.forEach((c) => c.accept(this));
         this.result += "\n\n";
     }
     visitHeadingNode(element: pm.HeadingElement): void {
         if (element.metadata.length !== 0) {
-            element.metadata.forEach(m => {
-                this.result += `#[${m}]\n`;
-            });
+            this.addMetadata(element);
         }
         for (let i = 0; i < element.level; ++i) {
             this.result += "#";
@@ -184,9 +193,7 @@ export class MarkdownVisitor implements IVisitor {
 
     visitListNode(element: pm.ListElement): void {
         if (element.metadata.length !== 0) {
-            element.metadata.forEach(m => {
-                this.result += `#[${m}]\n`;
-            });
+            this.addMetadata(element);
         }
         let counter = 1;
         this.listLevel++;
@@ -216,9 +223,7 @@ export class MarkdownVisitor implements IVisitor {
 
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
         if (element.metadata.length !== 0) {
-            element.metadata.forEach(m => {
-                this.result += `#[${m}]\n`;
-            });
+            this.addMetadata(element);
         }
         element.content.forEach((c) => {
             this.result += "> ";

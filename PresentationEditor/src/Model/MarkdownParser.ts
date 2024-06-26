@@ -12,18 +12,21 @@ export class MarkdownParser {
         if (state.src.slice(startPos, startPos + 2) !== '#[') {
             return false;
         }
-        const match = state.src.slice(startPos, max).match(/^#\[(.*)\]$/);
+        const match: string[] = state.src.slice(startPos, max).match(/^#\[(.*)\]$/);
         if (!match) {
             return false;
         }
         if (silent) {
             return true;
         }
-        const name = match[1];
+        let names: string[] = [];
+        match[1].split(",").forEach(part => {
+            names.push(part.trim());
+        })
         state.line = startLine + 1;
         let token = state.push('metadata', '', 0);
         token.hidden = true;
-        token.meta = { name: name };
+        token.meta = { names: names };
         return true;
     }
 
@@ -64,7 +67,10 @@ export class MarkdownParser {
                     slide.content.push(this.handleBlockQuote(array, index));
                     break;
                 case "metadata":
-                    this.metadataTags.push(array[index.index].meta["name"]);
+                    const names: string[] = array[index.index].meta["names"];
+                    names.forEach(name => {
+                        this.metadataTags.push(name);
+                    });
                     break;
                 default:
                     break;
