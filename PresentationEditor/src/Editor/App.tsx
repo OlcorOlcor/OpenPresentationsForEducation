@@ -17,6 +17,7 @@ function App() {
         new Lane([new SlideElement([])], "second"),
     ]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
+    const [constraints, setConstraints] = useState<pt.Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
@@ -153,9 +154,11 @@ function App() {
                     exportPresentationAsReveal={exportPresentationAsReveal}
                     metadata={metadata}
                     setMetadata={setMetadata}
+                    constraints={constraints}
+                    setConstraints={setConstraints}
                 />
             </Grid>
-            <Grid item xs md sm style={{height: "100%"}}>
+            <Grid item xs md sm>
                 <Grid
                     container
                     spacing={1}
