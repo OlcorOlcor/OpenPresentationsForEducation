@@ -1,3 +1,4 @@
+import { RestoreOutlined } from "@mui/icons-material";
 import * as pm from "./PresentationModel";
 import * as pt from "./PresentationTypes";
 
@@ -363,4 +364,92 @@ export class JsonVisitor implements IVisitor {
     getResult(): pt.Lane {
         return this.lane;
     }
+}
+
+class AnalysisResult {
+    words: number = 0;
+    characters: number = 0;
+    images: number = 0;
+    links: number = 0;
+    headings: number = 0;
+    bullet_points: number = 0;
+}
+
+export class AnalysisVisitor implements IVisitor {
+
+    result: AnalysisResult = new AnalysisResult();
+
+    visitTextNode(element: pm.TextElement): void {
+        this.result.characters += element.content.length;
+        this.result.words += element.content.split(' ').length;
+    }
+    
+    visitBoldNode(element: pm.BoldElement): void {
+        return;
+    }
+
+    visitItalicNode(element: pm.ItalicElement): void {
+        return;
+    }
+
+    visitCodeNode(element: pm.CodeElement): void {
+        return;
+    }
+
+    visitImageNode(element: pm.ImageElement): void {
+        this.result.images++;
+    }
+
+    visitLinkNode(element: pm.LinkElement): void {
+        this.result.links++;
+    }
+
+    visitParagraphNode(element: pm.ParagraphElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+        });
+    }
+
+    visitHeadingNode(element: pm.HeadingElement): void {
+        this.result.headings++;
+        element.content.forEach(c => {
+            c.accept(this);
+        });
+    }
+    
+    visitListNode(element: pm.ListElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+        });
+    }
+
+    visitListItemNode(element: pm.ListItemElement): void {
+        this.result.bullet_points++;
+        element.content.forEach(c => {
+            c.accept(this);
+        });
+    }
+
+    visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+        });
+    }
+
+    visitSlideNode(element: pm.SlideElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+        });
+    }
+
+    visitLaneNode(element: pm.Lane): void {
+        element.slides.forEach(slide => {
+            slide?.accept(this);
+        });
+    }
+
+    getResult(): AnalysisResult {
+        return this.result;
+    }
+
 }
