@@ -93,8 +93,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     }
 
     return (
-        <Grid container style={{ height: "100%" }}>
-            <Grid item xs={12} md={12}>
+        <Grid container direction="column" style={{ height: "100%" }}>
+            <Grid item >
                 <SelectContainer
                     selectedSlideIndex={selectedSlideIndex}
                     onAdd={addSlide}
@@ -105,7 +105,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                     onActivate={activateSlide}
                 />
             </Grid>
-            <Grid item xs={12} md={12} style={{ height: "100%" }}>
+            <Grid item xs style={{ height: "100%" }}>
                 {getView()}
             </Grid>
         </Grid>

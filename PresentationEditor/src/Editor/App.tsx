@@ -9,6 +9,7 @@ import { MarkdownParser } from "../Model/MarkdownParser";
 import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
+import { Box, Button } from "@mui/material";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -142,54 +143,57 @@ function App() {
     }, []);
 
     return (
-        <div style={{ height: "100%" }}>
-            <Menu
-                addLane={addLane}
-                swapLane={swapLane}
-                importPresentation={importPresentation}
-                exportPresentationAsJson={exportPresentationAsJSON}
-                exportPresentationAsReveal={exportPresentationAsReveal}
-                metadata={metadata}
-                setMetadata={setMetadata}
-            />
-            <Grid
-                container
-                spacing={1}
-                className="gridContainer"
-                style={{ height: "100%" }}
-            >
-                <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
-                        <LaneContainer
-                            lanes={lanes}
-                            setLanes={setLanes}
-                            selectedLaneIndex={selectedLeftLaneIndex}
-                            setSelectedLaneIndex={setSelectedLeftLaneIndex}
-                            otherLaneIndex={selectedRightLaneIndex}
-                            addLane={addLane}
-                            deleteLane={deleteLane}
-                            imported={imported}
-                            setImported={setImported}
-                        />
-                    )}
-                </Grid>
-                <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
-                        <LaneContainer
-                            lanes={lanes}
-                            setLanes={setLanes}
-                            selectedLaneIndex={selectedRightLaneIndex}
-                            setSelectedLaneIndex={setSelectedRightLaneIndex}
-                            otherLaneIndex={selectedLeftLaneIndex}
-                            addLane={addLane}
-                            deleteLane={deleteLane}
-                            imported={imported}
-                            setImported={setImported}
-                        />
-                    )}
+        <Grid container direction="column" style={{height: "100%"}}>
+            <Grid item>
+                <Menu
+                    addLane={addLane}
+                    swapLane={swapLane}
+                    importPresentation={importPresentation}
+                    exportPresentationAsJson={exportPresentationAsJSON}
+                    exportPresentationAsReveal={exportPresentationAsReveal}
+                    metadata={metadata}
+                    setMetadata={setMetadata}
+                />
+            </Grid>
+            <Grid item xs md sm style={{height: "100%"}}>
+                <Grid
+                    container
+                    spacing={1}
+                    style={{ height: "90%" }}
+                >
+                    <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                        {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
+                            <LaneContainer
+                                lanes={lanes}
+                                setLanes={setLanes}
+                                selectedLaneIndex={selectedLeftLaneIndex}
+                                setSelectedLaneIndex={setSelectedLeftLaneIndex}
+                                otherLaneIndex={selectedRightLaneIndex}
+                                addLane={addLane}
+                                deleteLane={deleteLane}
+                                imported={imported}
+                                setImported={setImported}
+                            />
+                        )}
+                    </Grid>
+                    <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                        {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
+                            <LaneContainer
+                                lanes={lanes}
+                                setLanes={setLanes}
+                                selectedLaneIndex={selectedRightLaneIndex}
+                                setSelectedLaneIndex={setSelectedRightLaneIndex}
+                                otherLaneIndex={selectedLeftLaneIndex}
+                                addLane={addLane}
+                                deleteLane={deleteLane}
+                                imported={imported}
+                                setImported={setImported}
+                            />
+                        )}
+                    </Grid>
                 </Grid>
             </Grid>
-        </div>
+        </Grid>
     );
 }
 
