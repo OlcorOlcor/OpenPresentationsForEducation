@@ -84,6 +84,7 @@ function App() {
             let parser = new PresentationParser();
             let json = JSON.parse(content);
             setMetadata(json.metadata);
+            setConstraints(json.constraints);
             let lanes = parser.getLanes(json.lanes);
             setLanes(lanes);
             setSelectedLeftLaneIndex(0);
@@ -102,7 +103,7 @@ function App() {
             visitor.visitLaneNode(lane);
             jsonLanes.push(visitor.getResult());
         });
-        let exportJson = {lanes: jsonLanes, metadata: metadata};
+        let exportJson = {lanes: jsonLanes, metadata: metadata, constraints: constraints};
         const blob = new Blob([JSON.stringify(exportJson)], { type: "json" });
         saveAs(blob, "output.json");
     }

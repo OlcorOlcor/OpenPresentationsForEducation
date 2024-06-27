@@ -1,5 +1,5 @@
 import { Button, Dialog, FormControl, Grid, TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { Constraints } from "../Model/PresentationTypes";
 
 interface ConstraintsDialogProps {
@@ -16,6 +16,15 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
     const [links, setLinks] = React.useState<number>(constraints.links);
     const [headings, setHeadings] = React.useState<number>(constraints.headings);
     const [bulletPoints, setBulletPoints] = React.useState<number>(constraints.bullet_points);
+
+    useEffect(() => {
+        setWords(constraints.words);
+        setCharacters(constraints.characters);
+        setImages(constraints.images);
+        setLinks(constraints.links);
+        setHeadings(constraints.headings);
+        setBulletPoints(constraints.bullet_points);
+    }, [constraints])
 
     function handleSubmit(words: number, characters: number, images: number, links: number, headings: number, bulletPoints: number): void {
         setConstraints({words: words, characters: characters, images: images, links: links, headings: headings, bullet_points: bulletPoints});
