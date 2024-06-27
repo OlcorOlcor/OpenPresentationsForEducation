@@ -22,27 +22,27 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
     }
 
     function handleWordsChange(e: any): void {
-        setWords(e.target.value);
+        setWords(+e.target.value);
     }
 
     function handleCharactersChange(e: any): void {
-        setCharacters(e.target.value);
+        setCharacters(+e.target.value);
     }
 
     function handleImagesChange(e: any): void {
-        setImages(e.target.value);
+        setImages(+e.target.value);
     }
 
     function handleLinksChange(e: any): void {
-        setLinks(e.target.value);
+        setLinks(+e.target.value);
     }
 
     function handleHeadingsChange(e: any): void {
-        setHeadings(e.target.value);
+        setHeadings(+e.target.value);
     }
 
     function handleBulletPointsChange(e: any): void {
-        setBulletPoints(e.target.value);
+        setBulletPoints(+e.target.value);
     }
 
     function handleClose() {
