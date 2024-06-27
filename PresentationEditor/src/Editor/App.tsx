@@ -177,6 +177,7 @@ function App() {
                                 deleteLane={deleteLane}
                                 imported={imported}
                                 setImported={setImported}
+                                constraints={constraints}
                             />
                         )}
                     </Grid>
@@ -192,6 +193,7 @@ function App() {
                                 deleteLane={deleteLane}
                                 imported={imported}
                                 setImported={setImported}
+                                constraints={constraints}
                             />
                         )}
                     </Grid>
