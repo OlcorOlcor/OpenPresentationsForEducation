@@ -10,12 +10,12 @@ interface ConstraintsDialogProps {
 }
 
 const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDialogOpen, constraints, setConstraints}) => {    
-    const [words, setWords] = React.useState<number>(constraints.words);
-    const [characters, setCharacters] = React.useState<number>(constraints.characters);
-    const [images, setImages] = React.useState<number>(constraints.images);
-    const [links, setLinks] = React.useState<number>(constraints.links);
-    const [headings, setHeadings] = React.useState<number>(constraints.headings);
-    const [bulletPoints, setBulletPoints] = React.useState<number>(constraints.bullet_points);
+    const [words, setWords] = React.useState<number | null>(constraints.words);
+    const [characters, setCharacters] = React.useState<number | null>(constraints.characters);
+    const [images, setImages] = React.useState<number | null>(constraints.images);
+    const [links, setLinks] = React.useState<number | null>(constraints.links);
+    const [headings, setHeadings] = React.useState<number | null>(constraints.headings);
+    const [bulletPoints, setBulletPoints] = React.useState<number | null>(constraints.bullet_points);
 
     useEffect(() => {
         setWords(constraints.words);
@@ -26,7 +26,7 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
         setBulletPoints(constraints.bullet_points);
     }, [constraints])
 
-    function handleSubmit(words: number, characters: number, images: number, links: number, headings: number, bulletPoints: number): void {
+    function handleSubmit(words: number | null, characters: number | null, images: number | null, links: number | null, headings: number | null, bulletPoints: number | null): void {
         setConstraints({words: words, characters: characters, images: images, links: links, headings: headings, bullet_points: bulletPoints});
     }
 

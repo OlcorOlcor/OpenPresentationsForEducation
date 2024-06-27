@@ -5,6 +5,7 @@ import { SlideElement } from "../Model/PresentationModel";
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Constraints } from "../Model/PresentationTypes";
+import { Tune } from "@mui/icons-material";
 
 interface SelectContainerProps {
     elements: (SlideElement | null)[];
@@ -61,12 +62,25 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
     }
 
     function isSlideCorrect(): boolean {
-        return slideAnalysis.words <= constraints.words 
-                && slideAnalysis.characters <= constraints.characters
-                && slideAnalysis.images <= constraints.images
-                && slideAnalysis.links <= constraints.links
-                && slideAnalysis.headings <= constraints.headings
-                && slideAnalysis.bullet_points <= constraints.bullet_points;
+        if (slideAnalysis.words != null && constraints.words != null && slideAnalysis.words > constraints.words) {
+            return false;
+        }
+        if (slideAnalysis.characters != null && constraints.characters != null && slideAnalysis.characters > constraints.characters) {
+            return false;
+        }
+        if (slideAnalysis.images != null && constraints.images != null && slideAnalysis.images > constraints.images) {
+            return false;
+        }
+        if (slideAnalysis.links != null && constraints.links != null && slideAnalysis.links > constraints.links) {
+            return false;
+        }
+        if (slideAnalysis.headings != null && constraints.headings != null && slideAnalysis.headings > constraints.headings) {
+            return false;
+        }
+        if (slideAnalysis.bullet_points != null && constraints.bullet_points != null && slideAnalysis.bullet_points > constraints.bullet_points) {
+            return false;
+        }
+        return true;
     }
 
     return (
@@ -129,12 +143,12 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                 </Tooltip>
                 <Popover open={infoOpen} anchorEl={iconRef.current} onClose={handleInfoClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
                     <Grid container direction="column">
-                        <Grid item>{slideAnalysis.words > constraints.words && <WarningIcon color="warning"/>}Words: {slideAnalysis.words}</Grid>
-                        <Grid item>{slideAnalysis.characters > constraints.characters && <WarningIcon color="warning"/>}Characters: {slideAnalysis.characters}</Grid>
-                        <Grid item>{slideAnalysis.images > constraints.images && <WarningIcon color="warning"/>}Images: {slideAnalysis.images}</Grid>
-                        <Grid item>{slideAnalysis.links > constraints.links && <WarningIcon color="warning"/>}Links: {slideAnalysis.links}</Grid>
-                        <Grid item>{slideAnalysis.headings > constraints.headings && <WarningIcon color="warning"/>}Headings: {slideAnalysis.headings}</Grid>
-                        <Grid item>{slideAnalysis.bullet_points > constraints.bullet_points && <WarningIcon color="warning"/>}Bullet points: {slideAnalysis.bullet_points}</Grid>
+                        <Grid item>{ slideAnalysis.words != null && constraints.words != null && slideAnalysis.words > constraints.words && <WarningIcon color="warning"/>}Words: {slideAnalysis.words}</Grid>
+                        <Grid item>{ slideAnalysis.characters != null && constraints.characters != null && slideAnalysis.characters > constraints.characters && <WarningIcon color="warning"/>}Characters: {slideAnalysis.characters}</Grid>
+                        <Grid item>{ slideAnalysis.images != null && constraints.images != null && slideAnalysis.images > constraints.images && <WarningIcon color="warning"/>}Images: {slideAnalysis.images}</Grid>
+                        <Grid item>{ slideAnalysis.links != null && constraints.links != null && slideAnalysis.links > constraints.links && <WarningIcon color="warning"/>}Links: {slideAnalysis.links}</Grid>
+                        <Grid item>{ slideAnalysis.headings != null && constraints.headings != null && slideAnalysis.headings > constraints.headings && <WarningIcon color="warning"/>}Headings: {slideAnalysis.headings}</Grid>
+                        <Grid item>{slideAnalysis.bullet_points != null && constraints.bullet_points != null && slideAnalysis.bullet_points > constraints.bullet_points && <WarningIcon color="warning"/>}Bullet points: {slideAnalysis.bullet_points}</Grid>
                     </Grid>
                 </Popover>
             </Grid>

@@ -17,7 +17,7 @@ function App() {
         new Lane([new SlideElement([])], "second"),
     ]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
-    const [constraints, setConstraints] = useState<pt.Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
+    const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
