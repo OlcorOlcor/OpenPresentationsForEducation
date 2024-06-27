@@ -2,10 +2,11 @@ import { Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
-import { MarkdownVisitor } from "../Model/Visitors";
+import { AnalysisVisitor, MarkdownVisitor } from "../Model/Visitors";
 import LaneMenu from "./LaneMenu";
 import { MarkdownParser } from "../Model/MarkdownParser";
 import { PresentationParser } from "../Model/PresentationParser";
+import { Constraints } from "../Model/PresentationTypes";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -17,6 +18,7 @@ interface LaneContainerProps {
     deleteLane(index: number): void;
     imported: boolean;
     setImported: React.Dispatch<React.SetStateAction<boolean>>;
+    constraints: Constraints;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -27,11 +29,13 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     otherLaneIndex,
     deleteLane,
     imported,
-    setImported
+    setImported,
+    constraints
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [editorData, setEditorData] = useState<string>("");
     const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
+    const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
     const [slideMode, setSlideMode] = useState<boolean>(
         lanes[selectedLaneIndex].outputAsPresentation,
     );
@@ -116,6 +120,11 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedSlide = presentationParser.getSlides(jsonSlides)[0];
             //let updatedSlide = (presentationParser.GetPresentation() as Presentation).getSlides()[0];
             updatedSlides[index] = updatedSlide;
+            if (updatedSlide) {
+                let analysisVisitor = new AnalysisVisitor();
+                analysisVisitor.visitSlideNode(updatedSlide);
+                setSlideAnalysis(analysisVisitor.getResult());
+            }
             updatedLanes[selectedLaneIndex].slides = updatedSlides;
             return updatedLanes;
         });
@@ -134,8 +143,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     return (
-        <Grid container style={{ height: "100%" }}>
-            <Grid item xs={12}>
+        <Grid container direction="column" style={{ height: "100%" }}>
+            <Grid item>
                 <LaneMenu
                     lanes={lanes}
                     setLanes={setLanes}
@@ -149,7 +158,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     deleteLane={deleteLane}
                 />
             </Grid>
-            <Grid item xs={12} style={{ height: "100%" }}>
+            <Grid item xs style={{ height: "calc(100% - 64px)" }}>
                 <EditorModule
                     editorData={editorData}
                     setEditorData={setEditorData}
@@ -163,6 +172,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     setSlideActive={setSlideActive}
                     deleteSlideAt={deleteSlideAt}
                     regenerateSlide={regenerateSlide}
+                    constraints={constraints}
+                    slideAnalysis={slideAnalysis}
                 />
             </Grid>
         </Grid>

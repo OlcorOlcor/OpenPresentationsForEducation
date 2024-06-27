@@ -9,6 +9,7 @@ import { MarkdownParser } from "../Model/MarkdownParser";
 import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
+import { Box, Button } from "@mui/material";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -16,6 +17,7 @@ function App() {
         new Lane([new SlideElement([])], "second"),
     ]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
+    const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
@@ -82,6 +84,7 @@ function App() {
             let parser = new PresentationParser();
             let json = JSON.parse(content);
             setMetadata(json.metadata);
+            setConstraints(json.constraints);
             let lanes = parser.getLanes(json.lanes);
             setLanes(lanes);
             setSelectedLeftLaneIndex(0);
@@ -100,7 +103,7 @@ function App() {
             visitor.visitLaneNode(lane);
             jsonLanes.push(visitor.getResult());
         });
-        let exportJson = {lanes: jsonLanes, metadata: metadata};
+        let exportJson = {lanes: jsonLanes, metadata: metadata, constraints: constraints};
         const blob = new Blob([JSON.stringify(exportJson)], { type: "json" });
         saveAs(blob, "output.json");
     }
@@ -118,46 +121,23 @@ function App() {
         saveAs(blob, "output.html");
     }
 
-    // temp fix, error is likely caused by mui grid
-    useEffect(() => {
-        window.addEventListener("error", (e) => {
-            if (
-                e.message ===
-                "ResizeObserver loop completed with undelivered notifications."
-            ) {
-                const resizeObserverErrDiv = document.getElementById(
-                    "webpack-dev-server-client-overlay-div",
-                );
-                const resizeObserverErr = document.getElementById(
-                    "webpack-dev-server-client-overlay",
-                );
-                if (resizeObserverErr) {
-                    resizeObserverErr.setAttribute("style", "display: none");
-                }
-                if (resizeObserverErrDiv) {
-                    resizeObserverErrDiv.setAttribute("style", "display: none");
-                }
-            }
-        });
-    }, []);
 
     return (
-        <div style={{ height: "100%" }}>
-            <Menu
-                addLane={addLane}
-                swapLane={swapLane}
-                importPresentation={importPresentation}
-                exportPresentationAsJson={exportPresentationAsJSON}
-                exportPresentationAsReveal={exportPresentationAsReveal}
-                metadata={metadata}
-                setMetadata={setMetadata}
-            />
-            <Grid
-                container
-                spacing={1}
-                className="gridContainer"
-                style={{ height: "100%" }}
-            >
+        <Grid container direction="column" style={{height: "100%"}}>
+            <Grid item>
+                <Menu
+                    addLane={addLane}
+                    swapLane={swapLane}
+                    importPresentation={importPresentation}
+                    exportPresentationAsJson={exportPresentationAsJSON}
+                    exportPresentationAsReveal={exportPresentationAsReveal}
+                    metadata={metadata}
+                    setMetadata={setMetadata}
+                    constraints={constraints}
+                    setConstraints={setConstraints}
+                />
+            </Grid>
+            <Grid item container xs md sm spacing={1} style={{ height: "calc(100% - 64px)" }}>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
                     {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
                         <LaneContainer
@@ -170,6 +150,7 @@ function App() {
                             deleteLane={deleteLane}
                             imported={imported}
                             setImported={setImported}
+                            constraints={constraints}
                         />
                     )}
                 </Grid>
@@ -185,11 +166,12 @@ function App() {
                             deleteLane={deleteLane}
                             imported={imported}
                             setImported={setImported}
+                            constraints={constraints}
                         />
                     )}
                 </Grid>
             </Grid>
-        </div>
+        </Grid>
     );
 }
 

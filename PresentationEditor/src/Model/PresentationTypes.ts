@@ -80,3 +80,12 @@ export type Metadata = {
     name: string;
     source: string;
 }
+
+export type Constraints = {
+    words: number | null;
+    characters: number | null;
+    images: number | null;
+    links: number | null;
+    headings: number | null;
+    bullet_points: number | null;
+}

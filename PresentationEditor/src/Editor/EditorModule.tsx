@@ -4,6 +4,7 @@ import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
 import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
+import { Constraints } from "../Model/PresentationTypes";
 
 interface EditorModuleProps {
     editorData: string;
@@ -18,6 +19,8 @@ interface EditorModuleProps {
     setSlideActive(index: number): void;
     deleteSlideAt(index: number): void;
     regenerateSlide(index: number): void;
+    constraints: Constraints;
+    slideAnalysis: Constraints;
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
@@ -32,7 +35,9 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     addSlideAt,
     setSlideActive,
     deleteSlideAt,
-    regenerateSlide
+    regenerateSlide,
+    constraints,
+    slideAnalysis
 }) => {
     // const [selectedView, setSelectedView] = useState<any>(null);
 
@@ -93,8 +98,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     }
 
     return (
-        <Grid container style={{ height: "100%" }}>
-            <Grid item xs={12} md={12}>
+        <Grid container direction="column" style={{ height: "100%" }}>
+            <Grid item >
                 <SelectContainer
                     selectedSlideIndex={selectedSlideIndex}
                     onAdd={addSlide}
@@ -103,9 +108,11 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                     elements={slides}
                     onSelect={selectSlide}
                     onActivate={activateSlide}
+                    constraints={constraints}
+                    slideAnalysis={slideAnalysis}
                 />
             </Grid>
-            <Grid item xs={12} md={12} style={{ height: "100%" }}>
+            <Grid item xs style={{ height: "calc(100% - 64px)" }}>
                 {getView()}
             </Grid>
         </Grid>
