@@ -159,7 +159,7 @@ function App() {
                     setConstraints={setConstraints}
                 />
             </Grid>
-            <Grid item container spacing={1} style={{ height: "90%" }}>
+            <Grid item container xs md sm spacing={1} style={{ height: "calc(100% - 64px)" }}>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
                     {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
                         <LaneContainer

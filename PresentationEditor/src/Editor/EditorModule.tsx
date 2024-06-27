@@ -112,7 +112,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                     slideAnalysis={slideAnalysis}
                 />
             </Grid>
-            <Grid item xs style={{ height: "100%" }}>
+            <Grid item xs style={{ height: "calc(100% - 64px)" }}>
                 {getView()}
             </Grid>
         </Grid>

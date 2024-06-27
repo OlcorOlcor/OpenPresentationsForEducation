@@ -143,8 +143,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     return (
-        <Grid container style={{ height: "100%" }}>
-            <Grid item xs={12}>
+        <Grid container direction="column" style={{ height: "100%" }}>
+            <Grid item>
                 <LaneMenu
                     lanes={lanes}
                     setLanes={setLanes}
@@ -158,7 +158,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     deleteLane={deleteLane}
                 />
             </Grid>
-            <Grid item xs={12} style={{ height: "100%" }}>
+            <Grid item xs style={{ height: "calc(100% - 64px)" }}>
                 <EditorModule
                     editorData={editorData}
                     setEditorData={setEditorData}

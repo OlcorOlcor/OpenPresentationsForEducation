@@ -70,48 +70,58 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
     }
 
     return (
-        <div className="slide-select-container">
-            <Pagination
-                count={elements.length}
-                shape="rounded"
-                variant="outlined"
-                page={selectedSlideIndex + 1}
-                onChange={(_, number) => select(number - 1)}
-                renderItem={(item) => {
-                    if (
-                        item.type === "start-ellipsis" ||
-                        item.type === "end-ellipsis" ||
-                        item.type === "previous" ||
-                        item.type === "next"
-                    ) {
-                        return <PaginationItem {...item} />;
-                    }
-                    return (
-                        <PaginationItem
-                            {...item}
-                            className={`
-                                ${elements[(item.page as number) - 1]?.active ? "active" : "inactive"} 
-                                ${((item.page as number) - 1) === selectedSlideIndex ? "selected" : ""}
-                              `}
-                        />
-                    );
-                }}
-            />
-            <Button variant="contained" onClick={onActivate}>
-                {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.active
-                    ? "Activate"
-                    : "Deactivate"}
-            </Button>
-            <Button variant="contained" onClick={onAdd}>
-                Add
-            </Button>
-            <Button variant="contained" onClick={onAddAfter}>
-                Add after
-            </Button>
-            <Button variant="contained" color="error" onClick={onDelete}>
-                Delete
-            </Button>
-            <div>
+        <Grid container spacing={1}>
+            <Grid item>
+                <Pagination
+                    count={elements.length}
+                    shape="rounded"
+                    variant="outlined"
+                    page={selectedSlideIndex + 1}
+                    onChange={(_, number) => select(number - 1)}
+                    renderItem={(item) => {
+                        if (
+                            item.type === "start-ellipsis" ||
+                            item.type === "end-ellipsis" ||
+                            item.type === "previous" ||
+                            item.type === "next"
+                        ) {
+                            return <PaginationItem {...item} />;
+                        }
+                        return (
+                            <PaginationItem
+                                {...item}
+                                className={`
+                                    ${elements[(item.page as number) - 1]?.active ? "active" : "inactive"} 
+                                    ${((item.page as number) - 1) === selectedSlideIndex ? "selected" : ""}
+                                `}
+                            />
+                        );
+                    }}
+                />
+            </Grid>
+            <Grid item>
+                <Button variant="contained" onClick={onActivate}>
+                    {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.active
+                        ? "Activate"
+                        : "Deactivate"}
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button variant="contained" onClick={onAdd}>
+                    Add
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button variant="contained" onClick={onAddAfter}>
+                    Add after
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button variant="contained" color="error" onClick={onDelete}>
+                    Delete
+                </Button>
+            </Grid>
+            <Grid item>
                 <Tooltip open={warningMessageOpen} title="Constraint reached!" arrow>
                     <IconButton onClick={handleInfoClick} ref={iconRef}>
                         <InfoIcon color={isSlideCorrect() ? "primary" : "warning"}/>
@@ -127,8 +137,8 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                         <Grid item>{slideAnalysis.bullet_points > constraints.bullet_points && <WarningIcon color="warning"/>}Bullet points: {slideAnalysis.bullet_points}</Grid>
                     </Grid>
                 </Popover>
-            </div>
-        </div>
+            </Grid>
+        </Grid>
     );
 };
 
