@@ -159,44 +159,38 @@ function App() {
                     setConstraints={setConstraints}
                 />
             </Grid>
-            <Grid item xs md sm>
-                <Grid
-                    container
-                    spacing={1}
-                    style={{ height: "90%" }}
-                >
-                    <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                        {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
-                            <LaneContainer
-                                lanes={lanes}
-                                setLanes={setLanes}
-                                selectedLaneIndex={selectedLeftLaneIndex}
-                                setSelectedLaneIndex={setSelectedLeftLaneIndex}
-                                otherLaneIndex={selectedRightLaneIndex}
-                                addLane={addLane}
-                                deleteLane={deleteLane}
-                                imported={imported}
-                                setImported={setImported}
-                                constraints={constraints}
-                            />
-                        )}
-                    </Grid>
-                    <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                        {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
-                            <LaneContainer
-                                lanes={lanes}
-                                setLanes={setLanes}
-                                selectedLaneIndex={selectedRightLaneIndex}
-                                setSelectedLaneIndex={setSelectedRightLaneIndex}
-                                otherLaneIndex={selectedLeftLaneIndex}
-                                addLane={addLane}
-                                deleteLane={deleteLane}
-                                imported={imported}
-                                setImported={setImported}
-                                constraints={constraints}
-                            />
-                        )}
-                    </Grid>
+            <Grid item container spacing={1} style={{ height: "90%" }}>
+                <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
+                        <LaneContainer
+                            lanes={lanes}
+                            setLanes={setLanes}
+                            selectedLaneIndex={selectedLeftLaneIndex}
+                            setSelectedLaneIndex={setSelectedLeftLaneIndex}
+                            otherLaneIndex={selectedRightLaneIndex}
+                            addLane={addLane}
+                            deleteLane={deleteLane}
+                            imported={imported}
+                            setImported={setImported}
+                            constraints={constraints}
+                        />
+                    )}
+                </Grid>
+                <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                    {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
+                        <LaneContainer
+                            lanes={lanes}
+                            setLanes={setLanes}
+                            selectedLaneIndex={selectedRightLaneIndex}
+                            setSelectedLaneIndex={setSelectedRightLaneIndex}
+                            otherLaneIndex={selectedLeftLaneIndex}
+                            addLane={addLane}
+                            deleteLane={deleteLane}
+                            imported={imported}
+                            setImported={setImported}
+                            constraints={constraints}
+                        />
+                    )}
                 </Grid>
             </Grid>
         </Grid>
