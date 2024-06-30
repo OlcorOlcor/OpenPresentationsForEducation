@@ -164,6 +164,7 @@ export class SlideElement extends BaseElement implements IVisitable {
     content: OuterElement[];
     active: boolean = false;
     metadata: string[] = [];
+    refs: string[] = [];
     public constructor(content: OuterElement[]) {
         super();
         this.content = content;

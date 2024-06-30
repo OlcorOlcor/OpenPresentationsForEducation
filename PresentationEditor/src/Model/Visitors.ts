@@ -240,6 +240,13 @@ export class MarkdownVisitor implements IVisitor {
             this.addMetadata(element);
         }
         element.content.forEach((c) => c.accept(this));
+        if (element.refs.length > 0) {
+            this.result += "\n";
+            element.refs.forEach(ref => {
+                this.result += "->[" + ref + "]";
+                this.result += "\n";
+            });
+        }
     }
 
     visitLaneNode(element: pm.Lane): void {
@@ -347,7 +354,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitSlideNode(element: pm.SlideElement): void {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: {active: element.active}, metadataTags: element.metadata};
+        let slide: pt.Slide = {type: "slide", content: [], attributes: {active: element.active}, metadataTags: element.metadata, refs: element.refs};
         element.content.forEach(c => {
             c.accept(this);
             slide.content.push(this.stack.pop()!);

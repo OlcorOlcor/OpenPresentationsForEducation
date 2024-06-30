@@ -6,7 +6,7 @@ class RefIndex {
 
 export class MarkdownParser {
     slideTag: string = "";
-
+    slideRefs: string[] = [];
     metadataTags: string[] = [];
     metadata_rule(state: any, startLine: any, endLine: any, silent: any) {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
@@ -42,6 +42,7 @@ export class MarkdownParser {
         if (this.slideTag !== "") {
             slide.metadataTags.push(this.slideTag);
         }
+        slide.refs = this.slideRefs;
         slides.push(slide);
         return slides;
     }
@@ -51,7 +52,8 @@ export class MarkdownParser {
             type: "slide",
             content: [],
             attributes: { active: true },
-            metadataTags: []
+            metadataTags: [],
+            refs: []
         };
         let first = true;
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
@@ -157,6 +159,14 @@ export class MarkdownParser {
                                 this.slideTag = content.slice(1, content.length - 1);
                                 return;
                             }
+                        }
+                    }
+                    if (item.type === "text") {
+                        let content: string = "";
+                        (item as pt.Text).content.forEach(s => content += s);
+                        if (/^->\[.*\]$/.test(content)) {
+                            this.slideRefs.push(content.slice(3, content.length - 1));
+                            return;
                         }
                     }
                     paragraph.content.push(item);
