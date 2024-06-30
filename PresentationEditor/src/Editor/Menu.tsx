@@ -8,7 +8,6 @@ import ConstraintsDialog from "./ConstraintsDialog";
 
 interface MenuProps {
     addLane(): void;
-    swapLane(): void;
     importPresentation(file: File): void;
     exportPresentationAsJson(): void;
     exportPresentationAsReveal(): void;
@@ -20,7 +19,6 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({
     addLane,
-    swapLane,
     importPresentation,
     exportPresentationAsJson,
     exportPresentationAsReveal,
@@ -80,11 +78,6 @@ const Menu: React.FC<MenuProps> = ({
             <Grid item>
                 <Button variant="contained" onClick={addLane}>
                     Add Lane
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button variant="contained" onClick={swapLane}>
-                    Swap Lanes
                 </Button>
             </Grid>
             <Grid item>

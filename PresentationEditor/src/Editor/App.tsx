@@ -9,7 +9,9 @@ import { MarkdownParser } from "../Model/MarkdownParser";
 import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Fab } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -127,7 +129,6 @@ function App() {
             <Grid item>
                 <Menu
                     addLane={addLane}
-                    swapLane={swapLane}
                     importPresentation={importPresentation}
                     exportPresentationAsJson={exportPresentationAsJSON}
                     exportPresentationAsReveal={exportPresentationAsReveal}
@@ -169,6 +170,12 @@ function App() {
                             constraints={constraints}
                         />
                     )}
+                </Grid>
+                <Grid container justifyContent="center" alignItems="center" style={{ position: 'absolute', top: 0, bottom: 0 }}>
+                    <Fab color="primary" aria-label="add" onClick={swapLane}>
+                        <ArrowBackIcon />
+                        <ArrowForwardIcon />
+                    </Fab>
                 </Grid>
             </Grid>
         </Grid>
