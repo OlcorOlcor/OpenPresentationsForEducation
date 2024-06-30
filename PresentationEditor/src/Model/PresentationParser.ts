@@ -132,6 +132,8 @@ export class PresentationParser {
         let elements = this.getOuterElementContent(jsonSlide.content);
         let slide = new pm.SlideElement(elements);
         slide.active = jsonSlide.attributes.active;
+        slide.metadata = jsonSlide.metadataTags;
+        slide.refs = jsonSlide.refs;
         return slide;
     }
 
