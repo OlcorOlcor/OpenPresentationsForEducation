@@ -135,8 +135,11 @@ export class MarkdownVisitor implements IVisitor {
     result: string = "";
     listLevel: number = 0;
 
-    addMetadata(element: pm.BlockQuoteElement | pm.ParagraphElement | pm.HeadingElement | pm.ListElement): void {
-        this.result += "#[";
+    addMetadata(element: pm.BlockQuoteElement | pm.ParagraphElement | pm.HeadingElement | pm.ListElement | pm.SlideElement): void {
+        if (!(element instanceof pm.SlideElement)) {
+            this.result += "#";
+        }
+        this.result += "[";
         let first = true;
         element.metadata.forEach(m => {
             if (!first) {
@@ -233,6 +236,9 @@ export class MarkdownVisitor implements IVisitor {
     }
 
     visitSlideNode(element: pm.SlideElement): void {
+        if (element.metadata.length !== 0) {
+            this.addMetadata(element);
+        }
         element.content.forEach((c) => c.accept(this));
     }
 
@@ -341,7 +347,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitSlideNode(element: pm.SlideElement): void {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: {active: element.active}};
+        let slide: pt.Slide = {type: "slide", content: [], attributes: {active: element.active}, metadataTags: element.metadata};
         element.content.forEach(c => {
             c.accept(this);
             slide.content.push(this.stack.pop()!);

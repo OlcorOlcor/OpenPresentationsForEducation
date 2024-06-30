@@ -5,6 +5,8 @@ class RefIndex {
 }
 
 export class MarkdownParser {
+    slideTag: string = "";
+
     metadataTags: string[] = [];
     metadata_rule(state: any, startLine: any, endLine: any, silent: any) {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
@@ -36,7 +38,11 @@ export class MarkdownParser {
         let mdit = markdownit();
         mdit.block.ruler.before('paragraph', 'metadata', this.metadata_rule);
         let array = mdit.parse(markdown, {});
-        slides.push(this.handleArray(array));
+        let slide = this.handleArray(array);
+        if (this.slideTag !== "") {
+            slide.metadataTags.push(this.slideTag);
+        }
+        slides.push(slide);
         return slides;
     }
 
@@ -45,7 +51,9 @@ export class MarkdownParser {
             type: "slide",
             content: [],
             attributes: { active: true },
+            metadataTags: []
         };
+        let first = true;
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
                 case "bullet_list_open":
@@ -57,7 +65,11 @@ export class MarkdownParser {
                     slide.content.push(this.handleList(array, index, true));
                     break;
                 case "paragraph_open":
-                    slide.content.push(this.handleParagraph(array, index));
+                    let paragraph = this.handleParagraph(array, index, first);
+                    if (paragraph.content.length === 0) {
+                        break;
+                    }
+                    slide.content.push(paragraph);
                     break;
                 case "heading_open":
                     slide.content.push(this.handleHeading(array, index, array[index.index].markup.length));
@@ -75,6 +87,7 @@ export class MarkdownParser {
                 default:
                     break;
             }
+            first = false;
         }
         return slide;
     }
@@ -98,7 +111,7 @@ export class MarkdownParser {
                     );
                     break;
                 case "paragraph_open":
-                    blockQuote.content.push(this.handleParagraph(array, index));
+                    blockQuote.content.push(this.handleParagraph(array, index, false));
                     break;
                 case "heading_open":
                     blockQuote.content.push(
@@ -126,16 +139,28 @@ export class MarkdownParser {
         return blockQuote;
     }
 
-    private handleParagraph(array: Token[], index: RefIndex): pt.Paragraph {
+    private handleParagraph(array: Token[], index: RefIndex, first: boolean): pt.Paragraph {
         let paragraph: pt.Paragraph = { type: "paragraph", content: [], metadataTags: this.metadataTags };
         this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
+
             if (array[index.index].type === "paragraph_close") {
                 break;
             }
             if (array[index.index].type === "inline") {
                 this.getInline(array[index.index]).forEach((item) => {
+                    if (first) {
+                        if (item.type === "text") {
+                            let content: string = "";
+                            (item as pt.Text).content.forEach(s => content += s);
+                            if (/^\[.*\]$/.test(content)) {
+                                this.slideTag = content.slice(1, content.length - 1);
+                                return;
+                            }
+                        }
+                    }
                     paragraph.content.push(item);
+                    first = false;
                 }
                 );
             }

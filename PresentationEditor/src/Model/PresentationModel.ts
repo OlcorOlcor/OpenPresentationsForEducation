@@ -163,6 +163,7 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
 export class SlideElement extends BaseElement implements IVisitable {
     content: OuterElement[];
     active: boolean = false;
+    metadata: string[] = [];
     public constructor(content: OuterElement[]) {
         super();
         this.content = content;

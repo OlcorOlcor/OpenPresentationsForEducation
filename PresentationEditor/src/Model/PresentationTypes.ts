@@ -68,6 +68,7 @@ export type Slide = {
     type: string;
     content: OuterElement[];
     attributes: { active: boolean };
+    metadataTags: string[];
 };
 
 export type Lane = {
