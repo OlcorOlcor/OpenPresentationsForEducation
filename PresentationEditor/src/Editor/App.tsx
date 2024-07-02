@@ -171,8 +171,8 @@ function App() {
                         />
                     )}
                 </Grid>
-                <Grid container justifyContent="center" alignItems="center" style={{ position: 'absolute', top: 0, bottom: 0 }}>
-                    <Fab color="primary" aria-label="add" onClick={swapLane}>
+                <Grid container justifyContent="center" alignItems="center" style={{ position: 'absolute', top: 0, bottom: 0,  pointerEvents: 'none' }}>
+                    <Fab color="primary" aria-label="add" onClick={swapLane} style={{pointerEvents: 'auto'}}>
                         <ArrowBackIcon />
                         <ArrowForwardIcon />
                     </Fab>
