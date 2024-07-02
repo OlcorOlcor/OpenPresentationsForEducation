@@ -11,7 +11,8 @@ import {
 } from "@mui/material";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import React, { useState } from "react";
-import EditLaneDialog from "./EditLaneDialog";
+import EditLaneContainer from "./EditLaneContainer";
+import LaneDialog from "./LaneDialog";
 
 interface LaneMenuProps {
     lanes: Lane[];
@@ -23,6 +24,7 @@ interface LaneMenuProps {
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
     editorView: boolean;
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
+    addLane(): void;
     deleteLane(index: number): void; 
 }
 
@@ -32,10 +34,9 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     selectedLaneIndex,
     setSelectedLaneIndex,
     otherLaneIndex,
-    setSlideMode,
-    setEditorData,
     editorView,
     setEditorView,
+    addLane,
     deleteLane
 }) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -48,7 +49,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     }
     return (
         <Grid container justifyContent="center" alignItems="center" spacing={4}>
-            <Grid item xs={4}>
+            <Grid item xs>
                 <FormControl fullWidth>
                     <InputLabel id="laneSelectLabel">Select Lane</InputLabel>
                     <Select
@@ -68,10 +69,10 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item>
                 <Button color="primary" variant="contained" onClick={showSettings}>Edit Lane</Button>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item>
                 <FormGroup>
                     <FormControlLabel
                         control={<Checkbox />}
@@ -82,20 +83,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                     />
                 </FormGroup>
             </Grid>
-            <EditLaneDialog
-                dialogOpen={dialogOpen}
-                setDialogOpen={setDialogOpen}
-                lanes={lanes}
-                setLanes={setLanes}
-                selectedLaneIndex={selectedLaneIndex}
-                setSelectedLaneIndex={setSelectedLaneIndex}
-                otherLaneIndex={otherLaneIndex}
-                setSlideMode={setSlideMode}
-                setEditorData={setEditorData}
-                editorView={editorView}
-                setEditorView={setEditorView}
-                deleteLane={deleteLane}
-            />
+            <LaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane}  />
         </Grid>
     );
 };

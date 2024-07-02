@@ -27,6 +27,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     selectedLaneIndex,
     setSelectedLaneIndex,
     otherLaneIndex,
+    addLane,
     deleteLane,
     imported,
     setImported,
@@ -155,6 +156,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     setEditorData={setEditorData}
                     editorView={editorView}
                     setEditorView={setEditorView}
+                    addLane={addLane}
                     deleteLane={deleteLane}
                 />
             </Grid>
