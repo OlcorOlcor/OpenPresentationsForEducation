@@ -149,6 +149,9 @@ export class MarkdownVisitor implements IVisitor {
             first = false;
         });
         this.result += "]\n";
+        if ((element instanceof pm.SlideElement)) {
+            this.result += "\n";
+        }
     }
 
     visitTextNode(element: pm.TextElement): void {
@@ -218,6 +221,7 @@ export class MarkdownVisitor implements IVisitor {
                 this.result += "\n";
             }
         });
+        this.result += "\n";
         this.listLevel--;
     }
 
@@ -299,7 +303,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitImageNode(element: pm.ImageElement): void {
-        let image: pt.Image = {type: "images", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata}
+        let image: pt.Image = {type: "image", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata}
         this.stack.push(image);
     }
 
