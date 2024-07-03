@@ -1,0 +1,369 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "",
+    "title": "Presentation model",
+    "description": "A model for presentation",
+    "type": "object",
+    "$defs": {
+        "Text": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["text"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "content"]
+        },
+        "Link": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["link"]
+                }, 
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "alias": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["alias"]
+                },
+                "metadataTags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "content", "attributes", "metadataTags"]
+        },
+        "Image": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["image"]
+                }, 
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "alias": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["alias"]
+                },
+                "metadataTags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "content", "attributes", "metadataTags"]
+        },
+        "ListItem": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["listItem"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Text"},
+                            {"$ref": "#/$defs/InnerWrapperElement"}
+                        ]
+                    }
+                }
+            },
+            "required": ["type", "content"]
+        },
+        "List": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["list"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/List"},
+                            {"$ref": "#/$defs/ListItem"}
+                        ]
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "listType": {
+                            "type": "string",
+                            "enum": ["ordered", "unordered"]
+                        }
+                    },
+                    "required": ["listType"]
+                },
+                "metadataTags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "content", "attributes", "metadataTags"]
+        },
+        "InnerWrapperElement": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["bold", "italic", "code"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Text"},
+                            {"$ref": "#/$defs/InnerWrapperElement"}
+                        ]
+                    }
+                }
+            }
+        },
+        "Paragraph": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["paragraph"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Text"},
+                            {"$ref": "#/$defs/InnerWrapperElement"},
+                            {"$ref": "#/$defs/Link"},
+                            {"$ref": "#/$defs/Image"}
+                        ]
+                    }
+                },
+                "metadataTags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "content", "metadataTags"]
+        },
+        "Heading": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["heading"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Text"},
+                            {"$ref": "#/$defs/InnerWrapperElement"}
+                        ]
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "level": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 6
+                        }
+                    },
+                    "required": ["level"]
+                }
+            },
+            "required": ["type", "content", "attributes"]
+        },
+        "BlockQuote": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["blockquote"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Paragraph"},
+                            {"$ref": "#/$defs/Heading"},
+                            {"$ref": "#/$defs/List"}
+                        ]
+                    }
+                },
+                "metadataTags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "content", "metadataTags"]
+        },
+        "Slide": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["slide"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Paragraph"},
+                            {"$ref": "#/$defs/Heading"},
+                            {"$ref": "#/$defs/List"},
+                            {"$ref": "#/$defs/BlockQuote"}
+                        ]
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "active": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": ["active"]
+                },
+                "metadataTags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }, 
+                "refs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "content", "attributes", "refs"]
+        },
+        "Lane": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["lane"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Slide"},
+                            { "type": "null" }
+                        ]
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "compile": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": ["name", "compile"]
+                }
+            },
+            "required": ["type", "content", "attributes"]
+        }
+    },
+    "properties": {
+        "lanes": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {"$ref": "#/$defs/Lane"}
+                ]
+            }
+        },
+        "metadata": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "source": {
+                        "type": "string"
+                    }
+                },
+                "required": ["name", "source"]
+            }
+        },
+        "constraints": {
+            "type": "object",
+            "properties": {
+                "words": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
+                },
+                "characters": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
+                },
+                "images": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
+                },
+                "links": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
+                },
+                "headings": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
+                },
+                "bullet_points": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
+                }
+            }
+        }
+    }
+}
