@@ -1,6 +1,6 @@
 import { Dialog, Grid } from "@mui/material";
 import { Lane } from "../Model/PresentationModel";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditLaneContainer from "./EditLaneContainer";
 import ItemListContainer from "./ItemListContainer";
 
@@ -11,12 +11,14 @@ interface LaneEditDialogProps {
     setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
     addLane(): void;
     deleteLane(index: number): void;
+    selectLane(index: number): void;
 }
 
-const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialogOpen, setLanes, addLane, deleteLane}) => {
+const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialogOpen, setLanes, addLane, deleteLane, selectLane}) => {
     const [selectedLaneIndex, setSelectedLaneIndex] = useState<number>(-1);
 
     function handleClose() {
+        selectLane(selectedLaneIndex);
         setDialogOpen(false);
     }
 

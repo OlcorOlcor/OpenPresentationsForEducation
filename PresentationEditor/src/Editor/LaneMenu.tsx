@@ -18,7 +18,7 @@ interface LaneMenuProps {
     lanes: Lane[];
     setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
     selectedLaneIndex: number;
-    setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
+    selectLane(index: number): void;
     otherLaneIndex: number;
     setSlideMode: React.Dispatch<React.SetStateAction<boolean>>;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
@@ -32,7 +32,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     lanes,
     setLanes,
     selectedLaneIndex,
-    setSelectedLaneIndex,
+    selectLane,
     otherLaneIndex,
     editorView,
     setEditorView,
@@ -44,33 +44,10 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
         setDialogOpen(true);
     }
 
-    function selectLane(index: number) {
-        setSelectedLaneIndex(index);
-    }
     return (
         <Grid container justifyContent="center" alignItems="center" spacing={4}>
-            <Grid item xs>
-                <FormControl fullWidth>
-                    <InputLabel id="laneSelectLabel">Select Lane</InputLabel>
-                    <Select
-                        labelId="laneSelectLabel"
-                        value={selectedLaneIndex}
-                        onChange={(e) => selectLane(e.target.value as number)}
-                    >
-                        {lanes.map((lane, i) => (
-                            <MenuItem
-                                key={i}
-                                value={i}
-                                disabled={otherLaneIndex === i}
-                            >
-                                {lane.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Grid item>
-                <Button color="primary" variant="contained" onClick={showSettings}>Edit Lane</Button>
+            <Grid item xs style={{width: "100%"}}>
+                <Button color="primary" variant="contained" onClick={showSettings} style={{width: "100%"}}>{(lanes && lanes[selectedLaneIndex]) ? lanes[selectedLaneIndex].name : "choose a lane"}</Button>
             </Grid>
             <Grid item>
                 <FormGroup>
@@ -83,7 +60,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                     />
                 </FormGroup>
             </Grid>
-            <LaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane}  />
+            <LaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={selectLane}/>
         </Grid>
     );
 };

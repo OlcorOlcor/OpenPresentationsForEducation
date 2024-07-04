@@ -79,6 +79,20 @@ function App() {
         setSelectedRightLaneIndex(leftIndex);
     }
 
+    function selectLeftLane(index: number) {
+        if (index === selectedRightLaneIndex) {
+            return;
+        }
+        setSelectedLeftLaneIndex(index);
+    }
+
+    function selectRightLane(index: number) {
+        if (index === selectedLeftLaneIndex) {
+            return;
+        }
+        setSelectedRightLaneIndex(index);
+    }
+
     function importPresentation(file: File) {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -145,7 +159,7 @@ function App() {
                             lanes={lanes}
                             setLanes={setLanes}
                             selectedLaneIndex={selectedLeftLaneIndex}
-                            setSelectedLaneIndex={setSelectedLeftLaneIndex}
+                            selectLane={selectLeftLane}
                             otherLaneIndex={selectedRightLaneIndex}
                             addLane={addLane}
                             deleteLane={deleteLane}
@@ -161,7 +175,7 @@ function App() {
                             lanes={lanes}
                             setLanes={setLanes}
                             selectedLaneIndex={selectedRightLaneIndex}
-                            setSelectedLaneIndex={setSelectedRightLaneIndex}
+                            selectLane={selectRightLane}
                             otherLaneIndex={selectedLeftLaneIndex}
                             addLane={addLane}
                             deleteLane={deleteLane}
