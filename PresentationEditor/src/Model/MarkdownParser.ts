@@ -327,7 +327,7 @@ export class MarkdownParser {
                     }
                     break;
                 case "code_inline":
-                    let code = { type: "code", content: [child.content] };
+                    let code = { type: "code", content: [{type: "text", content: [child.content]}] };
                     if (stack.length === 0) {
                         inlineElements.push(code);
                         break;
