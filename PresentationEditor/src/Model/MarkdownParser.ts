@@ -1,3 +1,4 @@
+import { PerModuleNameCache } from "typescript";
 import * as pt from "./PresentationTypes";
 import markdownit, { Token } from "markdown-it";
 class RefIndex {
@@ -250,12 +251,22 @@ export class MarkdownParser {
         let inlineElements: (pt.InlineElement | pt.Text)[] = [];
         let stack: pt.TextAnnotation[] = [];
         let current: pt.TextAnnotation;
+        let isLinkAlias: boolean = false;
         inline.children?.forEach((child) => {
             switch (child.type) {
                 case "text":
                 case "softbreak":
                     if (child.type === "softbreak") {
                         child.content = "\n";
+                    }
+                    if (isLinkAlias) {
+                        isLinkAlias = false;
+                        if (stack.length === 0) {
+                            (inlineElements[inlineElements.length - 1] as pt.Link).attributes.alias = child.content;
+                            break;
+                        }
+                        (stack[stack.length - 1].content[stack[stack.length - 1].content.length - 1] as pt.Link).attributes.alias = child.content;
+                        break;
                     }
                     if (child.content === "") {
                         break;
@@ -285,7 +296,7 @@ export class MarkdownParser {
                 case "link_open":
                     let link_href = child.attrGet("href");
                     if (link_href != null) {
-                        // TODO: alias is in another child
+                        isLinkAlias = true;
                         let link: pt.Link = {
                             type: "link",
                             content: [link_href],
