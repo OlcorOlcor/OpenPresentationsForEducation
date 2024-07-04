@@ -80,13 +80,11 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
 export class ImageElement extends InlineLeafElement implements IVisitable {
     content: string;
     alias: string;
-    metadata: string[];
 
-    public constructor(content: string, alias: string, metadata: string[]) {
+    public constructor(content: string, alias: string) {
         super();
         this.content = content;
         this.alias = alias;
-        this.metadata = metadata;
     }
 
     accept(visitor: IVisitor): void {

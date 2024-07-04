@@ -40,9 +40,9 @@ export class MarkdownParser {
         let array = mdit.parse(markdown, {});
         let slide = this.handleArray(array);
         if (this.slideTag !== "") {
-            slide.metadataTags.push(this.slideTag);
+            slide.attributes.metadataTags.push(this.slideTag);
         }
-        slide.refs = this.slideRefs;
+        slide.attributes.refs = this.slideRefs;
         slides.push(slide);
         return slides;
     }
@@ -51,9 +51,10 @@ export class MarkdownParser {
         let slide: pt.Slide = {
             type: "slide",
             content: [],
-            attributes: { active: true },
-            metadataTags: [],
-            refs: []
+            attributes: { 
+                metadataTags: [],
+                refs: []
+            }
         };
         let first = true;
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
@@ -95,7 +96,7 @@ export class MarkdownParser {
     }
 
     private handleBlockQuote(array: Token[], index: RefIndex): pt.BlockQuote {
-        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], metadataTags: this.metadataTags };
+        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], attributes: { metadataTags: this.metadataTags }};
         this.metadataTags = [];
         let done: boolean = false;
         for (; index.index < array.length; ++index.index) {
@@ -142,7 +143,7 @@ export class MarkdownParser {
     }
 
     private handleParagraph(array: Token[], index: RefIndex, first: boolean): pt.Paragraph {
-        let paragraph: pt.Paragraph = { type: "paragraph", content: [], metadataTags: this.metadataTags };
+        let paragraph: pt.Paragraph = { type: "paragraph", content: [], attributes: { metadataTags: this.metadataTags }};
         this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
 
@@ -182,8 +183,8 @@ export class MarkdownParser {
         let heading: pt.HeadingElement = {
             type: "heading",
             content: [],
-            attributes: { level: level },
-            metadataTags: this.metadataTags
+            attributes: { level: level, metadataTags: this.metadataTags },
+            
         };
         this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -207,8 +208,7 @@ export class MarkdownParser {
         let list: pt.List = {
             type: "list",
             content: [],
-            attributes: { listType: ordered ? "ordered" : "unordered" },
-            metadataTags: this.metadataTags
+            attributes: { listType: ordered ? "ordered" : "unordered", metadataTags: this.metadataTags },
         };
         this.metadataTags = [];
         let done: boolean = false;
@@ -290,7 +290,6 @@ export class MarkdownParser {
                             type: "link",
                             content: [link_href],
                             attributes: { alias: child.content },
-                            metadataTags: this.metadataTags
                         };
                         this.metadataTags = [];
                         if (stack.length === 0) {
@@ -306,8 +305,7 @@ export class MarkdownParser {
                         let image: pt.Image = {
                             type: "image",
                             content: [img_href],
-                            attributes: { alias: child.content },
-                            metadataTags: this.metadataTags
+                            attributes: { alias: child.content }
                         };
                         this.metadataTags = [];
                         if (stack.length === 0) {

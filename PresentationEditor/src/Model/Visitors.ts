@@ -303,17 +303,17 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitImageNode(element: pm.ImageElement): void {
-        let image: pt.Image = {type: "image", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata}
+        let image: pt.Image = {type: "image", content: [element.content], attributes: { alias: element.alias }}
         this.stack.push(image);
     }
 
     visitLinkNode(element: pm.LinkElement): void {
-        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata};
+        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }};
         this.stack.push(link);
     }
 
     visitParagraphNode(element: pm.ParagraphElement): void {
-        let paragraph: pt.Paragraph = {type: "paragraph", content: [], metadataTags: element.metadata};
+        let paragraph: pt.Paragraph = {type: "paragraph", content: [], attributes: {metadataTags: element.metadata}};
         element.content.forEach(c => {
             c.accept(this);
             paragraph.content.push(this.stack.pop()!);
@@ -322,7 +322,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitHeadingNode(element: pm.HeadingElement): void {
-       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level }, metadataTags: element.metadata};
+       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level, metadataTags: element.metadata }};
        element.content.forEach(c => {
             c.accept(this);
             heading.content.push(this.stack.pop()!);
@@ -331,7 +331,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitListNode(element: pm.ListElement): void {
-        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType }, metadataTags: element.metadata};
+        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType, metadataTags: element.metadata }};
         element.content.forEach(c => {
             c.accept(this);
             list.content.push(this.stack.pop()!);
@@ -349,7 +349,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        let bq: pt.BlockQuote = {type: "blockquote", content: [], metadataTags: element.metadata};
+        let bq: pt.BlockQuote = {type: "blockquote", content: [], attributes: {metadataTags: element.metadata}};
         element.content.forEach(c => {
             c.accept(this);
             bq.content.push(this.stack.pop()!);
@@ -358,7 +358,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitSlideNode(element: pm.SlideElement): void {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: {active: element.active}, metadataTags: element.metadata, refs: element.refs};
+        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: element.metadata, refs: element.refs }};
         element.content.forEach(c => {
             c.accept(this);
             slide.content.push(this.stack.pop()!);
@@ -369,7 +369,7 @@ export class JsonVisitor implements IVisitor {
     visitLaneNode(element: pm.Lane): void {
         this.lane = {type: "lane", content: [], attributes: {name: element.name, compile: element.outputAsPresentation} };
         element.slides.forEach(slide => {
-            if (slide == null) {
+            if (slide == null || slide.active === false) {
                 this.lane.content.push(null);
                 return;
             }
