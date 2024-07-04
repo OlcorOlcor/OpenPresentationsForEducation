@@ -1,4 +1,4 @@
-import { RestoreOutlined } from "@mui/icons-material";
+import { RestoreOutlined, ThreeGMobiledataSharp } from "@mui/icons-material";
 import * as pm from "./PresentationModel";
 import * as pt from "./PresentationTypes";
 
@@ -134,7 +134,8 @@ export class HtmlVisitor implements IVisitor {
 export class MarkdownVisitor implements IVisitor {
     result: string = "";
     listLevel: number = 0;
-
+    blockQuoteLevel: number = 0;
+    paragraphNewLine: boolean = true;
     addMetadata(element: pm.BlockQuoteElement | pm.ParagraphElement | pm.HeadingElement | pm.ListElement | pm.SlideElement): void {
         if (!(element instanceof pm.SlideElement)) {
             this.result += "#";
@@ -155,6 +156,9 @@ export class MarkdownVisitor implements IVisitor {
     }
 
     visitTextNode(element: pm.TextElement): void {
+        if (element.content === "\n") {
+            this.paragraphNewLine = true;
+        }
         this.result += element.content;
     }
     visitBoldNode(element: pm.BoldElement): void {
@@ -183,12 +187,24 @@ export class MarkdownVisitor implements IVisitor {
         if (element.metadata.length !== 0) {
             this.addMetadata(element);
         }
-        element.content.forEach((c) => c.accept(this));
+        element.content.forEach((c) => { 
+            if (this.paragraphNewLine) {
+                for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+                    this.result += "> ";
+                }
+                this.paragraphNewLine = false;
+            }
+            c.accept(this) 
+        });
         this.result += "\n\n";
     }
+
     visitHeadingNode(element: pm.HeadingElement): void {
         if (element.metadata.length !== 0) {
             this.addMetadata(element);
+        }
+        for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+            this.result += "> ";
         }
         for (let i = 0; i < element.level; ++i) {
             this.result += "#";
@@ -205,11 +221,10 @@ export class MarkdownVisitor implements IVisitor {
         let counter = 1;
         this.listLevel++;
         element.content.forEach((c) => {
-            for (
-                let indentCounter = 0;
-                indentCounter < this.listLevel - 1;
-                indentCounter++
-            ) {
+            for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+                this.result += "> ";
+            }
+            for (let indentCounter = 0; indentCounter < this.listLevel - 1; indentCounter++) {
                 this.result += "\t";
             }
             if (c instanceof pm.ListItemElement) {
@@ -233,10 +248,11 @@ export class MarkdownVisitor implements IVisitor {
         if (element.metadata.length !== 0) {
             this.addMetadata(element);
         }
+        ++this.blockQuoteLevel;
         element.content.forEach((c) => {
-            this.result += "> ";
             c.accept(this);
         });
+        --this.blockQuoteLevel;
     }
 
     visitSlideNode(element: pm.SlideElement): void {
