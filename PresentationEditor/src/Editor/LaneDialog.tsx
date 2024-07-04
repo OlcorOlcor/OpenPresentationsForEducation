@@ -18,7 +18,9 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
     const [selectedLaneIndex, setSelectedLaneIndex] = useState<number>(-1);
 
     function handleClose() {
-        selectLane(selectedLaneIndex);
+        if (selectedLaneIndex !== -1) {
+            selectLane(selectedLaneIndex);
+        }
         setDialogOpen(false);
     }
 
