@@ -142,7 +142,6 @@ function App() {
         <Grid container direction="column" style={{height: "100%"}}>
             <Grid item>
                 <Menu
-                    addLane={addLane}
                     importPresentation={importPresentation}
                     exportPresentationAsJson={exportPresentationAsJSON}
                     exportPresentationAsReveal={exportPresentationAsReveal}

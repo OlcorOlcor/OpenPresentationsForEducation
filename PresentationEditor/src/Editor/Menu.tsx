@@ -7,7 +7,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ConstraintsDialog from "./ConstraintsDialog";
 
 interface MenuProps {
-    addLane(): void;
     importPresentation(file: File): void;
     exportPresentationAsJson(): void;
     exportPresentationAsReveal(): void;
@@ -18,7 +17,6 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({
-    addLane,
     importPresentation,
     exportPresentationAsJson,
     exportPresentationAsReveal,
@@ -75,11 +73,6 @@ const Menu: React.FC<MenuProps> = ({
 
     return (
         <Grid container spacing={4} style={{marginBottom: "10px"}}>
-            <Grid item>
-                <Button variant="contained" onClick={addLane}>
-                    Add Lane
-                </Button>
-            </Grid>
             <Grid item>
                 <Button variant="contained" onClick={openMetadata}>
                     Manage metadata
