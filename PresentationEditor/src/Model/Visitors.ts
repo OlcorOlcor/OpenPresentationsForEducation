@@ -486,3 +486,159 @@ export class AnalysisVisitor implements IVisitor {
     }
 
 }
+
+export class ReductionVisitor implements IVisitor {
+    keywords: string[];
+    metadataTags: string[];
+    isSlideCompliant: boolean = false;
+    compliantLane: pm.Lane;
+
+    constructor(keywords: string[], metadataTags: string[]) {
+        this.keywords = keywords;
+        this.metadataTags = metadataTags;
+        this.compliantLane = new pm.Lane([], "complient lane");
+    }
+
+    private checkMetadata(elementMetadata: string[]) {
+        elementMetadata.forEach(elementMetadata => {
+            this.metadataTags.forEach(metadata => {
+                if (elementMetadata === metadata) {
+                    this.isSlideCompliant = true;
+                    return;
+                }
+            });
+        });
+    }
+
+    visitTextNode(element: pm.TextElement): void {
+        this.keywords.forEach(k => {
+            if (element.content.includes(k)) {
+                this.isSlideCompliant = true;
+                return;
+            }
+        });
+    }
+
+    visitBoldNode(element: pm.BoldElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitItalicNode(element: pm.ItalicElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitCodeNode(element: pm.CodeElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitImageNode(element: pm.ImageElement): void {
+        this.keywords.forEach(k => {
+            if (element.content.includes(k)) {
+                this.isSlideCompliant = true;
+                return;
+            }
+        });
+    }
+
+    visitLinkNode(element: pm.LinkElement): void {
+        this.keywords.forEach(k => {
+            if (element.content.includes(k)) {
+                this.isSlideCompliant = true;
+                return;
+            }
+        });
+    }
+
+    visitParagraphNode(element: pm.ParagraphElement): void {
+        this.checkMetadata(element.metadata);
+        if (this.isSlideCompliant) {
+            return;
+        }
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitHeadingNode(element: pm.HeadingElement): void {
+        this.checkMetadata(element.metadata);
+        if (this.isSlideCompliant) {
+            return;
+        }
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitListNode(element: pm.ListElement): void {
+        this.checkMetadata(element.metadata);
+        if (this.isSlideCompliant) {
+            return;
+        }
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitListItemNode(element: pm.ListItemElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
+        this.checkMetadata(element.metadata);
+        if (this.isSlideCompliant) {
+            return;
+        }
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    visitSlideNode(element: pm.SlideElement): void {
+        element.content.forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                this.compliantLane.slides.push(element);
+                return;
+            }
+        })
+    }
+
+    visitLaneNode(element: pm.Lane): void {
+        element.slides.forEach(c => {
+            this.isSlideCompliant = false;
+            c?.accept(this);
+        });
+    }
+}
