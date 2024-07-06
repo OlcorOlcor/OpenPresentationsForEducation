@@ -24,11 +24,18 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
         setDialogOpen(false);
     }
 
+    function cancel() {
+        setDialogOpen(false);
+    }
+
     function selectLaneIndex(index: number) {
         setSelectedLaneIndex(index);
     }
 
     function handleSubmit(name: string, outputType: boolean) {
+        if (selectedLaneIndex === -1) {
+            return;
+        }
         setLanes(prev => {
             let newLanes = [...prev];
             let newLane = new Lane(newLanes[selectedLaneIndex].slides, name, outputType);
@@ -38,13 +45,13 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
     }
 
     return (
-        <Dialog open={dialogOpen} onClose={handleClose} maxWidth="md" fullWidth>
+        <Dialog open={dialogOpen} onClose={cancel} maxWidth="md" fullWidth>
             <Grid container style={{height: "500px"}}>
                 <Grid item xs={6} style={{overflowY: "auto" , height: "100%"}}>
-                    <ItemListContainer items={lanes} selectItem={selectLaneIndex} addItem={addLane} deleteItem={() => deleteLane(selectedLaneIndex)} selectedItemIndex={selectedLaneIndex}></ItemListContainer>
+                    <ItemListContainer items={lanes} selectItem={selectLaneIndex} addItem={addLane} deleteItem={() => { deleteLane(selectedLaneIndex); setSelectedLaneIndex(-1); }} selectedItemIndex={selectedLaneIndex} ></ItemListContainer>
                 </Grid>
                 <Grid item xs={6} style={{height: "100%"}}>
-                    <EditLaneContainer lanes={lanes} selectedLaneIndex={selectedLaneIndex} handleSubmit={handleSubmit}/>
+                    <EditLaneContainer lanes={lanes} selectedLaneIndex={selectedLaneIndex} handleSubmit={handleSubmit} handleSelect={handleClose} handleCancel={cancel}/>
                 </Grid>
             </Grid>
         </Dialog>

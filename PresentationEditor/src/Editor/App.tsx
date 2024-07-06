@@ -12,6 +12,7 @@ import { saveAs } from "file-saver";
 import { Box, Button, Fab } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import EmptyLane from "../EmptyLane";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -153,7 +154,7 @@ function App() {
             </Grid>
             <Grid item container xs md sm spacing={1} style={{ height: "calc(100% - 64px)" }}>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
+                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
@@ -166,10 +167,10 @@ function App() {
                             setImported={setImported}
                             constraints={constraints}
                         />
-                    )}
+                    ) : ( <EmptyLane addLane={addLane}/> ) }
                 </Grid>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
+                    {(selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex]) ? (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
@@ -182,7 +183,7 @@ function App() {
                             setImported={setImported}
                             constraints={constraints}
                         />
-                    )}
+                    ) : ( <EmptyLane addLane={addLane}/> ) }
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center" style={{ position: 'absolute', top: 0, bottom: 0,  pointerEvents: 'none' }}>
                     <Fab color="primary" aria-label="add" onClick={swapLane} style={{pointerEvents: 'auto'}}>
