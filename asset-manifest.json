@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/OlcorOlcor/OpenPresentationsForEducation/static/css/main.84c16a62.css",
+    "main.js": "/OlcorOlcor/OpenPresentationsForEducation/static/js/main.549370d3.js",
+    "index.html": "/OlcorOlcor/OpenPresentationsForEducation/index.html",
+    "main.84c16a62.css.map": "/OlcorOlcor/OpenPresentationsForEducation/static/css/main.84c16a62.css.map",
+    "main.549370d3.js.map": "/OlcorOlcor/OpenPresentationsForEducation/static/js/main.549370d3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.84c16a62.css",
+    "static/js/main.549370d3.js"
+  ]
+}
