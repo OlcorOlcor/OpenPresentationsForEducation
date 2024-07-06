@@ -18,7 +18,6 @@ export type Link = {
     type: string;
     content: string[];
     attributes: { alias: string };
-    metadataTags: string[]
 };
 
 export type CustomTag = {
@@ -30,7 +29,6 @@ export type Image = {
     type: string;
     content: string[];
     attributes: { alias: string };
-    metadataTags: string[]
 };
 
 export type ListItem = {
@@ -41,41 +39,52 @@ export type ListItem = {
 export type List = {
     type: string;
     content: (List | ListItem)[];
-    attributes: { listType: string };
-    metadataTags: string[]
+    attributes: { 
+        listType: string;
+        metadataTags: string[]
+    };
 };
 
 export type Paragraph = {
     type: string;
     content: (Text | InlineElement)[];
-    metadataTags: string[]
+    attributes: { metadataTags: string[] }
 };
 
 export type HeadingElement = {
     type: string;
     content: (Text | InlineElement)[];
-    attributes: { level: number };
-    metadataTags: string[]
+    attributes: { 
+        level: number;
+        metadataTags: string[]
+    };
+    
 };
 
 export type BlockQuote = {
     type: string;
     content: OuterElement[];
-    metadataTags: string[]
+    attributes: { 
+        metadataTags: string[]
+    }
 };
 
 export type Slide = {
     type: string;
     content: OuterElement[];
-    attributes: { active: boolean };
-    metadataTags: string[];
-    refs: string[];
+    attributes: { 
+        metadataTags: string[];
+        refs: string[];
+    };
 };
 
 export type Lane = {
     type: string;
     content: (Slide | null)[];
-    attributes: { name: string; compile: boolean };
+    attributes: { 
+        name: string; 
+        compile: boolean 
+    };
 };
 
 export type Metadata = {

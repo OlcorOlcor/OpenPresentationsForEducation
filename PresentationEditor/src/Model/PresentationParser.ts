@@ -58,18 +58,18 @@ export class PresentationParser {
     private getImageElement(imageJson: pt.Image): pm.ImageElement {
         let content: string = "";
         imageJson.content.forEach((c) => (content += c));
-        return new pm.ImageElement(content, imageJson.attributes.alias, imageJson.metadataTags);
+        return new pm.ImageElement(content, imageJson.attributes.alias);
     }
 
     private getParagraphElement(paragraphJson: pt.Paragraph): pm.ParagraphElement {
         let elements = this.getInlineContent(paragraphJson.content);
-        return new pm.ParagraphElement(elements, paragraphJson.metadataTags);
+        return new pm.ParagraphElement(elements, paragraphJson.attributes.metadataTags);
     }
 
     private getHeadingElement(headingJson: pt.HeadingElement): pm.HeadingElement {
         let level: number = headingJson.attributes.level;
         let content = this.getInlineContent(headingJson.content);
-        return new pm.HeadingElement(level, content, headingJson.metadataTags);
+        return new pm.HeadingElement(level, content, headingJson.attributes.metadataTags);
     }
 
     private getListItemElement(listItemJson: pt.ListItem): pm.ListItemElement {
@@ -91,7 +91,7 @@ export class PresentationParser {
                     break;
             }
         });
-        return new pm.ListElement(listType, content, listJson.metadataTags);
+        return new pm.ListElement(listType, content, listJson.attributes.metadataTags);
     }
 
     private getOuterElementContent(contentJson: pt.OuterElement[]): pm.OuterElement[] {
@@ -125,15 +125,15 @@ export class PresentationParser {
 
     private getBlockQuoteElement(blockQuoteJson: pt.BlockQuote): pm.BlockQuoteElement {
         let content = this.getOuterElementContent(blockQuoteJson.content);
-        return new pm.BlockQuoteElement(content, blockQuoteJson.metadataTags);
+        return new pm.BlockQuoteElement(content, blockQuoteJson.attributes.metadataTags);
     }
 
     private createSlide(jsonSlide: pt.Slide): pm.SlideElement {
         let elements = this.getOuterElementContent(jsonSlide.content);
         let slide = new pm.SlideElement(elements);
-        slide.active = jsonSlide.attributes.active;
-        slide.metadata = jsonSlide.metadataTags;
-        slide.refs = jsonSlide.refs;
+        slide.metadata = jsonSlide.attributes.metadataTags;
+        slide.active = true;
+        slide.refs = jsonSlide.attributes.refs;
         return slide;
     }
 

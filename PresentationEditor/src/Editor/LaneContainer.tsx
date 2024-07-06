@@ -12,7 +12,7 @@ interface LaneContainerProps {
     lanes: Lane[];
     setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
     selectedLaneIndex: number;
-    setSelectedLaneIndex: React.Dispatch<React.SetStateAction<number>>;
+    selectLane(index: number): void;
     otherLaneIndex: number;
     addLane(): void;
     deleteLane(index: number): void;
@@ -25,8 +25,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     lanes,
     setLanes,
     selectedLaneIndex,
-    setSelectedLaneIndex,
+    selectLane,
     otherLaneIndex,
+    addLane,
     deleteLane,
     imported,
     setImported,
@@ -149,12 +150,13 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     lanes={lanes}
                     setLanes={setLanes}
                     selectedLaneIndex={selectedLaneIndex}
-                    setSelectedLaneIndex={setSelectedLaneIndex}
+                    selectLane={selectLane}
                     otherLaneIndex={otherLaneIndex}
                     setSlideMode={setSlideMode}
                     setEditorData={setEditorData}
                     editorView={editorView}
                     setEditorView={setEditorView}
+                    addLane={addLane}
                     deleteLane={deleteLane}
                 />
             </Grid>

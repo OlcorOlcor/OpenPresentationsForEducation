@@ -1,4 +1,4 @@
-import { RestoreOutlined } from "@mui/icons-material";
+import { RestoreOutlined, ThreeGMobiledataSharp } from "@mui/icons-material";
 import * as pm from "./PresentationModel";
 import * as pt from "./PresentationTypes";
 
@@ -134,7 +134,8 @@ export class HtmlVisitor implements IVisitor {
 export class MarkdownVisitor implements IVisitor {
     result: string = "";
     listLevel: number = 0;
-
+    blockQuoteLevel: number = 0;
+    paragraphNewLine: boolean = true;
     addMetadata(element: pm.BlockQuoteElement | pm.ParagraphElement | pm.HeadingElement | pm.ListElement | pm.SlideElement): void {
         if (!(element instanceof pm.SlideElement)) {
             this.result += "#";
@@ -149,9 +150,15 @@ export class MarkdownVisitor implements IVisitor {
             first = false;
         });
         this.result += "]\n";
+        if ((element instanceof pm.SlideElement)) {
+            this.result += "\n";
+        }
     }
 
     visitTextNode(element: pm.TextElement): void {
+        if (element.content === "\n") {
+            this.paragraphNewLine = true;
+        }
         this.result += element.content;
     }
     visitBoldNode(element: pm.BoldElement): void {
@@ -180,12 +187,24 @@ export class MarkdownVisitor implements IVisitor {
         if (element.metadata.length !== 0) {
             this.addMetadata(element);
         }
-        element.content.forEach((c) => c.accept(this));
+        element.content.forEach((c) => { 
+            if (this.paragraphNewLine) {
+                for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+                    this.result += "> ";
+                }
+                this.paragraphNewLine = false;
+            }
+            c.accept(this) 
+        });
         this.result += "\n\n";
     }
+
     visitHeadingNode(element: pm.HeadingElement): void {
         if (element.metadata.length !== 0) {
             this.addMetadata(element);
+        }
+        for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+            this.result += "> ";
         }
         for (let i = 0; i < element.level; ++i) {
             this.result += "#";
@@ -202,11 +221,10 @@ export class MarkdownVisitor implements IVisitor {
         let counter = 1;
         this.listLevel++;
         element.content.forEach((c) => {
-            for (
-                let indentCounter = 0;
-                indentCounter < this.listLevel - 1;
-                indentCounter++
-            ) {
+            for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+                this.result += "> ";
+            }
+            for (let indentCounter = 0; indentCounter < this.listLevel - 1; indentCounter++) {
                 this.result += "\t";
             }
             if (c instanceof pm.ListItemElement) {
@@ -218,6 +236,7 @@ export class MarkdownVisitor implements IVisitor {
                 this.result += "\n";
             }
         });
+        this.result += "\n";
         this.listLevel--;
     }
 
@@ -229,10 +248,11 @@ export class MarkdownVisitor implements IVisitor {
         if (element.metadata.length !== 0) {
             this.addMetadata(element);
         }
+        ++this.blockQuoteLevel;
         element.content.forEach((c) => {
-            this.result += "> ";
             c.accept(this);
         });
+        --this.blockQuoteLevel;
     }
 
     visitSlideNode(element: pm.SlideElement): void {
@@ -299,17 +319,17 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitImageNode(element: pm.ImageElement): void {
-        let image: pt.Image = {type: "images", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata}
+        let image: pt.Image = {type: "image", content: [element.content], attributes: { alias: element.alias }}
         this.stack.push(image);
     }
 
     visitLinkNode(element: pm.LinkElement): void {
-        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }, metadataTags: element.metadata};
+        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }};
         this.stack.push(link);
     }
 
     visitParagraphNode(element: pm.ParagraphElement): void {
-        let paragraph: pt.Paragraph = {type: "paragraph", content: [], metadataTags: element.metadata};
+        let paragraph: pt.Paragraph = {type: "paragraph", content: [], attributes: {metadataTags: element.metadata}};
         element.content.forEach(c => {
             c.accept(this);
             paragraph.content.push(this.stack.pop()!);
@@ -318,7 +338,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitHeadingNode(element: pm.HeadingElement): void {
-       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level }, metadataTags: element.metadata};
+       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level, metadataTags: element.metadata }};
        element.content.forEach(c => {
             c.accept(this);
             heading.content.push(this.stack.pop()!);
@@ -327,7 +347,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitListNode(element: pm.ListElement): void {
-        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType }, metadataTags: element.metadata};
+        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType, metadataTags: element.metadata }};
         element.content.forEach(c => {
             c.accept(this);
             list.content.push(this.stack.pop()!);
@@ -345,7 +365,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        let bq: pt.BlockQuote = {type: "blockquote", content: [], metadataTags: element.metadata};
+        let bq: pt.BlockQuote = {type: "blockquote", content: [], attributes: {metadataTags: element.metadata}};
         element.content.forEach(c => {
             c.accept(this);
             bq.content.push(this.stack.pop()!);
@@ -354,7 +374,7 @@ export class JsonVisitor implements IVisitor {
     }
 
     visitSlideNode(element: pm.SlideElement): void {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: {active: element.active}, metadataTags: element.metadata, refs: element.refs};
+        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: element.metadata, refs: element.refs }};
         element.content.forEach(c => {
             c.accept(this);
             slide.content.push(this.stack.pop()!);
@@ -365,7 +385,7 @@ export class JsonVisitor implements IVisitor {
     visitLaneNode(element: pm.Lane): void {
         this.lane = {type: "lane", content: [], attributes: {name: element.name, compile: element.outputAsPresentation} };
         element.slides.forEach(slide => {
-            if (slide == null) {
+            if (slide == null || slide.active === false) {
                 this.lane.content.push(null);
                 return;
             }

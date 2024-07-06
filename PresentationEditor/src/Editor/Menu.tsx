@@ -1,14 +1,13 @@
-import { Button, ClickAwayListener, Grid, Grow, MenuItem, MenuList, Paper, Popper } from "@mui/material";
+import { Box, Button, ClickAwayListener, Grid, Grow, MenuItem, MenuList, Paper, Popper } from "@mui/material";
 import React, { useState } from "react";
 import "./css/Menu.css";
 import MetadataDialog from "./MetadataDialog";
 import { Constraints, Metadata } from "../Model/PresentationTypes";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { KeyboardArrowRight } from "@mui/icons-material";
 import ConstraintsDialog from "./ConstraintsDialog";
 
 interface MenuProps {
-    addLane(): void;
-    swapLane(): void;
     importPresentation(file: File): void;
     exportPresentationAsJson(): void;
     exportPresentationAsReveal(): void;
@@ -19,8 +18,6 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({
-    addLane,
-    swapLane,
     importPresentation,
     exportPresentationAsJson,
     exportPresentationAsReveal,
@@ -32,9 +29,12 @@ const Menu: React.FC<MenuProps> = ({
     const [metadataDialogOpen, setMetadataDialogOpen] = useState<boolean>(false);
     const [constraintsDialogOpen, setConstraintsDialogOpen] = useState<boolean>(false);
     const [exportOpen, setExportOpen] = useState(false);
-    const anchorRef = React.useRef<HTMLButtonElement>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const anchorRef = React.useRef<HTMLLIElement>(null);
+    const menuRef = React.useRef<HTMLButtonElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const prevExportOpen = React.useRef(exportOpen);
+    const prevMenuOpen = React.useRef(menuOpen);
     React.useEffect(() => {
       if (prevExportOpen.current === true && exportOpen === false) {
         anchorRef.current!.focus();
@@ -43,6 +43,14 @@ const Menu: React.FC<MenuProps> = ({
       prevExportOpen.current = exportOpen;
     }, [exportOpen]);
   
+    React.useEffect(() => {
+        if (prevMenuOpen.current === true && menuOpen === false) {
+          anchorRef.current!.focus();
+        }
+    
+        prevMenuOpen.current = menuOpen;
+      }, [menuOpen]);
+
     function openMetadata() {
         setMetadataDialogOpen(true);
     }
@@ -55,12 +63,25 @@ const Menu: React.FC<MenuProps> = ({
         setExportOpen(!exportOpen);
     };
 
-    const handleClose = (event: Event | React.SyntheticEvent) => {
+    const handleMenuToggle = () => {
+        setMenuOpen(!menuOpen);
+    }
+
+    const handleExportClose = (event: Event | React.SyntheticEvent) => {
         if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
             return;
         }
+
         setExportOpen(false);
     };
+
+    const handleMenuClose = (event: Event | React.SyntheticEvent) => {
+        if (menuRef.current && menuRef.current.contains(event.target as HTMLElement)) {
+            return;
+        }
+
+        setMenuOpen(false);
+    }
 
     function handleFileChange(event: any) {
         const file = event.target.files[0];
@@ -75,78 +96,79 @@ const Menu: React.FC<MenuProps> = ({
         }
     }
 
+    function exportJson() {
+        exportPresentationAsJson();
+        setExportOpen(false);
+    }
+
+    function exportReveal() {
+        exportPresentationAsReveal();
+        setExportOpen(false);
+    }
+
     return (
         <Grid container spacing={4} style={{marginBottom: "10px"}}>
             <Grid item>
-                <Button variant="contained" onClick={addLane}>
-                    Add Lane
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button variant="contained" onClick={swapLane}>
-                    Swap Lanes
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button variant="contained" onClick={openMetadata}>
-                    Manage metadata
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button variant="contained" onClick={openConstraints}>
-                    Manage slide constraints
-                </Button>
-            </Grid>
-            <Grid item>
-                <input
-                    type="file"
-                    id="fileInput"
-                    style={{display: "none"}}
-                    onChange={handleFileChange}
-                    ref={fileInputRef}
-                />
                 <Button 
-                    variant="contained" 
-                    color="primary"
-                    onClick={handleImportClick}
+                    ref={menuRef}
+                    variant="contained"
+                    onClick={handleMenuToggle}
+                    aria-controls={menuOpen ? 'composition-menu' : undefined}
+                    aria-expanded={menuOpen ? 'true' : undefined}
+                    aria-haspopup="true"
+                    endIcon={<KeyboardArrowDownIcon />}
                 >
-                    Import
+                    Menu
                 </Button>
-            </Grid>
-            <Grid item>
-                <Button
-                ref={anchorRef}
-                variant="contained"
-                id="composition-button"
-                aria-controls={exportOpen ? 'composition-menu' : undefined}
-                aria-expanded={exportOpen ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={handleExportToggle}
-                endIcon={<KeyboardArrowDownIcon />}
-                >
-                Export
-                </Button>
-                <Popper open={exportOpen} anchorEl={anchorRef.current} role={undefined} placement="bottom-start" transition disablePortal style={{zIndex: 2}}>
+                <Popper open={menuOpen} anchorEl={menuRef.current} role={undefined} placement="bottom-start" transition disablePortal style={{zIndex: 2}}>
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                        {...TransitionProps}
+                        style={{
+                            transformOrigin:
+                            placement === 'bottom-start' ? 'left top' : 'left bottom',
+                        }}
+                        >
+                        <Paper>
+                            <ClickAwayListener onClickAway={handleMenuClose}>
+                                <MenuList autoFocusItem={exportOpen} id="composition-menu" aria-labelledby="composition-button">
+                                    <MenuItem onClick={openMetadata}>Manage metadata</MenuItem>
+                                    <MenuItem onClick={openConstraints}>Manage slide constraints</MenuItem>
+                                    <MenuItem onClick={handleImportClick}>Import</MenuItem>
+                                    <MenuItem onClick={handleExportToggle} ref={anchorRef}>Export <Box sx={{ marginLeft: 'auto' }}><KeyboardArrowRight /></Box></MenuItem>
+                                </MenuList>
+                            </ClickAwayListener>
+                        </Paper>
+                        </Grow>
+                    )}
+                </Popper>
+                <Popper open={exportOpen} anchorEl={anchorRef.current} role={undefined} placement="right-start" transition disablePortal style={{zIndex: 2}}>
                 {({ TransitionProps, placement }) => (
                     <Grow
-                    {...TransitionProps}
-                    style={{
-                        transformOrigin:
-                        placement === 'bottom-start' ? 'left top' : 'left bottom',
-                    }}
+                        {...TransitionProps}
+                        style={{
+                        transformOrigin: placement === 'right-start' ? 'left top' : 'left bottom',
+                        }}
                     >
                     <Paper>
-                        <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList autoFocusItem={exportOpen} id="composition-menu" aria-labelledby="composition-button">
-                            <MenuItem onClick={exportPresentationAsJson}>Export JSON</MenuItem>
-                            <MenuItem onClick={exportPresentationAsReveal}>Export Reveal</MenuItem>
-                        </MenuList>
+                        <ClickAwayListener onClickAway={handleExportClose}>
+                            <MenuList autoFocusItem={exportOpen} id="composition-menu" aria-labelledby="composition-button">
+                                <MenuItem onClick={exportJson}>Export JSON</MenuItem>
+                                <MenuItem onClick={exportReveal}>Export Reveal</MenuItem>
+                            </MenuList>
                         </ClickAwayListener>
                     </Paper>
                     </Grow>
                 )}
                 </Popper>
             </Grid>
+            <input
+                    type="file"
+                    id="fileInput"
+                    style={{display: "none"}}
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+            />
             <MetadataDialog dialogOpen={metadataDialogOpen} setDialogOpen={setMetadataDialogOpen} metadata={metadata} setMetadata={setMetadata} />
             <ConstraintsDialog dialogOpen={constraintsDialogOpen} setDialogOpen={setConstraintsDialogOpen} constraints={constraints} setConstraints={setConstraints}></ConstraintsDialog>
     </Grid>

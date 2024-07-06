@@ -9,7 +9,10 @@ import { MarkdownParser } from "../Model/MarkdownParser";
 import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Fab } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import EmptyLane from "../EmptyLane";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -77,6 +80,20 @@ function App() {
         setSelectedRightLaneIndex(leftIndex);
     }
 
+    function selectLeftLane(index: number) {
+        if (index === selectedRightLaneIndex) {
+            return;
+        }
+        setSelectedLeftLaneIndex(index);
+    }
+
+    function selectRightLane(index: number) {
+        if (index === selectedLeftLaneIndex) {
+            return;
+        }
+        setSelectedRightLaneIndex(index);
+    }
+
     function importPresentation(file: File) {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -126,8 +143,6 @@ function App() {
         <Grid container direction="column" style={{height: "100%"}}>
             <Grid item>
                 <Menu
-                    addLane={addLane}
-                    swapLane={swapLane}
                     importPresentation={importPresentation}
                     exportPresentationAsJson={exportPresentationAsJSON}
                     exportPresentationAsReveal={exportPresentationAsReveal}
@@ -139,12 +154,12 @@ function App() {
             </Grid>
             <Grid item container xs md sm spacing={1} style={{ height: "calc(100% - 64px)" }}>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] && (
+                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
                             selectedLaneIndex={selectedLeftLaneIndex}
-                            setSelectedLaneIndex={setSelectedLeftLaneIndex}
+                            selectLane={selectLeftLane}
                             otherLaneIndex={selectedRightLaneIndex}
                             addLane={addLane}
                             deleteLane={deleteLane}
@@ -152,15 +167,15 @@ function App() {
                             setImported={setImported}
                             constraints={constraints}
                         />
-                    )}
+                    ) : ( <EmptyLane addLane={addLane}/> ) }
                 </Grid>
                 <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex] && (
+                    {(selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex]) ? (
                         <LaneContainer
                             lanes={lanes}
                             setLanes={setLanes}
                             selectedLaneIndex={selectedRightLaneIndex}
-                            setSelectedLaneIndex={setSelectedRightLaneIndex}
+                            selectLane={selectRightLane}
                             otherLaneIndex={selectedLeftLaneIndex}
                             addLane={addLane}
                             deleteLane={deleteLane}
@@ -168,7 +183,13 @@ function App() {
                             setImported={setImported}
                             constraints={constraints}
                         />
-                    )}
+                    ) : ( <EmptyLane addLane={addLane}/> ) }
+                </Grid>
+                <Grid container justifyContent="center" alignItems="center" style={{ position: 'absolute', top: 0, bottom: 0,  pointerEvents: 'none' }}>
+                    <Fab color="primary" aria-label="add" onClick={swapLane} style={{pointerEvents: 'auto'}}>
+                        <ArrowBackIcon />
+                        <ArrowForwardIcon />
+                    </Fab>
                 </Grid>
             </Grid>
         </Grid>

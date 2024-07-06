@@ -1,3 +1,4 @@
+import { PerModuleNameCache } from "typescript";
 import * as pt from "./PresentationTypes";
 import markdownit, { Token } from "markdown-it";
 class RefIndex {
@@ -40,9 +41,9 @@ export class MarkdownParser {
         let array = mdit.parse(markdown, {});
         let slide = this.handleArray(array);
         if (this.slideTag !== "") {
-            slide.metadataTags.push(this.slideTag);
+            slide.attributes.metadataTags.push(this.slideTag);
         }
-        slide.refs = this.slideRefs;
+        slide.attributes.refs = this.slideRefs;
         slides.push(slide);
         return slides;
     }
@@ -51,9 +52,10 @@ export class MarkdownParser {
         let slide: pt.Slide = {
             type: "slide",
             content: [],
-            attributes: { active: true },
-            metadataTags: [],
-            refs: []
+            attributes: { 
+                metadataTags: [],
+                refs: []
+            }
         };
         let first = true;
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
@@ -95,7 +97,7 @@ export class MarkdownParser {
     }
 
     private handleBlockQuote(array: Token[], index: RefIndex): pt.BlockQuote {
-        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], metadataTags: this.metadataTags };
+        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], attributes: { metadataTags: this.metadataTags }};
         this.metadataTags = [];
         let done: boolean = false;
         for (; index.index < array.length; ++index.index) {
@@ -142,7 +144,7 @@ export class MarkdownParser {
     }
 
     private handleParagraph(array: Token[], index: RefIndex, first: boolean): pt.Paragraph {
-        let paragraph: pt.Paragraph = { type: "paragraph", content: [], metadataTags: this.metadataTags };
+        let paragraph: pt.Paragraph = { type: "paragraph", content: [], attributes: { metadataTags: this.metadataTags }};
         this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
 
@@ -182,8 +184,8 @@ export class MarkdownParser {
         let heading: pt.HeadingElement = {
             type: "heading",
             content: [],
-            attributes: { level: level },
-            metadataTags: this.metadataTags
+            attributes: { level: level, metadataTags: this.metadataTags },
+            
         };
         this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -207,8 +209,7 @@ export class MarkdownParser {
         let list: pt.List = {
             type: "list",
             content: [],
-            attributes: { listType: ordered ? "ordered" : "unordered" },
-            metadataTags: this.metadataTags
+            attributes: { listType: ordered ? "ordered" : "unordered", metadataTags: this.metadataTags },
         };
         this.metadataTags = [];
         let done: boolean = false;
@@ -250,12 +251,22 @@ export class MarkdownParser {
         let inlineElements: (pt.InlineElement | pt.Text)[] = [];
         let stack: pt.TextAnnotation[] = [];
         let current: pt.TextAnnotation;
+        let isLinkAlias: boolean = false;
         inline.children?.forEach((child) => {
             switch (child.type) {
                 case "text":
                 case "softbreak":
                     if (child.type === "softbreak") {
                         child.content = "\n";
+                    }
+                    if (isLinkAlias) {
+                        isLinkAlias = false;
+                        if (stack.length === 0) {
+                            (inlineElements[inlineElements.length - 1] as pt.Link).attributes.alias = child.content;
+                            break;
+                        }
+                        (stack[stack.length - 1].content[stack[stack.length - 1].content.length - 1] as pt.Link).attributes.alias = child.content;
+                        break;
                     }
                     if (child.content === "") {
                         break;
@@ -285,12 +296,11 @@ export class MarkdownParser {
                 case "link_open":
                     let link_href = child.attrGet("href");
                     if (link_href != null) {
-                        // TODO: alias is in another child
+                        isLinkAlias = true;
                         let link: pt.Link = {
                             type: "link",
                             content: [link_href],
                             attributes: { alias: child.content },
-                            metadataTags: this.metadataTags
                         };
                         this.metadataTags = [];
                         if (stack.length === 0) {
@@ -306,8 +316,7 @@ export class MarkdownParser {
                         let image: pt.Image = {
                             type: "image",
                             content: [img_href],
-                            attributes: { alias: child.content },
-                            metadataTags: this.metadataTags
+                            attributes: { alias: child.content }
                         };
                         this.metadataTags = [];
                         if (stack.length === 0) {
@@ -318,7 +327,7 @@ export class MarkdownParser {
                     }
                     break;
                 case "code_inline":
-                    let code = { type: "code", content: [child.content] };
+                    let code = { type: "code", content: [{type: "text", content: [child.content]}] };
                     if (stack.length === 0) {
                         inlineElements.push(code);
                         break;
