@@ -1,6 +1,5 @@
 import * as pt from "./PresentationTypes";
 import * as pm from "./PresentationModel";
-import { Checker, Result } from "./StructureChecker";
 
 export class PresentationParser {
 
@@ -130,10 +129,7 @@ export class PresentationParser {
 
     private createSlide(jsonSlide: pt.Slide): pm.SlideElement {
         let elements = this.getOuterElementContent(jsonSlide.content);
-        let slide = new pm.SlideElement(elements);
-        slide.metadata = jsonSlide.attributes.metadataTags;
-        slide.active = true;
-        slide.refs = jsonSlide.attributes.refs;
+        let slide = new pm.SlideElement(elements, true, jsonSlide.attributes.metadataTags, jsonSlide.attributes.refs);
         return slide;
     }
 
@@ -146,8 +142,7 @@ export class PresentationParser {
                 return;
             }
             if (Object.keys(slide).length === 0) {
-                let s = new pm.SlideElement([]);
-                s.active = false;
+                let s = new pm.SlideElement([], false);
                 object_slides.push(s);
                 return;
             }

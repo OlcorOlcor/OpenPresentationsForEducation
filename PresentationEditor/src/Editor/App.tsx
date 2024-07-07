@@ -32,9 +32,9 @@ function App() {
             let slides = [];
             let numberOfSlides = 1;
             if (selectedLeftLaneIndex !== -1) {
-                numberOfSlides = lanes[selectedLeftLaneIndex].slides.length;
+                numberOfSlides = lanes[selectedLeftLaneIndex].getContent().length;
             } else if (selectedRightLaneIndex !== -1) {
-                numberOfSlides = lanes[selectedRightLaneIndex].slides.length;
+                numberOfSlides = lanes[selectedRightLaneIndex].getContent().length;
             }
             for (let i = 0; i < numberOfSlides; ++i) {
                 slides.push(null);

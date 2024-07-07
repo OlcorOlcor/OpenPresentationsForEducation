@@ -49,7 +49,7 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The text element to visit.
      */
     visitTextNode(element: pm.TextElement): void {
-        this.result += element.content;
+        this.result += element.getContent();
     }
 
     /**
@@ -58,7 +58,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitBoldNode(element: pm.BoldElement): void {
         this.result += "<strong>";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "</strong>";
     }
 
@@ -68,7 +68,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitItalicNode(element: pm.ItalicElement): void {
         this.result += "<em>";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "</em>";
     }
 
@@ -78,7 +78,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitCodeNode(element: pm.CodeElement): void {
         this.result += "<code>";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "</code>";
     }
 
@@ -88,7 +88,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitImageNode(element: pm.ImageElement): void {
         this.result +=
-            '<img src="' + element.content + '" alt="' + element.alias + '">';
+            '<img src="' + element.getContent() + '" alt="' + element.getAlias() + '">';
     }
 
     /**
@@ -96,8 +96,8 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The link element to visit.
      */
     visitLinkNode(element: pm.LinkElement): void {
-        this.result += '<a href="' + element.content + '">';
-        this.result += element.alias;
+        this.result += '<a href="' + element.getContent() + '">';
+        this.result += element.getAlias();
         this.result += "</a>";
     }
 
@@ -107,7 +107,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
         this.result += "<p>";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "</p>";
     }
 
@@ -116,9 +116,9 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The heading element to visit.
      */
     visitHeadingNode(element: pm.HeadingElement): void {
-        this.result += "<h" + element.level + ">";
-        element.content.forEach((c) => c.accept(this));
-        this.result += "</h" + element.level + ">";
+        this.result += "<h" + element.getLevel() + ">";
+        element.getContent().forEach((c) => c.accept(this));
+        this.result += "</h" + element.getLevel() + ">";
     }
 
     /**
@@ -126,11 +126,11 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        this.result += element.listType === "ordered" ? "<ol>" : "<ul>";
-        element.content.forEach((c) => {
+        this.result += element.getListType() === "ordered" ? "<ol>" : "<ul>";
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
-        this.result += element.listType === "ordered" ? "</ol>" : "</ul>";
+        this.result += element.getListType() === "ordered" ? "</ol>" : "</ul>";
     }
 
     /**
@@ -139,7 +139,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitListItemNode(element: pm.ListItemElement): void {
         this.result += "<li>";
-        element.content.forEach((c) => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "</li>";
@@ -151,7 +151,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
         this.result += "<blockquote>";
-        element.content.forEach((c) => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "</blockquote>";
@@ -165,7 +165,7 @@ export class HtmlVisitor implements IVisitor {
         if (this.revealOutput) {
             this.result += "<section>";
         }
-        element.content.forEach((c) => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         if (this.revealOutput) {
@@ -182,7 +182,7 @@ export class HtmlVisitor implements IVisitor {
         if (this.revealOutput) {
             this.result += "<div class=\"reveal\"><div class=\"slides\">";
         }
-        element.slides.forEach((slide) => {
+        element.getContent().forEach((slide) => {
            if (slide == null) {
                 return;
            }
@@ -223,7 +223,7 @@ export class MarkdownVisitor implements IVisitor {
         }
         this.result += "[";
         let first = true;
-        element.metadata.forEach(m => {
+        element.getMetadata().forEach(m => {
             if (!first) {
                 this.result += ", ";
             }
@@ -241,10 +241,10 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The text element to visit.
      */
     visitTextNode(element: pm.TextElement): void {
-        if (element.content === "\n") {
+        if (element.getContent() === "\n") {
             this.paragraphNewLine = true;
         }
-        this.result += element.content;
+        this.result += element.getContent();
     }
 
     /**
@@ -253,7 +253,7 @@ export class MarkdownVisitor implements IVisitor {
      */
     visitBoldNode(element: pm.BoldElement): void {
         this.result += "**";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "**";
     }
 
@@ -263,7 +263,7 @@ export class MarkdownVisitor implements IVisitor {
      */
     visitItalicNode(element: pm.ItalicElement): void {
         this.result += "*";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "*";
     }
 
@@ -273,7 +273,7 @@ export class MarkdownVisitor implements IVisitor {
      */
     visitCodeNode(element: pm.CodeElement): void {
         this.result += "`";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "`";
     }
 
@@ -282,7 +282,7 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The image element to visit.
      */
     visitImageNode(element: pm.ImageElement): void {
-        this.result += "![" + element.alias + "](" + element.content + ")";
+        this.result += "![" + element.getAlias() + "](" + element.getContent() + ")";
     }
 
     /**
@@ -290,7 +290,7 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The link element to visit.
      */
     visitLinkNode(element: pm.LinkElement): void {
-        this.result += "[" + element.alias + "](" + element.content + ")";
+        this.result += "[" + element.getAlias()+ "](" + element.getContent()+ ")";
     }
 
     /**
@@ -298,10 +298,10 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The paragraph element to visit.
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
-        if (element.metadata.length !== 0) {
+        if (element.getMetadata().length !== 0) {
             this.addMetadata(element);
         }
-        element.content.forEach((c) => { 
+        element.getContent().forEach((c) => { 
             if (this.paragraphNewLine) {
                 for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
                     this.result += "> ";
@@ -321,17 +321,17 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The heading element to visit.
      */
     visitHeadingNode(element: pm.HeadingElement): void {
-        if (element.metadata.length !== 0) {
+        if (element.getMetadata().length !== 0) {
             this.addMetadata(element);
         }
         for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
             this.result += "> ";
         }
-        for (let i = 0; i < element.level; ++i) {
+        for (let i = 0; i < element.getLevel(); ++i) {
             this.result += "#";
         }
         this.result += " ";
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "\n";
     }
 
@@ -342,12 +342,12 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        if (element.metadata.length !== 0) {
+        if (element.getMetadata().length !== 0) {
             this.addMetadata(element);
         }
         let counter = 1;
         this.listLevel++;
-        element.content.forEach((c) => {
+        element.getContent().forEach((c) => {
             for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
                 this.result += "> ";
             }
@@ -356,7 +356,7 @@ export class MarkdownVisitor implements IVisitor {
             }
             if (c instanceof pm.ListItemElement) {
                 this.result +=
-                    element.listType === "ordered" ? counter + ". " : "- ";
+                    element.getListType() === "ordered" ? counter + ". " : "- ";
             }
             c.accept(this);
             if (c instanceof pm.ListItemElement) {
@@ -372,7 +372,7 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The list item element to visit.
      */
     visitListItemNode(element: pm.ListItemElement): void {
-        element.content.forEach((c) => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -382,11 +382,11 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The blockquote element to visit.
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        if (element.metadata.length !== 0) {
+        if (element.getMetadata().length !== 0) {
             this.addMetadata(element);
         }
         ++this.blockQuoteLevel;
-        element.content.forEach((c) => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         --this.blockQuoteLevel;
@@ -399,13 +399,13 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        if (element.metadata.length !== 0) {
+        if (element.getMetadata().length !== 0) {
             this.addMetadata(element);
         }
-        element.content.forEach((c) => c.accept(this));
-        if (element.refs.length > 0) {
+        element.getContent().forEach((c) => c.accept(this));
+        if (element.getRefs().length > 0) {
             this.result += "\n";
-            element.refs.forEach(ref => {
+            element.getRefs().forEach(ref => {
                 this.result += "->[" + ref + "]";
                 this.result += "\n";
             });
@@ -417,7 +417,7 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The lane element to visit.
      */
     visitLaneNode(element: pm.Lane): void {
-        element.slides.forEach((slide) => {
+        element.getContent().forEach((slide) => {
            if (slide == null) {
                 return;
            }
@@ -448,7 +448,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The text element to visit.
      */
     visitTextNode(element: pm.TextElement): void {
-        let text: pt.Text = {type: "text", content: [element.content]};
+        let text: pt.Text = {type: "text", content: [element.getContent()]};
         this.stack.push(text);
     }
 
@@ -458,7 +458,7 @@ export class JsonVisitor implements IVisitor {
      */
     visitBoldNode(element: pm.BoldElement): void {
         let bold: pt.TextAnnotation = {type: "bold", content: []};
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             bold.content.push(this.stack.pop()!);
         });
@@ -471,7 +471,7 @@ export class JsonVisitor implements IVisitor {
      */
     visitItalicNode(element: pm.ItalicElement): void {
         let italic: pt.TextAnnotation = {type: "italic", content: []};
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             italic.content.push(this.stack.pop()!);
         });
@@ -484,7 +484,7 @@ export class JsonVisitor implements IVisitor {
      */
     visitCodeNode(element: pm.CodeElement): void {
         let code: pt.TextAnnotation = {type: "code", content: []};
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             code.content.push(this.stack.pop()!);
         });
@@ -496,7 +496,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The image element to visit.
      */
     visitImageNode(element: pm.ImageElement): void {
-        let image: pt.Image = {type: "image", content: [element.content], attributes: { alias: element.alias }}
+        let image: pt.Image = {type: "image", content: [element.getContent()], attributes: { alias: element.getAlias() }}
         this.stack.push(image);
     }
 
@@ -505,7 +505,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The link element to visit.
      */
     visitLinkNode(element: pm.LinkElement): void {
-        let link: pt.Link = {type: "link", content: [element.content], attributes: { alias: element.alias }};
+        let link: pt.Link = {type: "link", content: [element.getContent()], attributes: { alias: element.getAlias() }};
         this.stack.push(link);
     }
 
@@ -515,8 +515,8 @@ export class JsonVisitor implements IVisitor {
      * @param element - The paragraph element to visit.
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
-        let paragraph: pt.Paragraph = {type: "paragraph", content: [], attributes: {metadataTags: element.metadata}};
-        element.content.forEach(c => {
+        let paragraph: pt.Paragraph = {type: "paragraph", content: [], attributes: {metadataTags: element.getMetadata()}};
+        element.getContent().forEach(c => {
             c.accept(this);
             paragraph.content.push(this.stack.pop()!);
         });
@@ -529,8 +529,8 @@ export class JsonVisitor implements IVisitor {
      * @param element - The heading element to visit.
      */
     visitHeadingNode(element: pm.HeadingElement): void {
-       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.level, metadataTags: element.metadata }};
-       element.content.forEach(c => {
+       let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: element.getLevel(), metadataTags: element.getMetadata() }};
+       element.getContent().forEach(c => {
             c.accept(this);
             heading.content.push(this.stack.pop()!);
        });
@@ -543,8 +543,8 @@ export class JsonVisitor implements IVisitor {
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        let list: pt.List = {type: "list", content: [], attributes: { listType: element.listType, metadataTags: element.metadata }};
-        element.content.forEach(c => {
+        let list: pt.List = {type: "list", content: [], attributes: { listType: element.getListType(), metadataTags: element.getMetadata() }};
+        element.getContent().forEach(c => {
             c.accept(this);
             list.content.push(this.stack.pop()!);
         });
@@ -558,7 +558,7 @@ export class JsonVisitor implements IVisitor {
      */
     visitListItemNode(element: pm.ListItemElement): void {
         let item: pt.ListItem = {type: "listItem", content: []};
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             item.content.push(this.stack.pop()!);
         });
@@ -571,8 +571,8 @@ export class JsonVisitor implements IVisitor {
      * @param element - The blockquote element to visit.
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        let bq: pt.BlockQuote = {type: "blockquote", content: [], attributes: {metadataTags: element.metadata}};
-        element.content.forEach(c => {
+        let bq: pt.BlockQuote = {type: "blockquote", content: [], attributes: {metadataTags: element.getMetadata()}};
+        element.getContent().forEach(c => {
             c.accept(this);
             bq.content.push(this.stack.pop()!);
         });
@@ -585,8 +585,8 @@ export class JsonVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: element.metadata, refs: element.refs }};
-        element.content.forEach(c => {
+        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: element.getMetadata(), refs: element.getRefs()}};
+        element.getContent().forEach(c => {
             c.accept(this);
             slide.content.push(this.stack.pop()!);
         });
@@ -599,9 +599,9 @@ export class JsonVisitor implements IVisitor {
      * @param element - The lane element to visit.
      */
     visitLaneNode(element: pm.Lane): void {
-        this.lane = {type: "lane", content: [], attributes: {name: element.name, compile: element.outputAsPresentation} };
-        element.slides.forEach(slide => {
-            if (slide == null || slide.active === false) {
+        this.lane = {type: "lane", content: [], attributes: {name: element.getName(), compile: element.outputsAsPresentation()} };
+        element.getContent().forEach(slide => {
+            if (slide == null || slide.isActive() === false) {
                 this.lane.content.push(null);
                 return;
             }
@@ -644,8 +644,8 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The text element to visit.
      */
     visitTextNode(element: pm.TextElement): void {
-        this.result.characters += element.content.length;
-        this.result.words += element.content.split(' ').length;
+        this.result.characters += element.getContent().length;
+        this.result.words += element.getContent().split(' ').length;
     }
     
     /**
@@ -693,7 +693,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The paragraph element to visit.
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
         });
     }
@@ -704,7 +704,7 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitHeadingNode(element: pm.HeadingElement): void {
         this.result.headings++;
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
         });
     }
@@ -714,7 +714,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
         });
     }
@@ -725,7 +725,7 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitListItemNode(element: pm.ListItemElement): void {
         this.result.bullet_points++;
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
         });
     }
@@ -735,7 +735,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The blockquote element to visit.
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
         });
     }
@@ -745,7 +745,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
         });
     }
@@ -755,7 +755,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The lane element to visit.
      */
     visitLaneNode(element: pm.Lane): void {
-        element.slides.forEach(slide => {
+        element.getContent().forEach(slide => {
             slide?.accept(this);
         });
     }
@@ -779,8 +779,7 @@ export class ReductionVisitor implements IVisitor {
     private keywords: string[];
     private metadataTags: string[];
     private isSlideCompliant: boolean = false;
-    private compliantLane: pm.Lane;
-
+    private complientSlides: pm.SlideElement[] = [];
     /**
      * Constructor for ReductionVisitor
      * @param keywords - The list of keywords to check within text elements.
@@ -789,7 +788,6 @@ export class ReductionVisitor implements IVisitor {
     constructor(keywords: string[], metadataTags: string[]) {
         this.keywords = keywords;
         this.metadataTags = metadataTags;
-        this.compliantLane = new pm.Lane([], "complient lane");
     }
 
     /**
@@ -814,7 +812,7 @@ export class ReductionVisitor implements IVisitor {
      */
     visitTextNode(element: pm.TextElement): void {
         this.keywords.forEach(k => {
-            if (element.content.includes(k)) {
+            if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
                 return;
             }
@@ -827,7 +825,7 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The bold element to visit.
      */
     visitBoldNode(element: pm.BoldElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -841,7 +839,7 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The italic element to visit.
      */
     visitItalicNode(element: pm.ItalicElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -855,7 +853,7 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The code element to visit.
      */
     visitCodeNode(element: pm.CodeElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -870,7 +868,7 @@ export class ReductionVisitor implements IVisitor {
      */
     visitImageNode(element: pm.ImageElement): void {
         this.keywords.forEach(k => {
-            if (element.content.includes(k)) {
+            if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
                 return;
             }
@@ -884,7 +882,7 @@ export class ReductionVisitor implements IVisitor {
      */
     visitLinkNode(element: pm.LinkElement): void {
         this.keywords.forEach(k => {
-            if (element.content.includes(k)) {
+            if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
                 return;
             }
@@ -897,11 +895,11 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The paragraph element to visit.
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
-        this.checkMetadata(element.metadata);
+        this.checkMetadata(element.getMetadata());
         if (this.isSlideCompliant) {
             return;
         }
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -915,11 +913,11 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The heading element to visit.
      */
     visitHeadingNode(element: pm.HeadingElement): void {
-        this.checkMetadata(element.metadata);
+        this.checkMetadata(element.getMetadata());
         if (this.isSlideCompliant) {
             return;
         }
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -933,11 +931,11 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        this.checkMetadata(element.metadata);
+        this.checkMetadata(element.getMetadata());
         if (this.isSlideCompliant) {
             return;
         }
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -951,7 +949,7 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The list item element to visit.
      */
     visitListItemNode(element: pm.ListItemElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -965,11 +963,11 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The blockquote element to visit.
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        this.checkMetadata(element.metadata);
+        this.checkMetadata(element.getMetadata());
         if (this.isSlideCompliant) {
             return;
         }
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -983,10 +981,10 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        element.content.forEach(c => {
+        element.getContent().forEach(c => {
             c.accept(this);
             if (this.isSlideCompliant) {
-                this.compliantLane.slides.push(element);
+                this.complientSlides.push(element);
                 return;
             }
         })
@@ -998,7 +996,7 @@ export class ReductionVisitor implements IVisitor {
      * @param element - The lane element to visit.
      */
     visitLaneNode(element: pm.Lane): void {
-        element.slides.forEach(c => {
+        element.getContent().forEach(c => {
             this.isSlideCompliant = false;
             c?.accept(this);
         });
@@ -1009,6 +1007,6 @@ export class ReductionVisitor implements IVisitor {
      * @returns The resulting lane as a pm.Lane object.
      */
     getResult(): pm.Lane {
-        return this.compliantLane;
+        return new pm.Lane(this.complientSlides, "complient lane");
     }
 }

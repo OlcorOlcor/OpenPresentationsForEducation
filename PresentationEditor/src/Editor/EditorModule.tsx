@@ -67,7 +67,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     function getView(): any {
         if (editorView) {
             //updateEditor();
-            if (slides[selectedSlideIndex] != null && slides[selectedSlideIndex]!.active) {
+            if (slides[selectedSlideIndex] != null && slides[selectedSlideIndex]!.isActive()) {
                 return (
                     <EditorContainer
                         data={editorData}

@@ -108,7 +108,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                             <PaginationItem
                                 {...item}
                                 className={`
-                                    ${elements[(item.page as number) - 1]?.active ? "active" : "inactive"} 
+                                    ${elements[(item.page as number) - 1]?.isActive() ? "active" : "inactive"} 
                                     ${((item.page as number) - 1) === selectedSlideIndex ? "selected" : ""}
                                 `}
                             />
@@ -117,9 +117,9 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                 />
             </Grid>
             <Grid item>
-                <Tooltip title={elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.active ? "Activate slide" : "Deactivate slide" } arrow>
+                <Tooltip title={elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive() ? "Activate slide" : "Deactivate slide" } arrow>
                     <Fab color="primary" size="small" onClick={onActivate}>
-                        {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.active
+                        {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive()
                             ? <ToggleOffIcon />
                             : <ToggleOnIcon /> }
                     </Fab>

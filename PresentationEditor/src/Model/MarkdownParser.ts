@@ -1,4 +1,3 @@
-import { PerModuleNameCache } from "typescript";
 import * as pt from "./PresentationTypes";
 import markdownit, { Token } from "markdown-it";
 class RefIndex {
