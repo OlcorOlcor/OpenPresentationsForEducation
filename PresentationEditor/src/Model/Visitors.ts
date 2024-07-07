@@ -1003,4 +1003,12 @@ export class ReductionVisitor implements IVisitor {
             c?.accept(this);
         });
     }
+
+    /**
+     * Returns the resulting lane with all complient slides.
+     * @returns The resulting lane as a pm.Lane object.
+     */
+    getResult(): pm.Lane {
+        return this.compliantLane;
+    }
 }
