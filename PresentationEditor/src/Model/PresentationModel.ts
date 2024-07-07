@@ -11,7 +11,7 @@ class BaseElement {}
  * The class implements the IVisitable interface.
  */
 export class ListItemElement extends BaseElement implements IVisitable {
-    content: (TextElement | InlineElement)[];
+    private content: (TextElement | InlineElement)[];
 
     /**
      * ListItemElement constructor.
@@ -21,6 +21,14 @@ export class ListItemElement extends BaseElement implements IVisitable {
     public constructor(content: (TextElement | InlineElement)[]) {
         super();
         this.content = content;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): (TextElement | InlineElement)[] {
+        return this.content;
     }
 
     /**
@@ -39,7 +47,7 @@ export class ListItemElement extends BaseElement implements IVisitable {
  * The class implements the IVisitable interface.
  */
 export class TextElement extends BaseElement implements IVisitable {
-    content: string;
+    private content: string;
 
     /**
      * TextElement constructor.
@@ -49,6 +57,14 @@ export class TextElement extends BaseElement implements IVisitable {
     public constructor(content: string) {
         super();
         this.content = content;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): string {
+        return this.content;
     }
 
     /**
@@ -74,7 +90,7 @@ export abstract class InlineElement extends BaseElement implements IVisitable {
  * Abstract class for inline elements that contain other inline elements or text.
  */
 export abstract class InlineWrapperElement extends InlineElement {
-    content: (TextElement | InlineElement)[];
+    private content: (TextElement | InlineElement)[];
     /**
      * Constructs an InlineWrapperElement.
      * 
@@ -83,6 +99,14 @@ export abstract class InlineWrapperElement extends InlineElement {
     public constructor(content: (TextElement | InlineElement)[]) {
         super();
         this.content = content;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): (TextElement | InlineElement)[] {
+        return this.content;
     }
 
     abstract accept(visitor: IVisitor): void;
@@ -147,9 +171,8 @@ export class CodeElement extends InlineWrapperElement implements IVisitable {
  * This class implements the IVistable interface.
  */
 export class LinkElement extends InlineLeafElement implements IVisitable {
-    metadata: string[] = [];
-    content: string;
-    alias: string;
+    private content: string;
+    private alias: string;
     
     /**
      * Constructs a LinkElement.
@@ -161,6 +184,22 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
         super();
         this.content = content;
         this.alias = alias;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): string {
+        return this.content;
+    }
+
+    /**
+     * Retrieves alias of the element.
+     * @returns Alias of the element.
+     */
+    getAlias(): string {
+        return this.alias;
     }
 
     /**
@@ -179,8 +218,8 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
  * This class implement the IVisitable interface.
  */  
 export class ImageElement extends InlineLeafElement implements IVisitable {
-    content: string;
-    alias: string;
+    private content: string;
+    private alias: string;
 
     /**
      * Constructs an ImageElement.
@@ -192,6 +231,22 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
         super();
         this.content = content;
         this.alias = alias;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): string {
+        return this.content;
+    }
+    
+    /**
+     * Retrieves alias of the element.
+     * @returns Alias of the element.
+     */
+    getAlias(): string {
+        return this.alias;
     }
 
     /**
@@ -219,8 +274,8 @@ export abstract class OuterElement extends BaseElement implements IVisitable {
  * This class implements the IVisitable interface.
  */
 export class ParagraphElement extends OuterElement implements IVisitable {
-    content: (TextElement | InlineElement)[];
-    metadata: string[];
+    private content: (TextElement | InlineElement)[];
+    private metadata: string[];
 
     /**
      * Constructs a ParagraphElement.
@@ -232,6 +287,22 @@ export class ParagraphElement extends OuterElement implements IVisitable {
         super();
         this.content = content;
         this.metadata = metadata;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): (TextElement | InlineElement)[] {
+        return this.content;
+    }
+
+    /**
+     * Retrieves the metadata of the element.
+     * @returns Metadata of the elements;
+     */
+    getMetadata(): string[] {
+        return this.metadata;
     }
 
     /**
@@ -250,9 +321,9 @@ export class ParagraphElement extends OuterElement implements IVisitable {
  * This class implements the IVistable interface.
  */
 export class HeadingElement extends OuterElement implements IVisitable {
-    content: (TextElement | InlineElement)[];
-    level: number;
-    metadata: string[];
+    private content: (TextElement | InlineElement)[];
+    private level: number;
+    private metadata: string[];
 
     /**
      * Constructs a HeadingElement.
@@ -266,6 +337,30 @@ export class HeadingElement extends OuterElement implements IVisitable {
         this.content = content;
         this.level = level;
         this.metadata = metadata;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): (TextElement | InlineElement)[] {
+        return this.content;
+    }
+
+    /**
+     * Retrieves the metadata of the element.
+     * @returns Metadata of the elements;
+     */
+    getMetadata(): string[] {
+        return this.metadata;
+    }
+
+    /**
+     * Retrieves the level of the heading.
+     * @returns Level of the heading.
+     */
+    getLevel(): number {
+        return this.level;
     }
 
     /**
@@ -284,9 +379,9 @@ export class HeadingElement extends OuterElement implements IVisitable {
  * This class implements the IVisitable interface.
  */
 export class ListElement extends OuterElement implements IVisitable {
-    content: (ListItemElement | ListElement)[];
-    listType: string;
-    metadata: string[];
+    private content: (ListItemElement | ListElement)[];
+    private listType: string;
+    private metadata: string[];
 
     /**
      * Constructs a ListElement.
@@ -300,6 +395,30 @@ export class ListElement extends OuterElement implements IVisitable {
         this.content = content;
         this.listType = listType;
         this.metadata = metadata;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): (TextElement | InlineElement)[] {
+        return this.content;
+    }
+
+    /**
+     * Retrieves the metadata of the element.
+     * @returns Metadata of the elements;
+     */
+    getMetadata(): string[] {
+        return this.metadata;
+    }
+
+    /**
+     * Retrieves the list type.
+     * @return List type.
+     */
+    getListType(): string {
+        return this.listType;
     }
 
     /**
@@ -318,8 +437,8 @@ export class ListElement extends OuterElement implements IVisitable {
  * This class implements the IVisitable interface.
  */
 export class BlockQuoteElement extends OuterElement implements IVisitable {
-    content: OuterElement[];
-    metadata: string[] = [];
+    private content: OuterElement[];
+    private metadata: string[] = [];
 
     /**
      * Constructs a BlockQuoteElement.
@@ -331,6 +450,22 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
         super();
         this.content = content;
         this.metadata = metadata;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): OuterElement[] {
+        return this.content;
+    }
+
+    /**
+     * Retrieves the metadata of the element.
+     * @returns Metadata of the elements;
+     */
+    getMetadata(): string[] {
+        return this.metadata;
     }
 
     /**
@@ -349,10 +484,10 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
  * This class implements the IVisitable interface.
  */
 export class SlideElement extends BaseElement implements IVisitable {
-    content: OuterElement[];
-    active: boolean = false;
-    metadata: string[] = [];
-    refs: string[] = [];
+    private content: OuterElement[];
+    private active: boolean = false;
+    private metadata: string[] = [];
+    private refs: string[] = [];
 
     /**
      * Constructs a SlideElement.
@@ -362,6 +497,38 @@ export class SlideElement extends BaseElement implements IVisitable {
     public constructor(content: OuterElement[]) {
         super();
         this.content = content;
+    }
+
+    /**
+     * Retrieves the contents of the element.
+     * @returns Content of the element.
+     */
+    getContent(): OuterElement[] {
+        return this.content;
+    }
+
+    /**
+     * Retrieves the metadata of the element.
+     * @returns Metadata of the elements;
+     */
+    getMetadata(): string[] {
+        return this.metadata;
+    }
+
+    /**
+     * Check whether the slide is active.
+     * @returns True if the slide is active, false if its inactive.
+     */
+    isActive(): boolean {
+        return this.active;
+    }
+
+    /**
+     * Retrieves references to other slides.
+     * @returns References to other slides.
+     */
+    getRefs(): string[] {
+        return this.refs;
     }
 
     /**
@@ -378,21 +545,45 @@ export class SlideElement extends BaseElement implements IVisitable {
  * Represents a lane element.
  */
 export class Lane implements IVisitable {
-    slides: (SlideElement | null)[];
-    name: string;
-    outputAsPresentation: boolean;
+    private content: (SlideElement | null)[];
+    private name: string;
+    private outputAsPresentation: boolean;
 
     /**
      * Constructs a Lane.
      * 
-     * @param slides - The slides in the lane.
+     * @param content - The slides in the lane.
      * @param name - The name of the lane.
      * @param output - Whether to output as a presentation.
      */
-    constructor(slides: (SlideElement | null)[], name: string, output: boolean = true) {
-        this.slides = slides;
+    constructor(content: (SlideElement | null)[], name: string, output: boolean = true) {
+        this.content = content;
         this.name = name;
         this.outputAsPresentation = output;
+    }
+
+    /**
+     * Retrieves the contents of the lane.
+     * @returns Content of the lane.
+     */
+    getContent(): (SlideElement | null)[] {
+        return this.content;
+    }
+    
+    /**
+     * Retrieves the name of the lane.
+     * @returns Name of the lane.
+     */
+    getName(): string {
+        return this.name;
+    }
+
+    /**
+     * Check whether the lane outputs as presentation.
+     * @returns True if the lane should output as presentation, false if not.
+     */
+    outputsAsPresentation(): boolean {
+        return this.outputAsPresentation;
     }
 
     /**
