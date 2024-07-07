@@ -34,8 +34,8 @@ export interface IVisitable {
  * The class implements the IVisitor interface.
  */
 export class HtmlVisitor implements IVisitor {
-    result: string = "";
-    revealOutput: boolean;
+    private result: string = "";
+    private revealOutput: boolean;
     /**
      * Constructor for HtmlVisitor
      * @param reveal_output - Determines whether the output should be formatted as Reveal.js presentation.
@@ -208,10 +208,10 @@ export class HtmlVisitor implements IVisitor {
  * The class implements the IVisitor interface.
  */
 export class MarkdownVisitor implements IVisitor {
-    result: string = "";
-    listLevel: number = 0;
-    blockQuoteLevel: number = 0;
-    paragraphNewLine: boolean = true;
+    private result: string = "";
+    private listLevel: number = 0;
+    private blockQuoteLevel: number = 0;
+    private paragraphNewLine: boolean = true;
     
     /**
      * Adds metadata to the result string for wrapper elements and the slide element.
@@ -637,7 +637,7 @@ class AnalysisResult {
  * The class implements the IVisitor interface.
  */
 export class AnalysisVisitor implements IVisitor {
-    result: AnalysisResult = new AnalysisResult();
+    private result: AnalysisResult = new AnalysisResult();
 
     /**
      * Visits a text node, updating the character and word counts.
@@ -776,10 +776,10 @@ export class AnalysisVisitor implements IVisitor {
  * The class implements the IVisitor interface.
  */
 export class ReductionVisitor implements IVisitor {
-    keywords: string[];
-    metadataTags: string[];
-    isSlideCompliant: boolean = false;
-    compliantLane: pm.Lane;
+    private keywords: string[];
+    private metadataTags: string[];
+    private isSlideCompliant: boolean = false;
+    private compliantLane: pm.Lane;
 
     /**
      * Constructor for ReductionVisitor
