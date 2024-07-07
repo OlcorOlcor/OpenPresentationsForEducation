@@ -11,10 +11,10 @@ class RefIndex {
  * Class designed for taking in Markdown code and returning JSON structure.
  */
 export class MarkdownParser {
-    slideTag: string = "";
-    slideRefs: string[] = [];
-    metadataTags: string[] = [];
-
+    private slideTag: string = "";
+    private slideRefs: string[] = [];
+    private metadataTags: string[] = [];
+    private firstParagraph: boolean = true;
     /**
      * Custom rule to handle metadata in markdown.
      * @param state - The state of the markdown parser.
@@ -49,12 +49,11 @@ export class MarkdownParser {
 
     /**
      * Parses the given markdown string into an array of slides.
+     * Markdownit is used to parse the markdown into an array of tokens from which the JSON is created.
      * @param markdown - The markdown string to parse.
      * @returns An array of parsed slides.
      */
-    public parseMarkdown(markdown: string): pt.Slide[] {
-        let slides: pt.Slide[] = [];
-
+    public parseMarkdown(markdown: string): pt.Slide {
         let mdit = markdownit();
         mdit.block.ruler.before('paragraph', 'metadata', this.metadata_rule);
         let array = mdit.parse(markdown, {});
@@ -63,8 +62,7 @@ export class MarkdownParser {
             slide.attributes.metadataTags.push(this.slideTag);
         }
         slide.attributes.refs = this.slideRefs;
-        slides.push(slide);
-        return slides;
+        return slide;
     }
 
     /**
@@ -73,15 +71,7 @@ export class MarkdownParser {
      * @returns The parsed slide.
      */
     private handleArray(array: Token[]): pt.Slide {
-        let slide: pt.Slide = {
-            type: "slide",
-            content: [],
-            attributes: { 
-                metadataTags: [],
-                refs: []
-            }
-        };
-        let first = true;
+        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: [], refs: []}};
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
                 case "bullet_list_open":
@@ -93,7 +83,7 @@ export class MarkdownParser {
                     slide.content.push(this.handleList(array, index, true));
                     break;
                 case "paragraph_open":
-                    let paragraph = this.handleParagraph(array, index, first);
+                    let paragraph = this.handleParagraph(array, index);
                     if (paragraph.content.length === 0) {
                         break;
                     }
@@ -115,7 +105,6 @@ export class MarkdownParser {
                 default:
                     break;
             }
-            first = false;
         }
         return slide;
     }
@@ -145,7 +134,7 @@ export class MarkdownParser {
                     );
                     break;
                 case "paragraph_open":
-                    blockQuote.content.push(this.handleParagraph(array, index, false));
+                    blockQuote.content.push(this.handleParagraph(array, index));
                     break;
                 case "heading_open":
                     blockQuote.content.push(
@@ -177,10 +166,9 @@ export class MarkdownParser {
      * Handles a paragraph token and converts it into a Paragraph element.
      * @param array - The array of markdown tokens.
      * @param index - The current index in the token array.
-     * @param first - Boolean indicating if it's the first paragraph. This is used to check for slide metadata tag.
      * @returns The parsed Paragraph element.
      */
-    private handleParagraph(array: Token[], index: RefIndex, first: boolean): pt.Paragraph {
+    private handleParagraph(array: Token[], index: RefIndex): pt.Paragraph {
         let paragraph: pt.Paragraph = { type: "paragraph", content: [], attributes: { metadataTags: this.metadataTags }};
         this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -191,7 +179,7 @@ export class MarkdownParser {
             if (array[index.index].type === "inline") {
                 // eslint-disable-next-line no-loop-func
                 this.getInline(array[index.index]).forEach((item) => {
-                    if (first) {
+                    if (this.firstParagraph) {
                         if (item.type === "text") {
                             let content: string = "";
                             (item as pt.Text).content.forEach(s => content += s);
@@ -210,7 +198,7 @@ export class MarkdownParser {
                         }
                     }
                     paragraph.content.push(item);
-                    first = false;
+                    this.firstParagraph = false;
                 }
                 );
             }
@@ -226,12 +214,7 @@ export class MarkdownParser {
      * @returns The parsed Heading element.
      */
     private handleHeading(array: Token[], index: RefIndex, level: number): pt.HeadingElement {
-        let heading: pt.HeadingElement = {
-            type: "heading",
-            content: [],
-            attributes: { level: level, metadataTags: this.metadataTags },
-            
-        };
+        let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: level, metadataTags: this.metadataTags }};
         this.metadataTags = [];
         for (index.index + 1; index.index < array.length; ++index.index) {
             if (array[index.index].type === "heading_close") {
@@ -253,16 +236,8 @@ export class MarkdownParser {
      * @param ordered - Boolean indicating if the list is ordered.
      * @returns The parsed List element.
      */
-    private handleList(
-        array: Token[],
-        index: RefIndex,
-        ordered: boolean,
-    ): pt.List {
-        let list: pt.List = {
-            type: "list",
-            content: [],
-            attributes: { listType: ordered ? "ordered" : "unordered", metadataTags: this.metadataTags },
-        };
+    private handleList(array: Token[], index: RefIndex, ordered: boolean): pt.List {
+        let list: pt.List = { type: "list", content: [], attributes: { listType: ordered ? "ordered" : "unordered", metadataTags: this.metadataTags }};
         this.metadataTags = [];
         let done: boolean = false;
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -401,9 +376,7 @@ export class MarkdownParser {
                 case "link_close":
                     break;
                 default:
-                    // console.log("unexpected");
-                    // console.log(child);
-                    // throw "unexpected";
+                    // TODO handle default
             }
         });
 
