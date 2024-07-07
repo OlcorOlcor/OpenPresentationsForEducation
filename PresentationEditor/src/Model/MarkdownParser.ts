@@ -1,13 +1,28 @@
 import * as pt from "./PresentationTypes";
 import markdownit, { Token } from "markdown-it";
+/**
+ * helper class used for keeping track of an index across functions.
+ */
 class RefIndex {
     public index: number = 0;
 }
 
+/**
+ * Class designed for taking in Markdown code and returning JSON structure.
+ */
 export class MarkdownParser {
     slideTag: string = "";
     slideRefs: string[] = [];
     metadataTags: string[] = [];
+
+    /**
+     * Custom rule to handle metadata in markdown.
+     * @param state - The state of the markdown parser.
+     * @param startLine - The line where the rule starts.
+     * @param endLine - The line where the rule ends.
+     * @param silent - If true, the rule will be applied silently.
+     * @returns True if the rule was successfully applied, false otherwise.
+     */
     metadata_rule(state: any, startLine: any, endLine: any, silent: any) {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
@@ -32,6 +47,11 @@ export class MarkdownParser {
         return true;
     }
 
+    /**
+     * Parses the given markdown string into an array of slides.
+     * @param markdown - The markdown string to parse.
+     * @returns An array of parsed slides.
+     */
     public parseMarkdown(markdown: string): pt.Slide[] {
         let slides: pt.Slide[] = [];
 
@@ -47,6 +67,11 @@ export class MarkdownParser {
         return slides;
     }
 
+    /**
+     * Handles an array of markdown tokens and converts them into a slide.
+     * @param array - The array of markdown tokens.
+     * @returns The parsed slide.
+     */
     private handleArray(array: Token[]): pt.Slide {
         let slide: pt.Slide = {
             type: "slide",
@@ -95,6 +120,12 @@ export class MarkdownParser {
         return slide;
     }
 
+    /**
+     * Handles a blockquote token and converts it into a BlockQuote element.
+     * @param array - The array of markdown tokens.
+     * @param index - The current index in the token array.
+     * @returns The parsed BlockQuote element.
+     */
     private handleBlockQuote(array: Token[], index: RefIndex): pt.BlockQuote {
         let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], attributes: { metadataTags: this.metadataTags }};
         this.metadataTags = [];
@@ -142,6 +173,13 @@ export class MarkdownParser {
         return blockQuote;
     }
 
+    /**
+     * Handles a paragraph token and converts it into a Paragraph element.
+     * @param array - The array of markdown tokens.
+     * @param index - The current index in the token array.
+     * @param first - Boolean indicating if it's the first paragraph. This is used to check for slide metadata tag.
+     * @returns The parsed Paragraph element.
+     */
     private handleParagraph(array: Token[], index: RefIndex, first: boolean): pt.Paragraph {
         let paragraph: pt.Paragraph = { type: "paragraph", content: [], attributes: { metadataTags: this.metadataTags }};
         this.metadataTags = [];
@@ -151,6 +189,7 @@ export class MarkdownParser {
                 break;
             }
             if (array[index.index].type === "inline") {
+                // eslint-disable-next-line no-loop-func
                 this.getInline(array[index.index]).forEach((item) => {
                     if (first) {
                         if (item.type === "text") {
@@ -179,6 +218,13 @@ export class MarkdownParser {
         return paragraph;
     }
 
+    /**
+     * Handles a heading token and converts it into a Heading element.
+     * @param array - The array of markdown tokens.
+     * @param index - The current index in the token array.
+     * @param level - The heading level.
+     * @returns The parsed Heading element.
+     */
     private handleHeading(array: Token[], index: RefIndex, level: number): pt.HeadingElement {
         let heading: pt.HeadingElement = {
             type: "heading",
@@ -200,6 +246,13 @@ export class MarkdownParser {
         return heading;
     }
 
+    /**
+     * Handles a list token and converts it into a List element.
+     * @param array - The array of markdown tokens.
+     * @param index - The current index in the token array.
+     * @param ordered - Boolean indicating if the list is ordered.
+     * @returns The parsed List element.
+     */
     private handleList(
         array: Token[],
         index: RefIndex,
@@ -246,6 +299,11 @@ export class MarkdownParser {
         return list;
     }
 
+    /**
+     * Extracts inline elements from a given token.
+     * @param inline - The token containing inline elements.
+     * @returns An array of inline elements.
+     */
     private getInline(inline: Token): (pt.InlineElement | pt.Text)[] {
         let inlineElements: (pt.InlineElement | pt.Text)[] = [];
         let stack: pt.TextAnnotation[] = [];
