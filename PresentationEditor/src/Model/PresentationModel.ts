@@ -377,7 +377,7 @@ export class SlideElement extends BaseElement implements IVisitable {
 /**
  * Represents a lane element.
  */
-export class Lane {
+export class Lane implements IVisitable {
     slides: (SlideElement | null)[];
     name: string;
     outputAsPresentation: boolean;
@@ -393,5 +393,14 @@ export class Lane {
         this.slides = slides;
         this.name = name;
         this.outputAsPresentation = output;
+    }
+
+    /**
+     * Accepts a visitor to process this element.
+     * 
+     * @param visitor - The visitor processing this element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitLaneNode(this);
     }
 }
