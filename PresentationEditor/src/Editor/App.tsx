@@ -95,6 +95,23 @@ function App() {
         setSelectedRightLaneIndex(index);
     }
 
+    function formatImportErrors(errors: any[]): string {
+        return errors.map(error => {
+            const { instancePath, message, params } = error;
+            
+            let returnMessage: string = "";
+
+            returnMessage +=  `Error at ${instancePath || 'root'}: ${message}`;
+            if (params.allowedValues && params.allowedValues.length > 0) {
+                returnMessage += ": ";
+                params.allowedValues.forEach((val: string) => {
+                    returnMessage += val + ", ";
+                });
+            }
+            return returnMessage;
+        }).join('\n');
+    }
+
     function importPresentation(file: File) {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -105,7 +122,7 @@ function App() {
             const ajv = new Ajv();
             const validate = ajv.compile(modelSchema);
             if (!validate(json)) {
-                console.log(validate.errors);
+                alert(formatImportErrors(validate.errors as any[]));
                 return;
             }
             setMetadata(json.metadata);
