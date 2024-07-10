@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import Menu from "./Menu";
-import { MarkdownParser } from "../Model/MarkdownParser";
-import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
+import { HtmlVisitor, JsonVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
-import { Box, Button, Fab } from "@mui/material";
+import { Fab } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EmptyLane from "../EmptyLane";
+import modelSchema from "../Model/model-schema.json";
+import Ajv from "ajv";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -99,7 +100,14 @@ function App() {
         reader.onload = (e) => {
             let content = e.target?.result as string;
             let parser = new PresentationParser();
-            let json = JSON.parse(content);
+            let json: pt.Presentation = JSON.parse(content);
+
+            const ajv = new Ajv();
+            const validate = ajv.compile(modelSchema);
+            if (!validate(json)) {
+                console.log(validate.errors);
+                return;
+            }
             setMetadata(json.metadata);
             setConstraints(json.constraints);
             let lanes = parser.getLanes(json.lanes);
