@@ -86,13 +86,13 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let returnLanes: Lane[] = [];
             updatedLanes.forEach((lane) => {
-                let updatedSlides = lane.getContent().filter((_, slideIndex) => slideIndex !== index,);
+                let updatedSlides = lane.getContent().filter((_, slideIndex) => slideIndex !== index);
                 returnLanes.push(new Lane(updatedSlides, lane.getName(), lane.outputsAsPresentation()));
             });
             if (selectedSlideIndex > 0) {
                 setSelectedSlideIndex(selectedSlideIndex - 1);
             }
-            return updatedLanes;
+            return returnLanes;
         });
     }
 
