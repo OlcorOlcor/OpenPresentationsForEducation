@@ -143,3 +143,12 @@ export type Constraints = {
     headings: number | null;
     bullet_points: number | null;
 }
+
+/**
+ * Represents the whole presentation.
+ */
+export type Presentation = {
+    lanes: Lane[];
+    metadata: Metadata[];
+    constraints: Constraints;
+}
