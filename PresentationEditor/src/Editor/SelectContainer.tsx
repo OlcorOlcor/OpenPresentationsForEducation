@@ -118,7 +118,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
             </Grid>
             <Grid item>
                 <Tooltip title={elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive() ? "Activate slide" : "Deactivate slide" } arrow>
-                    <Fab color="primary" size="small" onClick={onActivate}>
+                    <Fab color="primary" size="small" onClick={onActivate} style={{zIndex: "0"}}>
                         {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive()
                             ? <ToggleOffIcon />
                             : <ToggleOnIcon /> }
@@ -127,21 +127,21 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
             </Grid>
             <Grid item>
                 <Tooltip title={"Add slide"} arrow>
-                    <Fab color="primary" aria-label="add" size="small" onClick={onAdd}>
+                    <Fab color="primary" aria-label="add" size="small" onClick={onAdd} style={{zIndex: "0"}}>
                         <AddIcon />
                     </Fab>
                 </Tooltip>
             </Grid>
             <Grid item>
                 <Tooltip title={"Add slide in place"} arrow>
-                    <Fab color="primary" aria-label="add after" size="small" onClick={onAddAfter}>
+                    <Fab color="primary" aria-label="add after" size="small" onClick={onAddAfter} style={{zIndex: "0"}}>
                         <AddCircleOutlineIcon />
                     </Fab>
                 </ Tooltip>
             </Grid>
             <Grid item>
                 <Tooltip title={"Delete slide"} arrow>
-                    <Fab color="error" aria-label="delete" size="small" onClick={onDelete}>
+                    <Fab color="error" aria-label="delete" size="small" onClick={onDelete} style={{zIndex: "0"}}>
                         <DeleteIcon />
                     </Fab>
                 </Tooltip>
