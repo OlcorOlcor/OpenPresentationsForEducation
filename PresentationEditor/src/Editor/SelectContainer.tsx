@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./css/SlideSelect.css";
-import { IconButton, Button, Pagination, PaginationItem, Dialog, DialogTitle, Popover, Grid, Snackbar, Alert, Tooltip } from "@mui/material";
+import { IconButton, Button, Pagination, PaginationItem, Popover, Tooltip, Grid, Fab } from "@mui/material";
 import { SlideElement } from "../Model/PresentationModel";
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Constraints } from "../Model/PresentationTypes";
-import { Tune } from "@mui/icons-material";
-
+import AddIcon from '@mui/icons-material/Add';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ToggleOffIcon from '@mui/icons-material/ToggleOff';
+import ToggleOnIcon from '@mui/icons-material/ToggleOn';
 interface SelectContainerProps {
     elements: (SlideElement | null)[];
     selectedSlideIndex: number;
@@ -105,7 +108,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                             <PaginationItem
                                 {...item}
                                 className={`
-                                    ${elements[(item.page as number) - 1]?.active ? "active" : "inactive"} 
+                                    ${elements[(item.page as number) - 1]?.isActive() ? "active" : "inactive"} 
                                     ${((item.page as number) - 1) === selectedSlideIndex ? "selected" : ""}
                                 `}
                             />
@@ -114,26 +117,34 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                 />
             </Grid>
             <Grid item>
-                <Button variant="contained" onClick={onActivate}>
-                    {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.active
-                        ? "Activate"
-                        : "Deactivate"}
-                </Button>
+                <Tooltip title={elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive() ? "Activate slide" : "Deactivate slide" } arrow>
+                    <Fab color="primary" size="small" onClick={onActivate} style={{zIndex: "0"}}>
+                        {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive()
+                            ? <ToggleOffIcon />
+                            : <ToggleOnIcon /> }
+                    </Fab>
+                </Tooltip>
             </Grid>
             <Grid item>
-                <Button variant="contained" onClick={onAdd}>
-                    Add
-                </Button>
+                <Tooltip title={"Add slide"} arrow>
+                    <Fab color="primary" aria-label="add" size="small" onClick={onAdd} style={{zIndex: "0"}}>
+                        <AddIcon />
+                    </Fab>
+                </Tooltip>
             </Grid>
             <Grid item>
-                <Button variant="contained" onClick={onAddAfter}>
-                    Add after
-                </Button>
+                <Tooltip title={"Add slide in place"} arrow>
+                    <Fab color="primary" aria-label="add after" size="small" onClick={onAddAfter} style={{zIndex: "0"}}>
+                        <AddCircleOutlineIcon />
+                    </Fab>
+                </ Tooltip>
             </Grid>
             <Grid item>
-                <Button variant="contained" color="error" onClick={onDelete}>
-                    Delete
-                </Button>
+                <Tooltip title={"Delete slide"} arrow>
+                    <Fab color="error" aria-label="delete" size="small" onClick={onDelete} style={{zIndex: "0"}}>
+                        <DeleteIcon />
+                    </Fab>
+                </Tooltip>
             </Grid>
             <Grid item>
                 <Tooltip open={warningMessageOpen} title="Constraint reached!" arrow>

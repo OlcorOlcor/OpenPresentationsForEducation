@@ -1,15 +1,27 @@
 import * as pt from "./PresentationTypes";
 import * as pm from "./PresentationModel";
-import { Checker, Result } from "./StructureChecker";
 
+/**
+ * Class designed for converting JSON representation of the presentation data model into its class representation.
+ */
 export class PresentationParser {
 
+    /**
+     * Converts a Text JSON object to a TextElement.
+     * @param textJson - The Text JSON object.
+     * @returns The corresponding TextElement.
+     */
     private getTextElement(textJson: pt.Text): pm.TextElement {
         let content: string = "";
         textJson.content.forEach((t) => (content += t));
         return new pm.TextElement(content);
     }
 
+    /**
+     * Converts inline content JSON objects to InlineElement or TextElement objects.
+     * @param contentJson - The array of Text or TextAnnotation JSON objects.
+     * @returns The corresponding array of InlineElement or TextElement objects.
+     */
     private getInlineContent(contentJson: (pt.Text | pt.TextAnnotation)[]) {
         let content: (pm.TextElement | pm.InlineElement)[] = [];
         contentJson.forEach((c) => {
@@ -37,47 +49,92 @@ export class PresentationParser {
         return content;
     }
 
+    /**
+     * Converts a Bold JSON object to a BoldElement.
+     * @param boldJson - The Bold JSON object.
+     * @returns The corresponding BoldElement.
+     */
     private getBoldElement(boldJson: pt.TextAnnotation): pm.BoldElement {
         return new pm.BoldElement(this.getInlineContent(boldJson.content));
     }
 
+    /**
+     * Converts an Italic JSON object to an ItalicElement.
+     * @param italicJson - The Italic JSON object.
+     * @returns The corresponding ItalicElement.
+     */
     private getItalicElement(italicJson: pt.TextAnnotation): pm.ItalicElement {
         return new pm.ItalicElement(this.getInlineContent(italicJson.content));
     }
 
+    /**
+     * Converts a Code JSON object to a CodeElement.
+     * @param codeJson - The Code JSON object.
+     * @returns The corresponding CodeElement.
+     */
     private GetCodeElement(codeJson: pt.TextAnnotation): pm.CodeElement {
         return new pm.CodeElement(this.getInlineContent(codeJson.content));
     }
 
+    /**
+     * Converts a Link JSON object to a LinkElement.
+     * @param linkJson - The Link JSON object.
+     * @returns The corresponding LinkElement.
+     */
     private getLinkElement(linkJson: pt.Link): pm.LinkElement {
         let content: string = "";
         linkJson.content.forEach((c) => (content += c));
         return new pm.LinkElement(content, linkJson.attributes.alias);
     }
 
+    /**
+     * Converts an Image JSON object to an ImageElement.
+     * @param imageJson - The Image JSON object.
+     * @returns The corresponding ImageElement.
+     */
     private getImageElement(imageJson: pt.Image): pm.ImageElement {
         let content: string = "";
         imageJson.content.forEach((c) => (content += c));
         return new pm.ImageElement(content, imageJson.attributes.alias);
     }
 
+    /**
+     * Converts a Paragraph JSON object to a ParagraphElement.
+     * @param paragraphJson - The Paragraph JSON object.
+     * @returns The corresponding ParagraphElement.
+     */
     private getParagraphElement(paragraphJson: pt.Paragraph): pm.ParagraphElement {
         let elements = this.getInlineContent(paragraphJson.content);
         return new pm.ParagraphElement(elements, paragraphJson.attributes.metadataTags);
     }
 
+    /**
+     * Converts a Heading JSON object to a HeadingElement.
+     * @param headingJson - The Heading JSON object.
+     * @returns The corresponding HeadingElement.
+     */
     private getHeadingElement(headingJson: pt.HeadingElement): pm.HeadingElement {
         let level: number = headingJson.attributes.level;
         let content = this.getInlineContent(headingJson.content);
         return new pm.HeadingElement(level, content, headingJson.attributes.metadataTags);
     }
 
+    /**
+     * Converts a ListItem JSON object to a ListItemElement.
+     * @param listItemJson - The ListItem JSON object.
+     * @returns The corresponding ListItemElement.
+     */
     private getListItemElement(listItemJson: pt.ListItem): pm.ListItemElement {
         return new pm.ListItemElement(
             this.getInlineContent(listItemJson.content),
         );
     }
 
+    /**
+     * Converts a List JSON object to a ListElement.
+     * @param listJson - The List JSON object.
+     * @returns The corresponding ListElement.
+     */
     private getListElement(listJson: pt.List): pm.ListElement {
         let listType = listJson.attributes.listType;
         let content: (pm.ListItemElement | pm.ListElement)[] = [];
@@ -94,6 +151,11 @@ export class PresentationParser {
         return new pm.ListElement(listType, content, listJson.attributes.metadataTags);
     }
 
+    /**
+     * Converts an array of OuterElement JSON objects to an array of OuterElement objects.
+     * @param contentJson - The array of OuterElement JSON objects.
+     * @returns The corresponding array of OuterElement objects.
+     */
     private getOuterElementContent(contentJson: pt.OuterElement[]): pm.OuterElement[] {
         let content: pm.OuterElement[] = [];
         contentJson.forEach((jsonElement) => {
@@ -123,20 +185,32 @@ export class PresentationParser {
         return content;
     }
 
+    /**
+     * Converts a BlockQuote JSON object to a BlockQuoteElement.
+     * @param blockQuoteJson - The BlockQuote JSON object.
+     * @returns The corresponding BlockQuoteElement.
+     */
     private getBlockQuoteElement(blockQuoteJson: pt.BlockQuote): pm.BlockQuoteElement {
         let content = this.getOuterElementContent(blockQuoteJson.content);
         return new pm.BlockQuoteElement(content, blockQuoteJson.attributes.metadataTags);
     }
 
+    /**
+     * Converts a Slide JSON object to a SlideElement.
+     * @param jsonSlide - The Slide JSON object.
+     * @returns The corresponding SlideElement.
+     */
     private createSlide(jsonSlide: pt.Slide): pm.SlideElement {
         let elements = this.getOuterElementContent(jsonSlide.content);
-        let slide = new pm.SlideElement(elements);
-        slide.metadata = jsonSlide.attributes.metadataTags;
-        slide.active = true;
-        slide.refs = jsonSlide.attributes.refs;
+        let slide = new pm.SlideElement(elements, true, jsonSlide.attributes.metadataTags, jsonSlide.attributes.refs);
         return slide;
     }
 
+    /**
+     * Converts an array of Slide JSON objects to an array of SlideElement objects.
+     * @param slides - The array of Slide JSON objects.
+     * @returns The corresponding array of SlideElement objects.
+     */
     public getSlides(slides: (pt.Slide | null)[]): (pm.SlideElement | null)[] {
         let object_slides: (pm.SlideElement | null)[] = [];
         slides.forEach((slide) => {
@@ -146,8 +220,7 @@ export class PresentationParser {
                 return;
             }
             if (Object.keys(slide).length === 0) {
-                let s = new pm.SlideElement([]);
-                s.active = false;
+                let s = new pm.SlideElement([], false);
                 object_slides.push(s);
                 return;
             }
@@ -156,16 +229,20 @@ export class PresentationParser {
         return object_slides;
     }
 
+    /**
+     * Converts an array of Lane JSON objects to an array of Lane objects.
+     * @param lanes - The array of Lane JSON objects.
+     * @returns The corresponding array of Lane objects.
+     */
     public getLanes(lanes: pt.Lane[]): pm.Lane[] {
-        // TODO: properly return result
         let object_lanes: pm.Lane[] = [];
         lanes.forEach((lane) => {
             object_lanes.push(
                 new pm.Lane(
                     this.getSlides(lane.content),
                     lane.attributes.name,
-                    lane.attributes.compile,
-                ),
+                    lane.attributes.compile
+                )
             );
         });
         return object_lanes;

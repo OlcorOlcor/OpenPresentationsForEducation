@@ -33,14 +33,11 @@ const EditLaneContainer: React.FC<EditLaneContainerProps> = ({
     }, [selectedLaneIndex]);
 
     function handleNameChange(name: string) {
-        setDialogLane((prev) => ({ ...prev, name: name }));
+        setDialogLane((prev) => { return new Lane(prev.getContent(), name, prev.outputsAsPresentation()) });
     }
 
     function handleOutputTypeChange() {
-        setDialogLane((prev) => ({
-            ...prev,
-            outputAsPresentation: !prev.outputAsPresentation,
-        }));
+        setDialogLane((prev) => { return new Lane(prev.getContent(), prev.getName(), !prev.outputsAsPresentation()) });
     }
 
     return (
@@ -51,7 +48,7 @@ const EditLaneContainer: React.FC<EditLaneContainerProps> = ({
                         id="Lane name"
                         variant="outlined"
                         label="Name"
-                        value={dialogLane ? dialogLane.name : ""}
+                        value={dialogLane ? dialogLane.getName() : ""}
                         onChange={(e) => handleNameChange(e.target.value)}
                         fullWidth
                     />
@@ -60,7 +57,7 @@ const EditLaneContainer: React.FC<EditLaneContainerProps> = ({
                     <FormControlLabel
                         control={
                             <Checkbox
-                                checked={dialogLane ? dialogLane.outputAsPresentation : false}
+                                checked={dialogLane ? dialogLane.outputsAsPresentation() : false}
                             />
                         }
                         label="Output as presentation"
@@ -70,7 +67,7 @@ const EditLaneContainer: React.FC<EditLaneContainerProps> = ({
             </Grid>
             <Grid container spacing={4}>
                 <Grid item>
-                    <Button color="primary" variant="contained" onClick={() => handleSubmit(dialogLane.name, dialogLane.outputAsPresentation)}>
+                    <Button color="primary" variant="contained" onClick={() => handleSubmit(dialogLane.getName(), dialogLane.outputsAsPresentation())}>
                         Save
                     </Button>
                 </Grid>

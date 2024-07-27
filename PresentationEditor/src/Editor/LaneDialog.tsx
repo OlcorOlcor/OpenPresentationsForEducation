@@ -38,7 +38,7 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
         }
         setLanes(prev => {
             let newLanes = [...prev];
-            let newLane = new Lane(newLanes[selectedLaneIndex].slides, name, outputType);
+            let newLane = new Lane(newLanes[selectedLaneIndex].getContent(), name, outputType);
             newLanes[selectedLaneIndex] = newLane;
             return newLanes;
         });

@@ -47,7 +47,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     return (
         <Grid container justifyContent="center" alignItems="center" spacing={4}>
             <Grid item xs style={{width: "100%"}}>
-                <Button color="primary" variant="contained" onClick={showSettings} style={{width: "100%"}}>{(lanes && lanes[selectedLaneIndex]) ? lanes[selectedLaneIndex].name : "choose a lane"}</Button>
+                <Button color="primary" variant="contained" onClick={showSettings} style={{width: "100%"}}>{(lanes && lanes[selectedLaneIndex]) ? lanes[selectedLaneIndex].getName() : "choose a lane"}</Button>
             </Grid>
             <Grid item>
                 <FormGroup>

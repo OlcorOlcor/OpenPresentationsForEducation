@@ -1,6 +1,6 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://OpenSlidesForEducation/model-schema.json",
     "title": "Presentation model",
     "description": "A model for presentation",
     "type": "object",
@@ -173,14 +173,21 @@
                         ]
                     }
                 },
-                "metadataTags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "metadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": ["metadataTags"]
                 }
+                
             },
-            "required": ["type", "content", "metadataTags"]
+            "required": ["type", "content", "attributes"]
         },
         "Heading": {
             "type": "object",
@@ -205,9 +212,15 @@
                             "type": "integer",
                             "minimum": 1,
                             "maximum": 6
+                        },
+                        "metadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "required": ["level"]
+                    "required": ["level", "metadataTags"]
                 }
             },
             "required": ["type", "content", "attributes"]
@@ -229,14 +242,20 @@
                         ]
                     }
                 },
-                "metadataTags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "metadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": ["metadataTags"]
                 }
             },
-            "required": ["type", "content", "metadataTags"]
+            "required": ["type", "content", "attributes"]
         },
         "Slide": {
             "type": "object",
@@ -259,26 +278,23 @@
                 "attributes": {
                     "type": "object",
                     "properties": {
-                        "active": {
-                            "type": "boolean"
+                        "metadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }, 
+                        "refs": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "required": ["active"]
-                },
-                "metadataTags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }, 
-                "refs": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "required": ["metadataTags", "refs"]
                 }
             },
-            "required": ["type", "content", "attributes", "refs"]
+            "required": ["type", "content", "attributes"]
         },
         "Lane": {
             "type": "object",

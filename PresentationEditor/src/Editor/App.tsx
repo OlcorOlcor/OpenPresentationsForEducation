@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import Menu from "./Menu";
-import { MarkdownParser } from "../Model/MarkdownParser";
-import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
+import { HtmlVisitor, JsonVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
-import { Box, Button, Fab } from "@mui/material";
+import { Fab } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EmptyLane from "../EmptyLane";
+import modelSchema from "../Model/model-schema.json";
+import Ajv from "ajv";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -32,9 +33,9 @@ function App() {
             let slides = [];
             let numberOfSlides = 1;
             if (selectedLeftLaneIndex !== -1) {
-                numberOfSlides = lanes[selectedLeftLaneIndex].slides.length;
+                numberOfSlides = lanes[selectedLeftLaneIndex].getContent().length;
             } else if (selectedRightLaneIndex !== -1) {
-                numberOfSlides = lanes[selectedRightLaneIndex].slides.length;
+                numberOfSlides = lanes[selectedRightLaneIndex].getContent().length;
             }
             for (let i = 0; i < numberOfSlides; ++i) {
                 slides.push(null);
@@ -94,12 +95,36 @@ function App() {
         setSelectedRightLaneIndex(index);
     }
 
+    function formatImportErrors(errors: any[]): string {
+        return errors.map(error => {
+            const { instancePath, message, params } = error;
+            
+            let returnMessage: string = "";
+
+            returnMessage +=  `Error at ${instancePath || 'root'}: ${message}`;
+            if (params.allowedValues && params.allowedValues.length > 0) {
+                returnMessage += ": ";
+                params.allowedValues.forEach((val: string) => {
+                    returnMessage += val + ", ";
+                });
+            }
+            return returnMessage;
+        }).join('\n');
+    }
+
     function importPresentation(file: File) {
         let reader = new FileReader();
         reader.onload = (e) => {
             let content = e.target?.result as string;
             let parser = new PresentationParser();
-            let json = JSON.parse(content);
+            let json: pt.Presentation = JSON.parse(content);
+
+            const ajv = new Ajv();
+            const validate = ajv.compile(modelSchema);
+            if (!validate(json)) {
+                alert(formatImportErrors(validate.errors as any[]));
+                return;
+            }
             setMetadata(json.metadata);
             setConstraints(json.constraints);
             let lanes = parser.getLanes(json.lanes);
