@@ -4,7 +4,7 @@ import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
-import Menu from "./Menu";
+import AppMenu from "./Menu";
 import { HtmlVisitor, JsonVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
@@ -167,7 +167,7 @@ function App() {
     return (
         <Grid container direction="column" style={{height: "100%"}}>
             <Grid item>
-                <Menu
+                <AppMenu
                     importPresentation={importPresentation}
                     exportPresentationAsJson={exportPresentationAsJSON}
                     exportPresentationAsReveal={exportPresentationAsReveal}
