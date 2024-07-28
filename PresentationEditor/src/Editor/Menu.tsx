@@ -1,12 +1,13 @@
-import { AppBar, Box, Button, ClickAwayListener, Container, Grid, Grow, MenuItem, MenuList, Paper, Popper, Toolbar, Menu, Typography, IconButton } from "@mui/material";
+import { AppBar, Box, Button, MenuItem, Toolbar, Menu, Typography, IconButton } from "@mui/material";
 import React, { useState } from "react";
 import "./css/Menu.css";
 import MetadataDialog from "./MetadataDialog";
 import { Constraints, Metadata } from "../Model/PresentationTypes";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { KeyboardArrowDownTwoTone, KeyboardArrowRight } from "@mui/icons-material";
 import ConstraintsDialog from "./ConstraintsDialog";
 import MenuIcon from '@mui/icons-material/Menu';
+import LaneDialog from "./LaneDialog";
+import { Lane } from "../Model/PresentationModel";
 
 interface MenuProps {
     importPresentation(file: File): void;
@@ -16,6 +17,10 @@ interface MenuProps {
     setMetadata: React.Dispatch<React.SetStateAction<Metadata[]>>;
     constraints: Constraints;
     setConstraints: React.Dispatch<React.SetStateAction<Constraints>>;
+    lanes: Lane[];
+    setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
+    addLane(): void;
+    deleteLane(index: number): void;
 }
 
 const AppMenu: React.FC<MenuProps> = ({
@@ -25,25 +30,20 @@ const AppMenu: React.FC<MenuProps> = ({
     metadata,
     setMetadata,
     constraints,
-    setConstraints
+    setConstraints,
+    lanes,
+    setLanes,
+    addLane,
+    deleteLane
 }) => {
     const [metadataDialogOpen, setMetadataDialogOpen] = useState<boolean>(false);
     const [constraintsDialogOpen, setConstraintsDialogOpen] = useState<boolean>(false);
+    const [lanesDialogOpen, setLanesDialogOpen] = useState<boolean>(false);
     const [exportOpen, setExportOpen] = useState(false);
     const [anchorElFile, setAnchorElFile] = useState(null);
     const [anchorElView, setAnchorElView] = useState(null);
-    const anchorFileRef = React.useRef<HTMLButtonElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
-    const prevExportOpen = React.useRef(exportOpen);
-    /*
-    React.useEffect(() => {
-      if (prevExportOpen.current === true && exportOpen === false) {
-        anchorRef.current!.focus();
-      }
-  
-      prevExportOpen.current = exportOpen;
-    }, [exportOpen]);
-    */
+
     function openMetadata() {
         setMetadataDialogOpen(true);
     }
@@ -52,19 +52,14 @@ const AppMenu: React.FC<MenuProps> = ({
         setConstraintsDialogOpen(true);
     }
 
+    function openLanes() {
+        setLanesDialogOpen(true);
+    }
+
     const handleExportToggle = () => {
         setExportOpen(!exportOpen);
     };
 
-    /*
-    const handleExportClose = (event: Event | React.SyntheticEvent) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
-            return;
-        }
-
-        setExportOpen(false);
-    };
-    */
     function handleFileChange(event: any) {
         const file = event.target.files[0];
         if (file) {
@@ -148,7 +143,7 @@ const AppMenu: React.FC<MenuProps> = ({
                         <MenuItem onClick={handleViewClose}>Single view</MenuItem>
                         <MenuItem onClick={handleViewClose}>Side by side</MenuItem>
                     </Menu>
-                    <Button color="inherit">Lanes</Button>
+                    <Button color="inherit" onClick={openLanes}>Lanes</Button>
                     <Button color="inherit" onClick={openMetadata}>Metadata</Button>
                     <Button color="inherit" onClick={openConstraints}>Constraints</Button>
                     <Button color="inherit">Export</Button>
@@ -165,6 +160,7 @@ const AppMenu: React.FC<MenuProps> = ({
             </IconButton>
             <MetadataDialog dialogOpen={metadataDialogOpen} setDialogOpen={setMetadataDialogOpen} metadata={metadata} setMetadata={setMetadata} />
             <ConstraintsDialog dialogOpen={constraintsDialogOpen} setDialogOpen={setConstraintsDialogOpen} constraints={constraints} setConstraints={setConstraints} />
+            <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => {}}/>
         </AppBar>
     );
 };

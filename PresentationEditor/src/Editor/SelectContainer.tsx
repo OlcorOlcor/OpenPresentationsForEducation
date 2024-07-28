@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./css/SlideSelect.css";
-import { IconButton, Button, Pagination, PaginationItem, Popover, Tooltip, Grid, Fab } from "@mui/material";
+import { IconButton, Button, Pagination, PaginationItem, Popover, Tooltip, Grid, Fab, Box, ButtonGroup } from "@mui/material";
 import { SlideElement } from "../Model/PresentationModel";
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -10,6 +10,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ToggleOffIcon from '@mui/icons-material/ToggleOff';
 import ToggleOnIcon from '@mui/icons-material/ToggleOn';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 interface SelectContainerProps {
     elements: (SlideElement | null)[];
     selectedSlideIndex: number;
@@ -88,7 +90,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
 
     return (
         <Grid container spacing={1}>
-            <Grid item>
+            <Grid item xs>
                 <Pagination
                     count={elements.length}
                     shape="rounded"
@@ -117,51 +119,40 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                 />
             </Grid>
             <Grid item>
-                <Tooltip title={elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive() ? "Activate slide" : "Deactivate slide" } arrow>
-                    <Fab color="primary" size="small" onClick={onActivate} style={{zIndex: "0"}}>
-                        {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive()
-                            ? <ToggleOffIcon />
-                            : <ToggleOnIcon /> }
-                    </Fab>
-                </Tooltip>
-            </Grid>
-            <Grid item>
-                <Tooltip title={"Add slide"} arrow>
-                    <Fab color="primary" aria-label="add" size="small" onClick={onAdd} style={{zIndex: "0"}}>
-                        <AddIcon />
-                    </Fab>
-                </Tooltip>
-            </Grid>
-            <Grid item>
-                <Tooltip title={"Add slide in place"} arrow>
-                    <Fab color="primary" aria-label="add after" size="small" onClick={onAddAfter} style={{zIndex: "0"}}>
-                        <AddCircleOutlineIcon />
-                    </Fab>
-                </ Tooltip>
-            </Grid>
-            <Grid item>
-                <Tooltip title={"Delete slide"} arrow>
-                    <Fab color="error" aria-label="delete" size="small" onClick={onDelete} style={{zIndex: "0"}}>
-                        <DeleteIcon />
-                    </Fab>
-                </Tooltip>
-            </Grid>
-            <Grid item>
-                <Tooltip open={warningMessageOpen} title="Constraint reached!" arrow>
-                    <IconButton onClick={handleInfoClick} ref={iconRef}>
-                        <InfoIcon color={isSlideCorrect() ? "primary" : "warning"}/>
-                    </IconButton>
-                </Tooltip>
-                <Popover open={infoOpen} anchorEl={iconRef.current} onClose={handleInfoClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
-                    <Grid container direction="column">
-                        <Grid item>{ slideAnalysis.words != null && constraints.words != null && slideAnalysis.words > constraints.words && <WarningIcon color="warning"/>}Words: {slideAnalysis.words}</Grid>
-                        <Grid item>{ slideAnalysis.characters != null && constraints.characters != null && slideAnalysis.characters > constraints.characters && <WarningIcon color="warning"/>}Characters: {slideAnalysis.characters}</Grid>
-                        <Grid item>{ slideAnalysis.images != null && constraints.images != null && slideAnalysis.images > constraints.images && <WarningIcon color="warning"/>}Images: {slideAnalysis.images}</Grid>
-                        <Grid item>{ slideAnalysis.links != null && constraints.links != null && slideAnalysis.links > constraints.links && <WarningIcon color="warning"/>}Links: {slideAnalysis.links}</Grid>
-                        <Grid item>{ slideAnalysis.headings != null && constraints.headings != null && slideAnalysis.headings > constraints.headings && <WarningIcon color="warning"/>}Headings: {slideAnalysis.headings}</Grid>
-                        <Grid item>{slideAnalysis.bullet_points != null && constraints.bullet_points != null && slideAnalysis.bullet_points > constraints.bullet_points && <WarningIcon color="warning"/>}Bullet points: {slideAnalysis.bullet_points}</Grid>
-                    </Grid>
-                </Popover>
+                <ButtonGroup>
+                    <Tooltip open={warningMessageOpen} title="Constraint reached!" arrow>
+                        <Button onClick={handleInfoClick} ref={iconRef} color={isSlideCorrect() ? "primary" : "warning"}>
+                            <InfoIcon color={isSlideCorrect() ? "primary" : "warning"}/>
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive() ? "Activate slide" : "Deactivate slide" } arrow>
+                        <Button color="primary" size="small" onClick={onActivate} style={{zIndex: "0"}}>
+                            {elements[selectedSlideIndex] == null || !elements[selectedSlideIndex]!.isActive()
+                                ? <VisibilityIcon />
+                                : <VisibilityOffIcon /> }
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={"Add slide"} arrow>
+                        <Button color="primary" aria-label="add" size="small" onClick={onAdd} style={{zIndex: "0"}}>
+                            <AddIcon />
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={"Delete slide"} arrow>
+                        <Button color="error" aria-label="delete" size="small" onClick={onDelete} style={{zIndex: "0"}}>
+                            <DeleteIcon />
+                        </Button>
+                    </Tooltip>
+                </ButtonGroup>
+                    <Popover open={infoOpen} anchorEl={iconRef.current} onClose={handleInfoClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
+                        <Grid container direction="column">
+                            <Grid item>{ slideAnalysis.words != null && constraints.words != null && slideAnalysis.words > constraints.words && <WarningIcon color="warning"/>}Words: {slideAnalysis.words}</Grid>
+                            <Grid item>{ slideAnalysis.characters != null && constraints.characters != null && slideAnalysis.characters > constraints.characters && <WarningIcon color="warning"/>}Characters: {slideAnalysis.characters}</Grid>
+                            <Grid item>{ slideAnalysis.images != null && constraints.images != null && slideAnalysis.images > constraints.images && <WarningIcon color="warning"/>}Images: {slideAnalysis.images}</Grid>
+                            <Grid item>{ slideAnalysis.links != null && constraints.links != null && slideAnalysis.links > constraints.links && <WarningIcon color="warning"/>}Links: {slideAnalysis.links}</Grid>
+                            <Grid item>{ slideAnalysis.headings != null && constraints.headings != null && slideAnalysis.headings > constraints.headings && <WarningIcon color="warning"/>}Headings: {slideAnalysis.headings}</Grid>
+                            <Grid item>{slideAnalysis.bullet_points != null && constraints.bullet_points != null && slideAnalysis.bullet_points > constraints.bullet_points && <WarningIcon color="warning"/>}Bullet points: {slideAnalysis.bullet_points}</Grid>
+                        </Grid>
+                    </Popover>
             </Grid>
         </Grid>
     );

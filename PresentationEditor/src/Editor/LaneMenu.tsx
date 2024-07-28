@@ -1,14 +1,4 @@
-import {
-    Button,
-    Checkbox,
-    FormControl,
-    FormControlLabel,
-    FormGroup,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Select,
-} from "@mui/material";
+import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select} from "@mui/material";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import React, { useState } from "react";
 import EditLaneContainer from "./EditLaneContainer";
@@ -44,23 +34,47 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
         setDialogOpen(true);
     }
 
+    function handleLaneChange(e: any) {
+        selectLane(e.target.value as number);
+    }
+
+    function handleViewChange(e: any) {
+        setEditorView(e.target.value === "editor");
+    }
+
     return (
         <Grid container justifyContent="center" alignItems="center" spacing={4}>
-            <Grid item xs style={{width: "100%"}}>
-                <Button color="primary" variant="contained" onClick={showSettings} style={{width: "100%"}}>{(lanes && lanes[selectedLaneIndex]) ? lanes[selectedLaneIndex].getName() : "choose a lane"}</Button>
+            <Grid item xs={6}>
+                <FormControl fullWidth>
+                    <InputLabel id="laneSelectLabel">Active lane:</InputLabel>
+                    <Select
+                        labelId="laneSelectLabel"
+                        id="laneSelect"
+                        value={selectedLaneIndex}
+                        onChange={handleLaneChange}
+                    >
+                        {lanes.map((lane, index) => (
+                            <MenuItem key={index} value={index}>
+                                {lane.getName()}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </Grid>
-            <Grid item>
-                <FormGroup>
-                    <FormControlLabel
-                        control={<Checkbox />}
-                        label="Preview"
-                        onChange={() => {
-                            setEditorView(!editorView);
-                        }}
-                    />
-                </FormGroup>
+            <Grid item xs={6}>
+            <FormControl fullWidth>
+                    <InputLabel id="mode-select-label">View:</InputLabel>
+                    <Select
+                        labelId="mode-select-label"
+                        id="mode-select"
+                        value={editorView ? "editor" : "preview"}
+                        onChange={handleViewChange}
+                    >
+                        <MenuItem value="editor">Editor</MenuItem>
+                        <MenuItem value="preview">Preview</MenuItem>
+                    </Select>
+                </FormControl>
             </Grid>
-            <LaneDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} lanes={lanes} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={selectLane}/>
         </Grid>
     );
 };

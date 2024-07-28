@@ -98,7 +98,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     }
 
     return (
-        <Grid container direction="column" style={{ height: "100%" }}>
+        <Grid container direction="column" style={{ height: "100%" }} spacing={2}>
             <Grid item >
                 <SelectContainer
                     selectedSlideIndex={selectedSlideIndex}

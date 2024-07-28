@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel";
@@ -8,9 +8,6 @@ import AppMenu from "./Menu";
 import { HtmlVisitor, JsonVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
-import { Fab } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EmptyLane from "../EmptyLane";
 import modelSchema from "../Model/model-schema.json";
 import Ajv from "ajv";
@@ -82,16 +79,10 @@ function App() {
     }
 
     function selectLeftLane(index: number) {
-        if (index === selectedRightLaneIndex) {
-            return;
-        }
         setSelectedLeftLaneIndex(index);
     }
 
     function selectRightLane(index: number) {
-        if (index === selectedLeftLaneIndex) {
-            return;
-        }
         setSelectedRightLaneIndex(index);
     }
 
@@ -165,7 +156,7 @@ function App() {
 
 
     return (
-        <Grid container direction="column" style={{height: "100%"}}>
+        <Grid container direction="column" style={{height: "100%"}} spacing={2}>
             <Grid item>
                 <AppMenu
                     importPresentation={importPresentation}
@@ -174,7 +165,11 @@ function App() {
                     metadata={metadata}
                     setMetadata={setMetadata}
                     constraints={constraints}
-                    setConstraints={setConstraints}
+                    setConstraints={setConstraints} 
+                    lanes={lanes} 
+                    setLanes={setLanes} 
+                    addLane={addLane} 
+                    deleteLane={deleteLane}
                 />
             </Grid>
             <Grid item container xs md sm spacing={1} style={{ height: "calc(100% - 64px)" }}>
@@ -209,12 +204,6 @@ function App() {
                             constraints={constraints}
                         />
                     ) : ( <EmptyLane addLane={addLane}/> ) }
-                </Grid>
-                <Grid container justifyContent="center" alignItems="center" style={{ position: 'absolute', top: 0, bottom: 0,  pointerEvents: 'none' }}>
-                    <Fab color="primary" aria-label="add" onClick={swapLane} style={{pointerEvents: 'auto'}}>
-                        <ArrowBackIcon />
-                        <ArrowForwardIcon />
-                    </Fab>
                 </Grid>
             </Grid>
         </Grid>

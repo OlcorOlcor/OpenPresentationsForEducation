@@ -26,6 +26,9 @@ const EditorContainer: React.FC<EditorProps> = ({ data, onEditorChange }) => {
             value={data}
             defaultLanguage="Markdown"
             onMount={handleMount}
+            options={{
+                minimap: { enabled: false }
+            }}
         />
     );
 };
