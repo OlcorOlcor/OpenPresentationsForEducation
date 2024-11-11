@@ -8,7 +8,7 @@ import AppMenu from "./Menu";
 import { HtmlVisitor, JsonVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
-import EmptyLane from "../EmptyLane";
+import EmptyLane from "./EmptyLane";
 import modelSchema from "../Model/model-schema.json";
 import Ajv from "ajv";
 
