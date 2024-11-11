@@ -103,9 +103,11 @@ const AppMenu: React.FC<MenuProps> = ({
         <AppBar position="static">
             <Toolbar disableGutters>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                    <Typography variant="h5" component="div" sx={{ display: 'flex', alignItems: 'center'}}>
-                        Open Slide Editor
-                    </Typography>
+                    <a href=".">
+                        <Typography variant="h5" component="div" sx={{ display: 'flex', alignItems: 'center'}}>
+                            Open Slide Editor
+                        </Typography>
+                    </a>
                     <Button
                         color="inherit"
                         onClick={handleFileClick}
