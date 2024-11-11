@@ -11,6 +11,7 @@ import { saveAs } from "file-saver";
 import EmptyLane from "./EmptyLane";
 import modelSchema from "../Model/model-schema.json";
 import Ajv from "ajv";
+import { ViewMode } from "./ViewMode";
 
 function App() {
     const [lanes, setLanes] = useState<Lane[]>([
@@ -24,6 +25,9 @@ function App() {
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
         useState<number>(1);
     const [imported, setImported] = useState<boolean>(false);
+    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.SPLIT);
+
+
     function addLane() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
@@ -154,6 +158,13 @@ function App() {
         saveAs(blob, "output.html");
     }
 
+    function newProject() {
+        setLanes([new Lane([new SlideElement([])], "first"), new Lane([new SlideElement([])], "second")]);
+        setSelectedLeftLaneIndex(0);
+        setSelectedRightLaneIndex(1);
+        setConstraints({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null});
+        setMetadata([]);
+    }
 
     return (
         <Grid container direction="column" style={{height: "100%"}} spacing={2}>
@@ -170,41 +181,64 @@ function App() {
                     setLanes={setLanes} 
                     addLane={addLane} 
                     deleteLane={deleteLane}
+                    newProject={newProject}
+                    setViewMode={setViewMode}
                 />
             </Grid>
             <Grid item container xs md sm spacing={1} style={{ height: "calc(100% - 64px)" }}>
-                <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
-                        <LaneContainer
-                            lanes={lanes}
-                            setLanes={setLanes}
-                            selectedLaneIndex={selectedLeftLaneIndex}
-                            selectLane={selectLeftLane}
-                            otherLaneIndex={selectedRightLaneIndex}
-                            addLane={addLane}
-                            deleteLane={deleteLane}
-                            imported={imported}
-                            setImported={setImported}
-                            constraints={constraints}
-                        />
-                    ) : ( <EmptyLane addLane={addLane}/> ) }
-                </Grid>
-                <Grid item xs={6} md={6} style={{ height: "100%" }}>
-                    {(selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex]) ? (
-                        <LaneContainer
-                            lanes={lanes}
-                            setLanes={setLanes}
-                            selectedLaneIndex={selectedRightLaneIndex}
-                            selectLane={selectRightLane}
-                            otherLaneIndex={selectedLeftLaneIndex}
-                            addLane={addLane}
-                            deleteLane={deleteLane}
-                            imported={imported}
-                            setImported={setImported}
-                            constraints={constraints}
-                        />
-                    ) : ( <EmptyLane addLane={addLane}/> ) }
-                </Grid>
+                {viewMode === ViewMode.SPLIT ? (
+                    <>
+                        <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                            {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
+                                <LaneContainer
+                                    lanes={lanes}
+                                    setLanes={setLanes}
+                                    selectedLaneIndex={selectedLeftLaneIndex}
+                                    selectLane={selectLeftLane}
+                                    otherLaneIndex={selectedRightLaneIndex}
+                                    addLane={addLane}
+                                    deleteLane={deleteLane}
+                                    imported={imported}
+                                    setImported={setImported}
+                                    constraints={constraints}
+                                />
+                            ) : ( <EmptyLane addLane={addLane}/> ) }
+                        </Grid>
+                        <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                            {(selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex]) ? (
+                                <LaneContainer
+                                    lanes={lanes}
+                                    setLanes={setLanes}
+                                    selectedLaneIndex={selectedRightLaneIndex}
+                                    selectLane={selectRightLane}
+                                    otherLaneIndex={selectedLeftLaneIndex}
+                                    addLane={addLane}
+                                    deleteLane={deleteLane}
+                                    imported={imported}
+                                    setImported={setImported}
+                                    constraints={constraints}
+                                />
+                            ) : ( <EmptyLane addLane={addLane}/> ) }
+                        </Grid> 
+                    </>
+                ) : (
+                    <Grid item xs={12} md={12} style={{ height: "100%" }}>
+                        {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
+                            <LaneContainer
+                                lanes={lanes}
+                                setLanes={setLanes}
+                                selectedLaneIndex={selectedLeftLaneIndex}
+                                selectLane={selectLeftLane}
+                                otherLaneIndex={selectedRightLaneIndex}
+                                addLane={addLane}
+                                deleteLane={deleteLane}
+                                imported={imported}
+                                setImported={setImported}
+                                constraints={constraints}
+                            />
+                        ) : ( <EmptyLane addLane={addLane}/> ) }
+                    </Grid>
+                )}
             </Grid>
         </Grid>
     );
