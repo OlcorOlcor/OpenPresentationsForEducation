@@ -16,8 +16,6 @@ interface LaneContainerProps {
     otherLaneIndex: number;
     addLane(): void;
     deleteLane(index: number): void;
-    imported: boolean;
-    setImported: React.Dispatch<React.SetStateAction<boolean>>;
     constraints: Constraints;
 }
 
@@ -29,8 +27,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     otherLaneIndex,
     addLane,
     deleteLane,
-    imported,
-    setImported,
     constraints
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
@@ -42,22 +38,12 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     );
 
     useEffect(() => {
-        if (imported) {
-            updateEditor();
-            setImported(false);
-        }
-    }, [imported]);
-
-    useEffect(() => {
-        updateEditor();
-    }, [selectedSlideIndex, selectedLaneIndex]);
-    useEffect(() => {
         setSelectedSlideIndex(0);
     }, [selectedLaneIndex]);
 
     useEffect(() => {
-        regenerateSlide(selectedSlideIndex);
-    }, [editorData])
+        //regenerateSlide(selectedSlideIndex);
+    }, [editorData]);
 
     function addSlide() {
         setLanes((oldLanes) => {
@@ -91,6 +77,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             });
             if (selectedSlideIndex > 0) {
                 setSelectedSlideIndex(selectedSlideIndex - 1);
+                updateEditor();
             }
             return returnLanes;
         });
@@ -156,7 +143,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     deleteLane={deleteLane}
                 />
             </Grid>
-            <Grid item xs style={{ height: "calc(100% - 64px)" }}>
+            <Grid item xs style={{height: "fit-content"}}>
                 <EditorModule
                     editorData={editorData}
                     setEditorData={setEditorData}
@@ -172,6 +159,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     regenerateSlide={regenerateSlide}
                     constraints={constraints}
                     slideAnalysis={slideAnalysis}
+                    updateEditor={updateEditor}
                 />
             </Grid>
         </Grid>

@@ -505,7 +505,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The link element to visit.
      */
     visitLinkNode(element: pm.LinkElement): void {
-        let link: pt.Link = {type: "link", content: [element.getContent()], attributes: { alias: element.getAlias() }};
+        let link: pt.Link = {type: "link", content: [element.getContent()], attributes: { alias: element.getAlias() }, metadataTags: element.getMetadata()};
         this.stack.push(link);
     }
 
@@ -543,7 +543,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        let list: pt.List = {type: "list", content: [], attributes: { listType: element.getListType(), metadataTags: element.getMetadata() }};
+        let list: pt.List = {type: "list", content: [], attributes: { listType: element.getListType()}, metadataTags: element.getMetadata() };
         element.getContent().forEach(c => {
             c.accept(this);
             list.content.push(this.stack.pop()!);

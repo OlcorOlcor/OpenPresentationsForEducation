@@ -21,6 +21,7 @@ interface EditorModuleProps {
     regenerateSlide(index: number): void;
     constraints: Constraints;
     slideAnalysis: Constraints;
+    updateEditor(): void;
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
@@ -37,7 +38,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     deleteSlideAt,
     regenerateSlide,
     constraints,
-    slideAnalysis
+    slideAnalysis,
+    updateEditor
 }) => {
     // const [selectedView, setSelectedView] = useState<any>(null);
 
@@ -57,6 +59,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
 
     function selectSlide(slideIndex: number): void {
         setSelectedSlideIndex(slideIndex);
+        updateEditor();
     }
 
     function editorChange(editorData: string): void {
@@ -98,24 +101,43 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     }
 
     return (
-        <Grid container direction="column" style={{ height: "100%" }} spacing={2}>
-            <Grid item >
-                <SelectContainer
-                    selectedSlideIndex={selectedSlideIndex}
-                    onAdd={addSlide}
-                    onAddAfter={() => addSlideAt(selectedSlideIndex)}
-                    onDelete={deleteSlide}
-                    elements={slides}
-                    onSelect={selectSlide}
-                    onActivate={activateSlide}
-                    constraints={constraints}
-                    slideAnalysis={slideAnalysis}
-                />
-            </Grid>
-            <Grid item xs style={{ height: "calc(100% - 64px)" }}>
-                {getView()}
-            </Grid>
+    <Grid container direction="column" style={{ height: "100%" }}>
+        <Grid item>
+            <SelectContainer
+                selectedSlideIndex={selectedSlideIndex}
+                onAdd={addSlide}
+                onAddAfter={() => addSlideAt(selectedSlideIndex)}
+                onDelete={deleteSlide}
+                elements={slides}
+                onSelect={selectSlide}
+                onActivate={activateSlide}
+                constraints={constraints}
+                slideAnalysis={slideAnalysis}
+            />
         </Grid>
+        <Grid item xs style={{ height: "100%", width: "95%", resize: "vertical", overflow: "auto" }}>
+            {editorView ? (
+                slides[selectedSlideIndex] != null && slides[selectedSlideIndex]!.isActive() ? (
+                    <EditorContainer
+                        data={editorData}
+                        onEditorChange={editorChange}
+                    />
+                ) : (
+                    <div></div>
+                )
+            ) : !slideMode ? (
+                <Preview data={editorData} />
+            ) : slides[selectedSlideIndex] == null ? (
+                <Preview data={""} />
+            ) : (
+                (() => {
+                    let visitor = new HtmlVisitor();
+                    visitor.visitSlideNode(slides[selectedSlideIndex]!);
+                    return <Preview data={visitor.getResult()} />;
+                })()
+            )}
+        </Grid>
+    </Grid>
     );
 };
 

@@ -237,7 +237,7 @@ export class MarkdownParser {
      * @returns The parsed List element.
      */
     private handleList(array: Token[], index: RefIndex, ordered: boolean): pt.List {
-        let list: pt.List = { type: "list", content: [], attributes: { listType: ordered ? "ordered" : "unordered", metadataTags: this.metadataTags }};
+        let list: pt.List = { type: "list", content: [], attributes: { listType: ordered ? "ordered" : "unordered"},  metadataTags: this.metadataTags };
         this.metadataTags = [];
         let done: boolean = false;
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -333,6 +333,7 @@ export class MarkdownParser {
                             type: "link",
                             content: [link_href],
                             attributes: { alias: child.content },
+                            metadataTags: []
                         };
                         this.metadataTags = [];
                         if (stack.length === 0) {

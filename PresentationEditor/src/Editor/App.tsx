@@ -27,7 +27,6 @@ function App() {
     const [imported, setImported] = useState<boolean>(false);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.SPLIT);
 
-
     function addLane() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
@@ -167,7 +166,7 @@ function App() {
     }
 
     return (
-        <Grid container direction="column" style={{height: "100%"}} spacing={2}>
+        <Grid container direction="column" style={{height: "100vh"}} spacing={2}>
             <Grid item>
                 <AppMenu
                     importPresentation={importPresentation}
@@ -185,10 +184,10 @@ function App() {
                     setViewMode={setViewMode}
                 />
             </Grid>
-            <Grid item container xs md sm spacing={1} style={{ height: "calc(100% - 64px)" }}>
+            <Grid item xs style={{height: "fit-content"}}>
                 {viewMode === ViewMode.SPLIT ? (
-                    <>
-                        <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                    <Grid container style={{height: "100%"}}>
+                        <Grid item xs={6} style={{height: "100%"}}>
                             {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
                                 <LaneContainer
                                     lanes={lanes}
@@ -198,13 +197,11 @@ function App() {
                                     otherLaneIndex={selectedRightLaneIndex}
                                     addLane={addLane}
                                     deleteLane={deleteLane}
-                                    imported={imported}
-                                    setImported={setImported}
                                     constraints={constraints}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
-                        <Grid item xs={6} md={6} style={{ height: "100%" }}>
+                        <Grid item xs={6} style={{height: "100%"}}>
                             {(selectedRightLaneIndex !== -1 && lanes[selectedRightLaneIndex]) ? (
                                 <LaneContainer
                                     lanes={lanes}
@@ -214,15 +211,13 @@ function App() {
                                     otherLaneIndex={selectedLeftLaneIndex}
                                     addLane={addLane}
                                     deleteLane={deleteLane}
-                                    imported={imported}
-                                    setImported={setImported}
                                     constraints={constraints}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
-                    </>
+                    </Grid>
                 ) : (
-                    <Grid item xs={12} md={12} style={{ height: "100%" }}>
+                    <Grid item xs style={{height: "100%"}}>
                         {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
                             <LaneContainer
                                 lanes={lanes}
@@ -232,8 +227,6 @@ function App() {
                                 otherLaneIndex={selectedRightLaneIndex}
                                 addLane={addLane}
                                 deleteLane={deleteLane}
-                                imported={imported}
-                                setImported={setImported}
                                 constraints={constraints}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
