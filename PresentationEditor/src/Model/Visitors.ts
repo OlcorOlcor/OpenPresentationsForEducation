@@ -432,6 +432,13 @@ export class MarkdownVisitor implements IVisitor {
     getResult(): string {
         return this.result;
     }
+
+    /**
+     * Sets the result to an empty string.
+     */
+    clearResult(): void {
+        this.result = "";
+    }
 }
 
 /**
