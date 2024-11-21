@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
 import { Lane, SlideElement } from "../Model/PresentationModel";
@@ -18,6 +18,7 @@ function App() {
         new Lane([new SlideElement([])], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
+    const [rawCode, setRawCode] = useState<string[][]>([[""],[""]]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
     const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
@@ -26,6 +27,10 @@ function App() {
         useState<number>(1);
     const [imported, setImported] = useState<boolean>(false);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.SPLIT);
+    const [leftEditorData, setLeftEditorData] = useState<string>("");
+    const [rightEditorData, setRightEditorData] = useState<string>("");
+    const [selectedLeftSlideIndex, setSelectedLeftSlideIndex] = useState<number>(0);
+    const [selectedRightSlideIndex, setSelectedRightSlideIndex] = useState<number>(0);
 
     function addLane() {
         setLanes((oldLanes) => {
@@ -48,8 +53,13 @@ function App() {
             }
             return updatedLanes;
         });
+        setRawCode((oldCode) => {
+            let updatedCode = [...oldCode];
+            updatedCode.push([""]);
+            return updatedCode;
+        })
     }
-
+    
     function deleteLane(index: number): void {
         setLanes((oldLanes) => {
             let leftLane = index === selectedLeftLaneIndex;
@@ -72,6 +82,22 @@ function App() {
             }
             return updatedLanes;
         });
+        setRawCode((oldCode) => {
+            return oldCode.filter((_, codeIndex) => codeIndex !== index);
+        });
+    }
+
+    function synchronizeEditors(editorContent: string, left: boolean) {
+        if (viewMode !== ViewMode.SPLIT 
+            || selectedLeftSlideIndex !== selectedRightSlideIndex 
+            || selectedLeftLaneIndex !== selectedRightLaneIndex) {
+            return;
+        }
+        if (left) {
+            setRightEditorData(editorContent);
+        } else {
+            setLeftEditorData(editorContent);
+        }
     }
 
     function swapLane() {
@@ -186,7 +212,7 @@ function App() {
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>
                 {viewMode === ViewMode.SPLIT ? (
-                    <Grid container style={{height: "100%"}}>
+                    <Grid container style={{height: "100%"}} spacing={2}>
                         <Grid item xs={6} style={{height: "100%"}}>
                             {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
                                 <LaneContainer
@@ -198,6 +224,14 @@ function App() {
                                     addLane={addLane}
                                     deleteLane={deleteLane}
                                     constraints={constraints}
+                                    editorData={leftEditorData}
+                                    setEditorData={setLeftEditorData}
+                                    synchronizeEditors={synchronizeEditors}
+                                    left={true}
+                                    selectedSlideIndex={selectedLeftSlideIndex}
+                                    setSelectedSlideIndex={setSelectedLeftSlideIndex}
+                                    rawCode={rawCode[selectedLeftLaneIndex]}
+                                    setRawCode={setRawCode}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
@@ -212,6 +246,14 @@ function App() {
                                     addLane={addLane}
                                     deleteLane={deleteLane}
                                     constraints={constraints}
+                                    editorData={rightEditorData}
+                                    setEditorData={setRightEditorData}
+                                    synchronizeEditors={synchronizeEditors}
+                                    left={false}
+                                    selectedSlideIndex={selectedRightSlideIndex}
+                                    setSelectedSlideIndex={setSelectedRightSlideIndex}
+                                    rawCode={rawCode[selectedLeftLaneIndex]}
+                                    setRawCode={setRawCode}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
@@ -228,6 +270,14 @@ function App() {
                                 addLane={addLane}
                                 deleteLane={deleteLane}
                                 constraints={constraints}
+                                editorData={leftEditorData}
+                                setEditorData={setLeftEditorData}
+                                synchronizeEditors={synchronizeEditors}
+                                left={true}
+                                selectedSlideIndex={selectedLeftSlideIndex}
+                                setSelectedSlideIndex={setSelectedLeftSlideIndex}
+                                rawCode={rawCode[selectedLeftLaneIndex]}
+                                setRawCode={setRawCode}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
                     </Grid>

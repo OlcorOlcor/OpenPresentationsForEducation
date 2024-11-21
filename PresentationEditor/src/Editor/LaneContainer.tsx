@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { AnalysisVisitor, MarkdownVisitor } from "../Model/Visitors";
@@ -17,6 +17,14 @@ interface LaneContainerProps {
     addLane(): void;
     deleteLane(index: number): void;
     constraints: Constraints;
+    editorData: string;
+    setEditorData: React.Dispatch<React.SetStateAction<string>>;
+    synchronizeEditors(editorContent: string, left: boolean): void;
+    left: boolean;
+    selectedSlideIndex: number;
+    setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
+    rawCode: string[];
+    setRawCode: React.Dispatch<React.SetStateAction<string[][]>>;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -27,22 +35,43 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     otherLaneIndex,
     addLane,
     deleteLane,
-    constraints
+    constraints,
+    editorData,
+    setEditorData,
+    synchronizeEditors,
+    left,
+    selectedSlideIndex,
+    setSelectedSlideIndex,
+    rawCode,
+    setRawCode
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
-    const [editorData, setEditorData] = useState<string>("");
-    const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
     const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
     const [slideMode, setSlideMode] = useState<boolean>(
         lanes[selectedLaneIndex].outputsAsPresentation(),
     );
+    let ignoreSync = useRef<boolean>(true);
+    useEffect(() => {
+        ignoreSync.current = true;
+        updateEditor();
+    }, [selectedSlideIndex])
 
     useEffect(() => {
         setSelectedSlideIndex(0);
+        updateEditor();
     }, [selectedLaneIndex]);
 
     useEffect(() => {
-        //regenerateSlide(selectedSlideIndex);
+        if (!ignoreSync.current) {
+            regenerateSlide(selectedSlideIndex);
+        }
+        setRawCode((oldCode) => {
+            let updatedCode = [...oldCode];
+            updatedCode[selectedLaneIndex][selectedSlideIndex] = editorData;
+            return updatedCode;
+        });
+        ignoreSync.current = false;
+        synchronizeEditors(editorData, left);
     }, [editorData]);
 
     function addSlide() {
@@ -119,11 +148,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             setEditorData("");
             return;
         }
-        const visitor = new MarkdownVisitor();
-        visitor.visitSlideNode(
-            lanes[selectedLaneIndex].getContent()[selectedSlideIndex]!,
-        );
-        setEditorData(visitor.getResult());
+        setEditorData(rawCode[selectedSlideIndex]);
     }
 
     return (
