@@ -9,6 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LaneDialog from "./LaneDialog";
 import { Lane } from "../Model/PresentationModel";
 import { ViewMode } from "./ViewMode";
+import ImageDialog from "./ImageDialog";
 
 interface MenuProps {
     importPresentation(file: File): void;
@@ -44,6 +45,7 @@ const AppMenu: React.FC<MenuProps> = ({
     const [metadataDialogOpen, setMetadataDialogOpen] = useState<boolean>(false);
     const [constraintsDialogOpen, setConstraintsDialogOpen] = useState<boolean>(false);
     const [lanesDialogOpen, setLanesDialogOpen] = useState<boolean>(false);
+    const [imageDialogOpen, setImageDialogOpen] = useState<boolean>(false);
     const [exportOpen, setExportOpen] = useState(false);
     const [anchorElFile, setAnchorElFile] = useState(null);
     const [anchorElView, setAnchorElView] = useState(null);
@@ -59,6 +61,10 @@ const AppMenu: React.FC<MenuProps> = ({
 
     function openLanes() {
         setLanesDialogOpen(true);
+    }
+
+    function openImages() {
+        setImageDialogOpen(true);
     }
 
     const handleExportToggle = () => {
@@ -161,6 +167,7 @@ const AppMenu: React.FC<MenuProps> = ({
                     <Button color="inherit" onClick={openLanes}>Lanes</Button>
                     <Button color="inherit" onClick={openMetadata}>Metadata</Button>
                     <Button color="inherit" onClick={openConstraints}>Constraints</Button>
+                    <Button color="inherit" onClick={openImages}>Images</Button>
                     <Button color="inherit" onClick={exportJson}>Export</Button>
                 </Box>
             </Toolbar>
@@ -176,6 +183,7 @@ const AppMenu: React.FC<MenuProps> = ({
             <MetadataDialog dialogOpen={metadataDialogOpen} setDialogOpen={setMetadataDialogOpen} metadata={metadata} setMetadata={setMetadata} />
             <ConstraintsDialog dialogOpen={constraintsDialogOpen} setDialogOpen={setConstraintsDialogOpen} constraints={constraints} setConstraints={setConstraints} />
             <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => {}}/>
+            <ImageDialog dialogOpen={imageDialogOpen} setDialogOpen={setImageDialogOpen}></ImageDialog>
             <input
                 type="file"
                 accept=".json"
