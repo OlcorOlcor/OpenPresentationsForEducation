@@ -1,20 +1,11 @@
 import { Dialog, Grid } from "@mui/material";
 import React, { useState } from "react";
 import ItemListContainer from "./ItemListContainer";
+import { ImageFile } from "./ImageFile";
 
 interface ImageDialogProps {
     dialogOpen: boolean;
     setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-class ImageFile {
-    imageBase64: string;
-    name: string;
-
-    constructor(name: string, imageBase64: string) {
-        this.name = name;
-        this.imageBase64 = imageBase64;
-    }
 }
 
 const ImageDialog: React.FC<ImageDialogProps> = ({
