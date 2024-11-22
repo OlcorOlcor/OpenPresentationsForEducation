@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import { AnalysisVisitor, MarkdownVisitor } from "../Model/Visitors";
@@ -16,9 +16,17 @@ interface LaneContainerProps {
     otherLaneIndex: number;
     addLane(): void;
     deleteLane(index: number): void;
+    constraints: Constraints;
+    editorData: string;
+    setEditorData: React.Dispatch<React.SetStateAction<string>>;
+    synchronizeEditors(editorContent: string, left: boolean): void;
+    left: boolean;
+    selectedSlideIndex: number;
+    setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
+    rawCode: string[];
+    setRawCode: React.Dispatch<React.SetStateAction<string[][]>>;
     imported: boolean;
     setImported: React.Dispatch<React.SetStateAction<boolean>>;
-    constraints: Constraints;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -29,35 +37,49 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     otherLaneIndex,
     addLane,
     deleteLane,
+    constraints,
+    editorData,
+    setEditorData,
+    synchronizeEditors,
+    left,
+    selectedSlideIndex,
+    setSelectedSlideIndex,
+    rawCode,
+    setRawCode,
     imported,
-    setImported,
-    constraints
+    setImported
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
-    const [editorData, setEditorData] = useState<string>("");
-    const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
     const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
     const [slideMode, setSlideMode] = useState<boolean>(
         lanes[selectedLaneIndex].outputsAsPresentation(),
     );
-
+    let ignoreSync = useRef<boolean>(true);
     useEffect(() => {
-        if (imported) {
-            updateEditor();
-            setImported(false);
-        }
-    }, [imported]);
-
-    useEffect(() => {
+        ignoreSync.current = true;
         updateEditor();
-    }, [selectedSlideIndex, selectedLaneIndex]);
+    }, [selectedSlideIndex])
+
     useEffect(() => {
         setSelectedSlideIndex(0);
+        updateEditor();
     }, [selectedLaneIndex]);
 
     useEffect(() => {
-        regenerateSlide(selectedSlideIndex);
-    }, [editorData])
+        if (!ignoreSync.current) {
+            regenerateSlide(selectedSlideIndex);
+        }
+        if (!imported) {
+            setRawCode((oldCode) => {
+                let updatedCode = [...oldCode];
+                updatedCode[selectedLaneIndex][selectedSlideIndex] = editorData;
+                return updatedCode;
+            });
+            setImported(false);
+        }
+        ignoreSync.current = false;
+        synchronizeEditors(editorData, left);
+    }, [editorData]);
 
     function addSlide() {
         setLanes((oldLanes) => {
@@ -91,6 +113,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             });
             if (selectedSlideIndex > 0) {
                 setSelectedSlideIndex(selectedSlideIndex - 1);
+                updateEditor();
             }
             return returnLanes;
         });
@@ -132,11 +155,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             setEditorData("");
             return;
         }
-        const visitor = new MarkdownVisitor();
-        visitor.visitSlideNode(
-            lanes[selectedLaneIndex].getContent()[selectedSlideIndex]!,
-        );
-        setEditorData(visitor.getResult());
+        setEditorData(rawCode[selectedSlideIndex]);
     }
 
     return (
@@ -156,7 +175,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     deleteLane={deleteLane}
                 />
             </Grid>
-            <Grid item xs style={{ height: "calc(100% - 64px)" }}>
+            <Grid item xs style={{height: "fit-content"}}>
                 <EditorModule
                     editorData={editorData}
                     setEditorData={setEditorData}
@@ -172,6 +191,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     regenerateSlide={regenerateSlide}
                     constraints={constraints}
                     slideAnalysis={slideAnalysis}
+                    updateEditor={updateEditor}
                 />
             </Grid>
         </Grid>

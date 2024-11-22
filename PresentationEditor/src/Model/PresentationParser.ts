@@ -84,7 +84,7 @@ export class PresentationParser {
     private getLinkElement(linkJson: pt.Link): pm.LinkElement {
         let content: string = "";
         linkJson.content.forEach((c) => (content += c));
-        return new pm.LinkElement(content, linkJson.attributes.alias);
+        return new pm.LinkElement(content, linkJson.attributes.alias, linkJson.metadataTags);
     }
 
     /**
@@ -148,7 +148,7 @@ export class PresentationParser {
                     break;
             }
         });
-        return new pm.ListElement(listType, content, listJson.attributes.metadataTags);
+        return new pm.ListElement(listType, content, listJson.metadataTags);
     }
 
     /**

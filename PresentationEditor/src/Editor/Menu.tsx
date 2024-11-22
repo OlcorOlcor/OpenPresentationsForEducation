@@ -8,6 +8,7 @@ import ConstraintsDialog from "./ConstraintsDialog";
 import MenuIcon from '@mui/icons-material/Menu';
 import LaneDialog from "./LaneDialog";
 import { Lane } from "../Model/PresentationModel";
+import { ViewMode } from "./ViewMode";
 
 interface MenuProps {
     importPresentation(file: File): void;
@@ -21,6 +22,8 @@ interface MenuProps {
     setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
     addLane(): void;
     deleteLane(index: number): void;
+    newProject(): void;
+    setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
 }
 
 const AppMenu: React.FC<MenuProps> = ({
@@ -34,7 +37,9 @@ const AppMenu: React.FC<MenuProps> = ({
     lanes,
     setLanes,
     addLane,
-    deleteLane
+    deleteLane,
+    newProject,
+    setViewMode
 }) => {
     const [metadataDialogOpen, setMetadataDialogOpen] = useState<boolean>(false);
     const [constraintsDialogOpen, setConstraintsDialogOpen] = useState<boolean>(false);
@@ -68,6 +73,7 @@ const AppMenu: React.FC<MenuProps> = ({
     }
 
     function handleImportClick() {
+        handleFileClose();
         if (fileInputRef.current != null) {
            fileInputRef.current.click();
         }
@@ -91,21 +97,30 @@ const AppMenu: React.FC<MenuProps> = ({
         setAnchorElFile(null);
     };
 
+    function newFile() {
+        handleFileClose();
+
+        newProject();
+    }
+
     function handleViewClick(event: any) {
         setAnchorElView(event.currentTarget);
     };
     
-    function handleViewClose() {
+    function handleViewClose(vm: ViewMode) {
         setAnchorElView(null);
+        setViewMode(vm);
     };
 
     return (
         <AppBar position="static">
             <Toolbar disableGutters>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                    <Typography variant="h5" component="div" sx={{ display: 'flex', alignItems: 'center'}}>
-                        Open Slide Editor
-                    </Typography>
+                    <a href=".">
+                        <Typography variant="h5" component="div" sx={{ display: 'flex', alignItems: 'center'}}>
+                            Open Slide Editor
+                        </Typography>
+                    </a>
                     <Button
                         color="inherit"
                         onClick={handleFileClick}
@@ -121,8 +136,8 @@ const AppMenu: React.FC<MenuProps> = ({
                         open={Boolean(anchorElFile)}
                         onClose={handleFileClose}
                     >
-                        <MenuItem onClick={handleFileClose}>New</MenuItem>
-                        <MenuItem onClick={handleFileClose}>Open</MenuItem>
+                        <MenuItem onClick={newFile}>New</MenuItem>
+                        <MenuItem onClick={handleImportClick}>Open</MenuItem>
                         <MenuItem onClick={handleFileClose}>Save</MenuItem>
                     </Menu>
                     <Button
@@ -140,13 +155,13 @@ const AppMenu: React.FC<MenuProps> = ({
                         open={Boolean(anchorElView)}
                         onClose={handleViewClose}
                     >
-                        <MenuItem onClick={handleViewClose}>Single view</MenuItem>
-                        <MenuItem onClick={handleViewClose}>Side by side</MenuItem>
+                        <MenuItem onClick={() => handleViewClose(ViewMode.SINGLE)}>Single view</MenuItem>
+                        <MenuItem onClick={() => handleViewClose(ViewMode.SPLIT)}>Side by side</MenuItem>
                     </Menu>
                     <Button color="inherit" onClick={openLanes}>Lanes</Button>
                     <Button color="inherit" onClick={openMetadata}>Metadata</Button>
                     <Button color="inherit" onClick={openConstraints}>Constraints</Button>
-                    <Button color="inherit">Export</Button>
+                    <Button color="inherit" onClick={exportJson}>Export</Button>
                 </Box>
             </Toolbar>
             <IconButton
@@ -161,6 +176,13 @@ const AppMenu: React.FC<MenuProps> = ({
             <MetadataDialog dialogOpen={metadataDialogOpen} setDialogOpen={setMetadataDialogOpen} metadata={metadata} setMetadata={setMetadata} />
             <ConstraintsDialog dialogOpen={constraintsDialogOpen} setDialogOpen={setConstraintsDialogOpen} constraints={constraints} setConstraints={setConstraints} />
             <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => {}}/>
+            <input
+                type="file"
+                accept=".json"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={handleFileChange}
+            />
         </AppBar>
     );
 };

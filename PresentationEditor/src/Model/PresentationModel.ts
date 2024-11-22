@@ -173,17 +173,19 @@ export class CodeElement extends InlineWrapperElement implements IVisitable {
 export class LinkElement extends InlineLeafElement implements IVisitable {
     private content: string;
     private alias: string;
-    
+    private metadata: string[];
     /**
      * Constructs a LinkElement.
      * 
      * @param content - The link text.
      * @param alias - The alias for the link.
+     * @parama metadata
      */
-    public constructor(content: string, alias: string) {
+    public constructor(content: string, alias: string, metadata: string[]) {
         super();
         this.content = content;
         this.alias = alias;
+        this.metadata = metadata;
     }
 
     /**
@@ -202,6 +204,10 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
         return this.alias;
     }
 
+    getMetadata(): string[] {
+        return this.metadata;
+    }
+    
     /**
      * Accepts a visitor to process this element.
      * 

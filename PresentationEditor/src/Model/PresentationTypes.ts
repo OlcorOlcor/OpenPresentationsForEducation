@@ -36,6 +36,7 @@ export type Link = {
     type: string;
     content: string[];
     attributes: { alias: string };
+    metadataTags: string[];
 };
 
 /**
@@ -63,8 +64,8 @@ export type List = {
     content: (List | ListItem)[];
     attributes: { 
         listType: string;
-        metadataTags: string[]
     };
+    metadataTags: string[];
 };
 
 /**
