@@ -1,18 +1,22 @@
 import { Dialog, Grid } from "@mui/material";
 import React, { useState } from "react";
 import ItemListContainer from "./ItemListContainer";
-import { ImageFile } from "./ImageFile";
+import { ImageFile } from "../Model/PresentationTypes";
+
 
 interface ImageDialogProps {
     dialogOpen: boolean;
     setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    images: ImageFile[];
+    setImages: React.Dispatch<React.SetStateAction<ImageFile[]>>;
 }
 
 const ImageDialog: React.FC<ImageDialogProps> = ({
     dialogOpen,
     setDialogOpen,
+    images,
+    setImages
 }) => {
-    const [images, setImages] = useState<ImageFile[]>([]);
     const [selectedImageIndex, setSelectedImageIndex] = useState<number>(-1);
 
     function cancel() {
@@ -28,7 +32,7 @@ const ImageDialog: React.FC<ImageDialogProps> = ({
             const file = (event.target as HTMLInputElement)?.files?.[0];
             if (file) {
                 const base64 = await convertToBase64(file);
-                let img = new ImageFile(file.name, base64);
+                let img = {name: file.name, fileBase64: base64}
                 setImages((prevImages) => [...prevImages, img]);
             }
         };

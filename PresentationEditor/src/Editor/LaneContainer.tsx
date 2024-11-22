@@ -6,7 +6,7 @@ import { AnalysisVisitor, MarkdownVisitor } from "../Model/Visitors";
 import LaneMenu from "./LaneMenu";
 import { MarkdownParser } from "../Model/MarkdownParser";
 import { PresentationParser } from "../Model/PresentationParser";
-import { Constraints } from "../Model/PresentationTypes";
+import { Constraints, ImageFile } from "../Model/PresentationTypes";
 
 interface LaneContainerProps {
     lanes: Lane[];

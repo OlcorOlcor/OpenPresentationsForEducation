@@ -145,6 +145,11 @@ export type Constraints = {
     bullet_points: number | null;
 }
 
+export type ImageFile = {
+    name: string;
+    fileBase64: string;
+}
+
 /**
  * Represents the whole presentation.
  */
@@ -152,4 +157,5 @@ export type Presentation = {
     lanes: Lane[];
     metadata: Metadata[];
     constraints: Constraints;
+    imageFiles: ImageFile[];
 }

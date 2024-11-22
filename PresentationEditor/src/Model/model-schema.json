@@ -380,6 +380,21 @@
                     "minimum": 0
                 }
             }
+        },
+        "imageFiles": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "fileBase64": {
+                        "type": "string"
+                    }
+                },
+                "required": ["name", "fileBase64"]
+            }
         }
     }
 }
