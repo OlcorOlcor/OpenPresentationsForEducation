@@ -25,6 +25,8 @@ interface LaneContainerProps {
     setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
     rawCode: string[];
     setRawCode: React.Dispatch<React.SetStateAction<string[][]>>;
+    imported: boolean;
+    setImported: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -43,7 +45,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     selectedSlideIndex,
     setSelectedSlideIndex,
     rawCode,
-    setRawCode
+    setRawCode,
+    imported,
+    setImported
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
@@ -65,11 +69,14 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         if (!ignoreSync.current) {
             regenerateSlide(selectedSlideIndex);
         }
-        setRawCode((oldCode) => {
-            let updatedCode = [...oldCode];
-            updatedCode[selectedLaneIndex][selectedSlideIndex] = editorData;
-            return updatedCode;
-        });
+        if (!imported) {
+            setRawCode((oldCode) => {
+                let updatedCode = [...oldCode];
+                updatedCode[selectedLaneIndex][selectedSlideIndex] = editorData;
+                return updatedCode;
+            });
+            setImported(false);
+        }
         ignoreSync.current = false;
         synchronizeEditors(editorData, left);
     }, [editorData]);

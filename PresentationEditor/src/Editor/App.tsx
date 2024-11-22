@@ -5,7 +5,7 @@ import { Lane, SlideElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import AppMenu from "./Menu";
-import { HtmlVisitor, JsonVisitor } from "../Model/Visitors";
+import { HtmlVisitor, JsonVisitor, MarkdownVisitor } from "../Model/Visitors";
 import * as pt from "../Model/PresentationTypes";
 import { saveAs } from "file-saver";
 import EmptyLane from "./EmptyLane";
@@ -31,6 +31,16 @@ function App() {
     const [rightEditorData, setRightEditorData] = useState<string>("");
     const [selectedLeftSlideIndex, setSelectedLeftSlideIndex] = useState<number>(0);
     const [selectedRightSlideIndex, setSelectedRightSlideIndex] = useState<number>(0);
+
+    useEffect(() => {
+        if (imported) {
+            setLeftEditorData(rawCode[0][0]);
+            if (rawCode.length > 1) {
+                setRightEditorData(rawCode[1][0]);
+            }
+            setImported(false);
+        }
+    }, [imported]);
 
     function addLane() {
         setLanes((oldLanes) => {
@@ -88,6 +98,9 @@ function App() {
     }
 
     function synchronizeEditors(editorContent: string, left: boolean) {
+        console.log(selectedLeftLaneIndex);
+        console.log(selectedRightLaneIndex);
+        console.log(rawCode);
         if (viewMode !== ViewMode.SPLIT 
             || selectedLeftSlideIndex !== selectedRightSlideIndex 
             || selectedLeftLaneIndex !== selectedRightLaneIndex) {
@@ -132,6 +145,27 @@ function App() {
         }).join('\n');
     }
 
+    function setRawCodeAfterImport(lanes: Lane[]) {
+        let importRaw : string[][] = [];
+        let markdownVisitor = new MarkdownVisitor();
+        let index = 0;
+        lanes.forEach(lane => {
+            importRaw.push([]);
+            lane.getContent().forEach(slide => {
+                if (slide === null) {
+                    importRaw[index].push("");
+                    return;
+                }
+                markdownVisitor.visitSlideNode(slide);
+                importRaw[index].push(markdownVisitor.getResult());
+                markdownVisitor.clearResult();
+            });
+            ++index;
+        });
+        setRawCode(importRaw);
+        setImported(true);
+    }
+
     function importPresentation(file: File) {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -154,6 +188,7 @@ function App() {
                 setSelectedRightLaneIndex(1);
             }
             setImported(true);
+            setRawCodeAfterImport(lanes);
         };
         reader.readAsText(file);
     }
@@ -232,6 +267,8 @@ function App() {
                                     setSelectedSlideIndex={setSelectedLeftSlideIndex}
                                     rawCode={rawCode[selectedLeftLaneIndex]}
                                     setRawCode={setRawCode}
+                                    imported={imported}
+                                    setImported={setImported}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
@@ -252,8 +289,10 @@ function App() {
                                     left={false}
                                     selectedSlideIndex={selectedRightSlideIndex}
                                     setSelectedSlideIndex={setSelectedRightSlideIndex}
-                                    rawCode={rawCode[selectedLeftLaneIndex]}
+                                    rawCode={rawCode[selectedRightLaneIndex]}
                                     setRawCode={setRawCode}
+                                    imported={imported}
+                                    setImported={setImported}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
@@ -278,6 +317,8 @@ function App() {
                                 setSelectedSlideIndex={setSelectedLeftSlideIndex}
                                 rawCode={rawCode[selectedLeftLaneIndex]}
                                 setRawCode={setRawCode}
+                                imported={imported}
+                                setImported={setImported}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
                     </Grid>
