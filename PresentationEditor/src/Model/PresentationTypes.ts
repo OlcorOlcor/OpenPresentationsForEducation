@@ -46,6 +46,7 @@ export type Image = {
     type: string;
     content: string[];
     attributes: { alias: string };
+    metadataTags: string[]
 };
 
 /**

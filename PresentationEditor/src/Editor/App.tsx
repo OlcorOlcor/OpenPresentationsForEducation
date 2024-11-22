@@ -273,6 +273,7 @@ function App() {
                                     setRawCode={setRawCode}
                                     imported={imported}
                                     setImported={setImported}
+                                    images={images}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
@@ -297,6 +298,7 @@ function App() {
                                     setRawCode={setRawCode}
                                     imported={imported}
                                     setImported={setImported}
+                                    images={images}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
@@ -323,6 +325,7 @@ function App() {
                                 setRawCode={setRawCode}
                                 imported={imported}
                                 setImported={setImported}
+                                images={images}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
                     </Grid>

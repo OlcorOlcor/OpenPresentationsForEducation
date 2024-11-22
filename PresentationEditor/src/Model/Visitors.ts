@@ -36,12 +36,14 @@ export interface IVisitable {
 export class HtmlVisitor implements IVisitor {
     private result: string = "";
     private revealOutput: boolean;
+    private images: pt.ImageFile[] = [];
     /**
      * Constructor for HtmlVisitor
      * @param reveal_output - Determines whether the output should be formatted as Reveal.js presentation.
      */
-    constructor(reveal_output: boolean = false) {
+    constructor(reveal_output: boolean = false, images: pt.ImageFile[] = []) {
         this.revealOutput = reveal_output;
+        this.images = images;
     }
 
     /**
@@ -87,8 +89,20 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The image element to visit.
      */
     visitImageNode(element: pm.ImageElement): void {
+        let src = element.getContent();
+        console.log(element.getContent().substring(0, 4))
+        console.log(element.getContent().substring(4))
+        if (element.getContent().substring(0, 4) === "img:") {
+            let name = element.getContent().substring(4)
+            this.images.forEach(img => {
+                if (img.name === name) {
+                    src = img.fileBase64;
+                    return;
+                }
+            })
+        }
         this.result +=
-            '<img src="' + element.getContent() + '" alt="' + element.getAlias() + '">';
+            '<img src="' + src + '" alt="' + element.getAlias() + '">';
     }
 
     /**
@@ -503,7 +517,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The image element to visit.
      */
     visitImageNode(element: pm.ImageElement): void {
-        let image: pt.Image = {type: "image", content: [element.getContent()], attributes: { alias: element.getAlias() }}
+        let image: pt.Image = {type: "image", content: [element.getContent()], attributes: { alias: element.getAlias()}, metadataTags: element.getMetadata()}
         this.stack.push(image);
     }
 

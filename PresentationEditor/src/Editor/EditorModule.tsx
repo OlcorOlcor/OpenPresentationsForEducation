@@ -4,7 +4,7 @@ import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
 import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
-import { Constraints } from "../Model/PresentationTypes";
+import { Constraints, ImageFile } from "../Model/PresentationTypes";
 
 interface EditorModuleProps {
     editorData: string;
@@ -22,6 +22,7 @@ interface EditorModuleProps {
     constraints: Constraints;
     slideAnalysis: Constraints;
     updateEditor(): void;
+    images: ImageFile[];
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
@@ -39,7 +40,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     regenerateSlide,
     constraints,
     slideAnalysis,
-    updateEditor
+    updateEditor,
+    images
 }) => {
     // const [selectedView, setSelectedView] = useState<any>(null);
 
@@ -131,7 +133,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                 <Preview data={""} />
             ) : (
                 (() => {
-                    let visitor = new HtmlVisitor();
+                    let visitor = new HtmlVisitor(false, images);
                     visitor.visitSlideNode(slides[selectedSlideIndex]!);
                     return <Preview data={visitor.getResult()} />;
                 })()
