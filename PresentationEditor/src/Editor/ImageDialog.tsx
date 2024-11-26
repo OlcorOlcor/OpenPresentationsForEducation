@@ -49,13 +49,22 @@ const ImageDialog: React.FC<ImageDialogProps> = ({
         });
     }
 
-    function selectImage() {
-        // TODO
+    function selectImage(index: number) {
+        setSelectedImageIndex(index);
     }
 
     function deleteImage() {
-        console.log(images);
-        // TODO
+        setImages(oldImages => {
+            let newImages = oldImages.filter((_, index) => selectedImageIndex !== index);
+            if (selectedImageIndex > 0) {
+                setSelectedImageIndex(selectedImageIndex - 1);
+            }
+            if (newImages.length === 0) {
+                setSelectedImageIndex(-1);
+            }
+
+            return newImages;
+        });
     }
     return (
         <Dialog open={dialogOpen} onClose={cancel} maxWidth="md" fullWidth>
