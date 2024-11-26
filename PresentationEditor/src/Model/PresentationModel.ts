@@ -226,17 +226,19 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
 export class ImageElement extends InlineLeafElement implements IVisitable {
     private content: string;
     private alias: string;
-
+    private metadata: string[];
     /**
      * Constructs an ImageElement.
      * 
      * @param content - The image source URL.
      * @param alias - The alias for the image.
+     * @param metadata - The metadata of the image.
      */
-    public constructor(content: string, alias: string) {
+    public constructor(content: string, alias: string, metadata: string[]) {
         super();
         this.content = content;
         this.alias = alias;
+        this.metadata = metadata;
     }
 
     /**
@@ -262,6 +264,14 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
      */
     accept(visitor: IVisitor): void {
         visitor.visitImageNode(this);
+    }
+
+    /**
+     * Retrieves the metadata of the element.
+     * @returns Metadata of the elements;
+     */
+    getMetadata(): string[] {
+        return this.metadata;
     }
 }
 

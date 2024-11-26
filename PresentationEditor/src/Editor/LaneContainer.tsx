@@ -6,7 +6,7 @@ import { AnalysisVisitor, MarkdownVisitor } from "../Model/Visitors";
 import LaneMenu from "./LaneMenu";
 import { MarkdownParser } from "../Model/MarkdownParser";
 import { PresentationParser } from "../Model/PresentationParser";
-import { Constraints } from "../Model/PresentationTypes";
+import { Constraints, ImageFile } from "../Model/PresentationTypes";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -27,6 +27,7 @@ interface LaneContainerProps {
     setRawCode: React.Dispatch<React.SetStateAction<string[][]>>;
     imported: boolean;
     setImported: React.Dispatch<React.SetStateAction<boolean>>;
+    images: ImageFile[];
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -47,7 +48,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     rawCode,
     setRawCode,
     imported,
-    setImported
+    setImported,
+    images
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
     const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
@@ -192,6 +194,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     constraints={constraints}
                     slideAnalysis={slideAnalysis}
                     updateEditor={updateEditor}
+                    images={images}
                 />
             </Grid>
         </Grid>

@@ -349,7 +349,8 @@ export class MarkdownParser {
                         let image: pt.Image = {
                             type: "image",
                             content: [img_href],
-                            attributes: { alias: child.content }
+                            attributes: { alias: child.content },
+                            metadataTags: this.metadataTags
                         };
                         this.metadataTags = [];
                         if (stack.length === 0) {

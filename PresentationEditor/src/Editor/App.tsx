@@ -20,6 +20,7 @@ function App() {
     ]);
     const [rawCode, setRawCode] = useState<string[][]>([[""],[""]]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
+    const [images, setImages] = useState<pt.ImageFile[]>([]);
     const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
@@ -181,6 +182,7 @@ function App() {
             }
             setMetadata(json.metadata);
             setConstraints(json.constraints);
+            setImages(json.imageFiles);
             let lanes = parser.getLanes(json.lanes);
             setLanes(lanes);
             setSelectedLeftLaneIndex(0);
@@ -200,7 +202,7 @@ function App() {
             visitor.visitLaneNode(lane);
             jsonLanes.push(visitor.getResult());
         });
-        let exportJson = {lanes: jsonLanes, metadata: metadata, constraints: constraints};
+        let exportJson = {lanes: jsonLanes, metadata: metadata, constraints: constraints, imageFiles: images};
         const blob = new Blob([JSON.stringify(exportJson)], { type: "json" });
         saveAs(blob, "output.json");
     }
@@ -243,6 +245,8 @@ function App() {
                     deleteLane={deleteLane}
                     newProject={newProject}
                     setViewMode={setViewMode}
+                    images={images}
+                    setImages={setImages}
                 />
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>
@@ -269,6 +273,7 @@ function App() {
                                     setRawCode={setRawCode}
                                     imported={imported}
                                     setImported={setImported}
+                                    images={images}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
@@ -293,6 +298,7 @@ function App() {
                                     setRawCode={setRawCode}
                                     imported={imported}
                                     setImported={setImported}
+                                    images={images}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
@@ -319,6 +325,7 @@ function App() {
                                 setRawCode={setRawCode}
                                 imported={imported}
                                 setImported={setImported}
+                                images={images}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
                     </Grid>

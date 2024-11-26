@@ -2,13 +2,14 @@ import { AppBar, Box, Button, MenuItem, Toolbar, Menu, Typography, IconButton } 
 import React, { useState } from "react";
 import "./css/Menu.css";
 import MetadataDialog from "./MetadataDialog";
-import { Constraints, Metadata } from "../Model/PresentationTypes";
+import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ConstraintsDialog from "./ConstraintsDialog";
 import MenuIcon from '@mui/icons-material/Menu';
 import LaneDialog from "./LaneDialog";
 import { Lane } from "../Model/PresentationModel";
 import { ViewMode } from "./ViewMode";
+import ImageDialog from "./ImageDialog";
 
 interface MenuProps {
     importPresentation(file: File): void;
@@ -24,6 +25,8 @@ interface MenuProps {
     deleteLane(index: number): void;
     newProject(): void;
     setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
+    images: ImageFile[];
+    setImages: React.Dispatch<React.SetStateAction<ImageFile[]>>;
 }
 
 const AppMenu: React.FC<MenuProps> = ({
@@ -39,11 +42,14 @@ const AppMenu: React.FC<MenuProps> = ({
     addLane,
     deleteLane,
     newProject,
-    setViewMode
+    setViewMode,
+    images,
+    setImages
 }) => {
     const [metadataDialogOpen, setMetadataDialogOpen] = useState<boolean>(false);
     const [constraintsDialogOpen, setConstraintsDialogOpen] = useState<boolean>(false);
     const [lanesDialogOpen, setLanesDialogOpen] = useState<boolean>(false);
+    const [imageDialogOpen, setImageDialogOpen] = useState<boolean>(false);
     const [exportOpen, setExportOpen] = useState(false);
     const [anchorElFile, setAnchorElFile] = useState(null);
     const [anchorElView, setAnchorElView] = useState(null);
@@ -59,6 +65,10 @@ const AppMenu: React.FC<MenuProps> = ({
 
     function openLanes() {
         setLanesDialogOpen(true);
+    }
+
+    function openImages() {
+        setImageDialogOpen(true);
     }
 
     const handleExportToggle = () => {
@@ -161,6 +171,7 @@ const AppMenu: React.FC<MenuProps> = ({
                     <Button color="inherit" onClick={openLanes}>Lanes</Button>
                     <Button color="inherit" onClick={openMetadata}>Metadata</Button>
                     <Button color="inherit" onClick={openConstraints}>Constraints</Button>
+                    <Button color="inherit" onClick={openImages}>Images</Button>
                     <Button color="inherit" onClick={exportJson}>Export</Button>
                 </Box>
             </Toolbar>
@@ -176,6 +187,7 @@ const AppMenu: React.FC<MenuProps> = ({
             <MetadataDialog dialogOpen={metadataDialogOpen} setDialogOpen={setMetadataDialogOpen} metadata={metadata} setMetadata={setMetadata} />
             <ConstraintsDialog dialogOpen={constraintsDialogOpen} setDialogOpen={setConstraintsDialogOpen} constraints={constraints} setConstraints={setConstraints} />
             <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => {}}/>
+            <ImageDialog dialogOpen={imageDialogOpen} setDialogOpen={setImageDialogOpen} images={images} setImages={setImages}></ImageDialog>
             <input
                 type="file"
                 accept=".json"
