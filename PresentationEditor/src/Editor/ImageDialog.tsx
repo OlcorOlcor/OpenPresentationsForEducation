@@ -2,6 +2,7 @@ import { Dialog, Grid } from "@mui/material";
 import React, { useState } from "react";
 import ItemListContainer from "./ItemListContainer";
 import { ImageFile } from "../Model/PresentationTypes";
+import ImagePreviewContainer from "./ImagePreviewContainer";
 
 
 interface ImageDialogProps {
@@ -66,6 +67,15 @@ const ImageDialog: React.FC<ImageDialogProps> = ({
             return newImages;
         });
     }
+
+    function updateImage(image: ImageFile) {
+        setImages(oldImages => {
+            let newImages = [...oldImages]
+            newImages[selectedImageIndex] = image;
+            return newImages;
+        })
+    }
+
     return (
         <Dialog open={dialogOpen} onClose={cancel} maxWidth="md" fullWidth>
             <Grid container style={{ height: "500px" }}>
@@ -73,7 +83,10 @@ const ImageDialog: React.FC<ImageDialogProps> = ({
                     <ItemListContainer items={images} selectItem={selectImage} addItem={addImage} deleteItem={deleteImage} selectedItemIndex={selectedImageIndex}></ItemListContainer>
                 </Grid>
                 <Grid item xs={6} style={{ height: "100%" }}>
-                    
+                    { selectedImageIndex !== -1 ?
+                        <ImagePreviewContainer image={images[selectedImageIndex]} updateImage={updateImage}></ImagePreviewContainer>
+                        : <div></div>
+                    }
                 </Grid>
             </Grid>
         </Dialog>
