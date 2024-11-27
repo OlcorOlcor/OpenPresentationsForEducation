@@ -1,7 +1,7 @@
 {
   "name": "openpresentationsforeducation",
   "version": "0.1.0",
-  "homepage": "https://github.com/OlcorOlcor/OpenPresentationsForEducation/PresentationEditor",
+  "homepage": "https://olcorolcor.github.io/OpenPresentationsForEducation/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/preset-flow": "^7.23.3",
     "@types/file-saver": "^2.0.7",
-    "gh-pages": "^6.1.1",
+    "gh-pages": "^6.2.0",
     "prettier": "^3.0.3",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1"
