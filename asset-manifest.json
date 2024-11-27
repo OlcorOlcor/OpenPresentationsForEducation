@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/OlcorOlcor/OpenPresentationsForEducation/static/css/main.84c16a62.css",
-    "main.js": "/OlcorOlcor/OpenPresentationsForEducation/static/js/main.549370d3.js",
-    "index.html": "/OlcorOlcor/OpenPresentationsForEducation/index.html",
-    "main.84c16a62.css.map": "/OlcorOlcor/OpenPresentationsForEducation/static/css/main.84c16a62.css.map",
-    "main.549370d3.js.map": "/OlcorOlcor/OpenPresentationsForEducation/static/js/main.549370d3.js.map"
+    "main.css": "/OpenPresentationsForEducation/static/css/main.2134e346.css",
+    "main.js": "/OpenPresentationsForEducation/static/js/main.e69b3794.js",
+    "index.html": "/OpenPresentationsForEducation/index.html",
+    "main.2134e346.css.map": "/OpenPresentationsForEducation/static/css/main.2134e346.css.map",
+    "main.e69b3794.js.map": "/OpenPresentationsForEducation/static/js/main.e69b3794.js.map"
   },
   "entrypoints": [
-    "static/css/main.84c16a62.css",
-    "static/js/main.549370d3.js"
+    "static/css/main.2134e346.css",
+    "static/js/main.e69b3794.js"
   ]
 }
