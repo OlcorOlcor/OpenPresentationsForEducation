@@ -345,11 +345,12 @@
                     "name": {
                         "type": "string"
                     },
-                    "source": {
-                        "type": "string"
+                    "attributes": {
+                        "type": "object",
+                        "additionalProperties": true
                     }
                 },
-                "required": ["name", "source"]
+                "required": ["name", "attributes"]
             }
         },
         "constraints": {

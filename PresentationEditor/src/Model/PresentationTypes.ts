@@ -131,7 +131,7 @@ export type Lane = {
  */
 export type Metadata = {
     name: string;
-    source: string;
+    attributes: {[key: string]: any};
 }
 
 /**
