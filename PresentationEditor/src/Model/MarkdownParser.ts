@@ -25,7 +25,7 @@ export class MarkdownParser {
      * @returns True if the rule was successfully applied, false otherwise.
      */
     metadata_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
-        console.log('yeha');
+        
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
         if (state.src.slice(startPos, startPos + 2) !== "#[") {
@@ -53,7 +53,6 @@ export class MarkdownParser {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const frontMatterBorder = "---"
         if (state.src.slice(startPos, startPos + 3) !== frontMatterBorder) {
-            console.log(state.src.slice(startPos, startPos + 3));
             return false;
         }
         
@@ -85,7 +84,6 @@ export class MarkdownParser {
         content.forEach(line => {
             const match = line.match(/^([A-Za-z0-9_-]+):\s(.*)$/);
             if (match) {
-                console.log(match);
                 frontMatter[match[1].trim()] = match[2].trim();
             }
         });
@@ -105,7 +103,6 @@ export class MarkdownParser {
      */
     public parseMarkdown(markdown: string): pt.Slide {
         let mdit = markdownit();
-        console.log(mdit.block.ruler.getRules(""));
         mdit.block.ruler.before("paragraph", "metadata", this.metadata_rule);
         mdit.block.ruler.before("hr", "front_matter", this.front_matter_rule);
         let array = mdit.parse(markdown, {});
@@ -156,12 +153,9 @@ export class MarkdownParser {
                     break;
                 case "front_matter":
                     const pairs = array[index.index].meta.front_matter;
-                    console.log("yahooo");
-                    console.log(pairs);
                     slide.attributes.frontMatter = pairs;
                     break;
                 default:
-                    console.log("HERE");
                     break;
             }
         }

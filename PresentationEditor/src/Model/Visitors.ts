@@ -90,8 +90,6 @@ export class HtmlVisitor implements IVisitor {
      */
     visitImageNode(element: pm.ImageElement): void {
         let src = element.getContent();
-        console.log(element.getContent().substring(0, 4))
-        console.log(element.getContent().substring(4))
         if (element.getContent().substring(0, 4) === "img:") {
             let name = element.getContent().substring(4)
             this.images.forEach(img => {
@@ -212,7 +210,6 @@ export class HtmlVisitor implements IVisitor {
      * @returns The HTML result as a string.
      */
     getResult(): string {
-        console.log(this.result);
         return this.result;
     }
 }

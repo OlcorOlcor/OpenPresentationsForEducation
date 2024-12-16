@@ -137,8 +137,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         let markdownParser = new MarkdownParser();
         let jsonSlide = markdownParser.parseMarkdown(editorData);
         let presentationParser = new PresentationParser();
-        console.log(editorData);
-        console.log(lanes[selectedLaneIndex].getContent()[selectedSlideIndex])
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].getContent()];
