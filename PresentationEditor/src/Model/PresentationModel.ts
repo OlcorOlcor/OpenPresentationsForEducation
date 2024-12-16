@@ -504,18 +504,19 @@ export class SlideElement extends BaseElement implements IVisitable {
     private active: boolean = false;
     private metadata: string[] = [];
     private refs: string[] = [];
-
+    private frontMatter: {[key: string]: any};
     /**
      * Constructs a SlideElement.
      * 
      * @param content - The content of the slide.
      */
-    public constructor(content: OuterElement[], active: boolean = false, metadata: string[] = [], refs: string[] = []) {
+    public constructor(content: OuterElement[], active: boolean = false, metadata: string[] = [], refs: string[] = [], frontMatter: {[key: string]: string} = {}) {
         super();
         this.content = content;
         this.active = active;
         this.metadata = metadata;
         this.refs = refs;
+        this.frontMatter = frontMatter;
     }
 
     /**
@@ -532,6 +533,10 @@ export class SlideElement extends BaseElement implements IVisitable {
      */
     getMetadata(): string[] {
         return this.metadata;
+    }
+
+    getFrontMatter(): {[key: string]: any} {
+        return this.frontMatter;
     }
 
     /**
