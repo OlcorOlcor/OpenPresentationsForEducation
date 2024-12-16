@@ -1,4 +1,3 @@
-import { parseIsolatedEntityName } from "typescript";
 import * as pt from "./PresentationTypes";
 import markdownit, { Token } from "markdown-it";
 /**
@@ -49,6 +48,14 @@ export class MarkdownParser {
         return true;
     }
 
+    /**
+     * Custom rule to handle front matter in markdown.
+     * @param state - The state of the markdown parser.
+     * @param startLine - The line where the rule starts.
+     * @param endLine - The line where the rule ends.
+     * @param silent - If true, the rule will be applied silently.
+     * @returns True if the rule was successfully applied, false otherwise.
+     */
     front_matter_rule(state: any, startLine: any, endLine: any, silent: any) {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const frontMatterBorder = "---"
