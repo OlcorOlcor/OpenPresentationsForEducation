@@ -57,6 +57,11 @@ export class MarkdownParser {
      * @returns True if the rule was successfully applied, false otherwise.
      */
     front_matter_rule(state: any, startLine: any, endLine: any, silent: any) {
+        
+        if (startLine !== 0) {
+            return false;
+        }
+
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const frontMatterBorder = "---"
         if (state.src.slice(startPos, startPos + 3) !== frontMatterBorder) {
