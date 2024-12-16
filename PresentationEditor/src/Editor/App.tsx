@@ -99,9 +99,6 @@ function App() {
     }
 
     function synchronizeEditors(editorContent: string, left: boolean) {
-        console.log(selectedLeftLaneIndex);
-        console.log(selectedRightLaneIndex);
-        console.log(rawCode);
         if (viewMode !== ViewMode.SPLIT 
             || selectedLeftSlideIndex !== selectedRightSlideIndex 
             || selectedLeftLaneIndex !== selectedRightLaneIndex) {

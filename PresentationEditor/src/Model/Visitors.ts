@@ -90,8 +90,6 @@ export class HtmlVisitor implements IVisitor {
      */
     visitImageNode(element: pm.ImageElement): void {
         let src = element.getContent();
-        console.log(element.getContent().substring(0, 4))
-        console.log(element.getContent().substring(4))
         if (element.getContent().substring(0, 4) === "img:") {
             let name = element.getContent().substring(4)
             this.images.forEach(img => {
@@ -212,7 +210,6 @@ export class HtmlVisitor implements IVisitor {
      * @returns The HTML result as a string.
      */
     getResult(): string {
-        console.log(this.result);
         return this.result;
     }
 }
@@ -413,6 +410,16 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
+        const frontMatter = element.getFrontMatter();
+        if (Object.keys(frontMatter).length !== 0) {
+
+            this.result += "---\n";
+            Object.keys(frontMatter).forEach(key => {
+                this.result += key + ": " + frontMatter[key] + "\n";
+            })
+            this.result += "---\n\n";
+        }
+        
         if (element.getMetadata().length !== 0) {
             this.addMetadata(element);
         }
@@ -606,7 +613,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: element.getMetadata(), refs: element.getRefs()}};
+        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: element.getMetadata(), refs: element.getRefs(), frontMatter: element.getFrontMatter()}};
         element.getContent().forEach(c => {
             c.accept(this);
             slide.content.push(this.stack.pop()!);

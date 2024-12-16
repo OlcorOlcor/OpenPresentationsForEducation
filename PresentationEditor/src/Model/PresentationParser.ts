@@ -202,7 +202,7 @@ export class PresentationParser {
      */
     private createSlide(jsonSlide: pt.Slide): pm.SlideElement {
         let elements = this.getOuterElementContent(jsonSlide.content);
-        let slide = new pm.SlideElement(elements, true, jsonSlide.attributes.metadataTags, jsonSlide.attributes.refs);
+        let slide = new pm.SlideElement(elements, true, jsonSlide.attributes.metadataTags, jsonSlide.attributes.refs, jsonSlide.attributes.frontMatter);
         return slide;
     }
 

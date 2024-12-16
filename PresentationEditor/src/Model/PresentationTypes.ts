@@ -111,6 +111,7 @@ export type Slide = {
     attributes: { 
         metadataTags: string[];
         refs: string[];
+        frontMatter: { [key: string]: any }
     };
 };
 

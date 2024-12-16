@@ -23,10 +23,11 @@ export class MarkdownParser {
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    metadata_rule(state: any, startLine: any, endLine: any, silent: any) {
+    metadata_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+        
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
-        if (state.src.slice(startPos, startPos + 2) !== '#[') {
+        if (state.src.slice(startPos, startPos + 2) !== "#[") {
             return false;
         }
         const match: string[] = state.src.slice(startPos, max).match(/^#\[(.*)\]$/);
@@ -41,9 +42,68 @@ export class MarkdownParser {
             names.push(part.trim());
         })
         state.line = startLine + 1;
-        let token = state.push('metadata', '', 0);
+        let token = state.push("metadata", '', 0);
         token.hidden = true;
-        token.meta = { names: names };
+        token.meta = {...token.meta, names: names}
+        return true;
+    }
+
+    /**
+     * Custom rule to handle front matter in markdown.
+     * @param state - The state of the markdown parser.
+     * @param startLine - The line where the rule starts.
+     * @param endLine - The line where the rule ends.
+     * @param silent - If true, the rule will be applied silently.
+     * @returns True if the rule was successfully applied, false otherwise.
+     */
+    front_matter_rule(state: any, startLine: any, endLine: any, silent: any) {
+        
+        if (startLine !== 0) {
+            return false;
+        }
+
+        const startPos = state.bMarks[startLine] + state.tShift[startLine];
+        const frontMatterBorder = "---"
+        if (state.src.slice(startPos, startPos + 3) !== frontMatterBorder) {
+            return false;
+        }
+        
+        let line = startLine + 1;
+        let content: string[] = [];
+
+        while (line < endLine) {
+            const lineStart = state.bMarks[line] + state.tShift[line];
+            const lineEnd = state.eMarks[line];
+            const lineText = state.src.slice(lineStart, lineEnd);
+
+            if (lineText === frontMatterBorder) {
+                break;
+            }
+
+            content.push(lineText);
+            ++line;
+        }
+
+        if (line >= endLine || state.src.slice(state.bMarks[line] + state.tShift[line], state.eMarks[line]) !== '---') {
+            return false;
+        }
+
+        if (silent) {
+            return true;
+        }
+
+        let frontMatter: { [key: string]: string } = {};
+        content.forEach(line => {
+            const match = line.match(/^([A-Za-z0-9_-]+):\s(.*)$/);
+            if (match) {
+                frontMatter[match[1].trim()] = match[2].trim();
+            }
+        });
+
+        state.line = line + 1;
+        const token = state.push("front_matter", "", 0);
+        token.hidden = true;
+        token.meta = {...token.meta, front_matter: frontMatter};
         return true;
     }
 
@@ -55,7 +115,8 @@ export class MarkdownParser {
      */
     public parseMarkdown(markdown: string): pt.Slide {
         let mdit = markdownit();
-        mdit.block.ruler.before('paragraph', 'metadata', this.metadata_rule);
+        mdit.block.ruler.before("paragraph", "metadata", this.metadata_rule);
+        mdit.block.ruler.before("hr", "front_matter", this.front_matter_rule);
         let array = mdit.parse(markdown, {});
         let slide = this.handleArray(array);
         if (this.slideTag !== "") {
@@ -71,7 +132,7 @@ export class MarkdownParser {
      * @returns The parsed slide.
      */
     private handleArray(array: Token[]): pt.Slide {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: [], refs: []}};
+        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: [], refs: [], frontMatter: {}}};
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
                 case "bullet_list_open":
@@ -101,6 +162,10 @@ export class MarkdownParser {
                     names.forEach(name => {
                         this.metadataTags.push(name);
                     });
+                    break;
+                case "front_matter":
+                    const pairs = array[index.index].meta.front_matter;
+                    slide.attributes.frontMatter = pairs;
                     break;
                 default:
                     break;
