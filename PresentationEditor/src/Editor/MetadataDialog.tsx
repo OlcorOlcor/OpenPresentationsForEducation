@@ -22,10 +22,10 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
         setSelectedMetadataIndex(index);
     }
 
-    function handleSubmit(name: string, source: string) {
+    function handleSubmit(name: string, attributes: object) {
         setMetadata(old => {
             let newMetadata = [...old];
-            let newMetadataObject = {name: name, source: source};
+            let newMetadataObject = {name: name, attributes: attributes};
             newMetadata[selectedMetadataIndex] = newMetadataObject;
             return newMetadata;
         });
@@ -34,7 +34,7 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
     function addMetadata() {
         setMetadata(old => {
             let newMetadata = [...old];
-            newMetadata.push({name: "New", source: ""});
+            newMetadata.push({name: "New tag", attributes: {}});
             return newMetadata;
         });
     }
@@ -59,7 +59,10 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
                     <ItemListContainer items={metadata} selectItem={selectMetadata} addItem={addMetadata} deleteItem={deleteMetadata} selectedItemIndex={selectedMetadataIndex}/>
                 </Grid>
                 <Grid item xs={6} style={{height: "100%"}}>
-                    <MetadataFormContainer metadata={metadata} selectedMetadataIndex={selectedMetadataIndex} selectMetadata={selectMetadata} handleSubmit={handleSubmit} />
+                    {selectedMetadataIndex !== -1 ? (
+                        <MetadataFormContainer metadata={metadata} selectedMetadataIndex={selectedMetadataIndex} selectMetadata={selectMetadata} handleSubmit={handleSubmit} />
+                    ) : <div></div>
+                    }
                 </Grid>
             </Grid>
         </Dialog>
