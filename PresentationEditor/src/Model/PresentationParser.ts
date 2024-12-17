@@ -180,6 +180,9 @@ export class PresentationParser {
                         this.getBlockQuoteElement(jsonElement as pt.BlockQuote),
                     );
                     break;
+                case "horizontal_line":
+                    content.push(new pm.HorizontalLineElement((jsonElement as pt.HorizontalLine).metadataTags));
+                    break;
             }
         });
         return content;

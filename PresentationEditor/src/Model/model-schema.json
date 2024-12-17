@@ -21,6 +21,22 @@
             },
             "required": ["type", "content"]
         },
+        "HorizontalLine": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["horizontal_line"]
+                },
+                "metadataTags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["type", "metadataTags"]
+        },
         "Link": {
             "type": "object",
             "properties": {
@@ -238,7 +254,8 @@
                         "anyOf": [
                             {"$ref": "#/$defs/Paragraph"},
                             {"$ref": "#/$defs/Heading"},
-                            {"$ref": "#/$defs/List"}
+                            {"$ref": "#/$defs/List"},
+                            {"$ref": "#/$defs/HorizontalLine"}
                         ]
                     }
                 },
@@ -271,7 +288,8 @@
                             {"$ref": "#/$defs/Paragraph"},
                             {"$ref": "#/$defs/Heading"},
                             {"$ref": "#/$defs/List"},
-                            {"$ref": "#/$defs/BlockQuote"}
+                            {"$ref": "#/$defs/BlockQuote"},
+                            {"$ref": "#/$defs/HorizontalLine"}
                         ]
                     }
                 },

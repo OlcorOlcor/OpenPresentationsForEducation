@@ -285,6 +285,37 @@ export abstract class OuterElement extends BaseElement implements IVisitable {
 }
 
 /**
+ * Class for horizontal line elements.
+ * 
+ * The class implements the IVisitable interface
+ */
+export class HorizontalLineElement extends OuterElement implements IVisitable {
+    private metadata: string[];
+
+    constructor(metadata: string[]) {
+        super();
+        this.metadata = metadata;
+    }
+
+    /**
+     * Accepts a visitor to process this element.
+     * 
+     * @param visitor - The visitor processing this element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitHorizontalLineNode(this);   
+    }
+
+    /**
+     * Retrieves metadata of the element.
+     * @returns metadata of the element.
+     */
+    getMetadata() {
+        return this.metadata;
+    }
+}
+
+/**
  * Represents a paragraph element.
  * 
  * This class implements the IVisitable interface.

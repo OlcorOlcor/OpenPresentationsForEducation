@@ -167,6 +167,11 @@ export class MarkdownParser {
                     const pairs = array[index.index].meta.front_matter;
                     slide.attributes.frontMatter = pairs;
                     break;
+                case "hr":
+                    const hr: pt.HorizontalLine = { type: "horizontal_line", metadataTags: this.metadataTags }
+                    this.metadataTags = [];
+                    slide.content.push(hr);
+                    break;
                 default:
                     break;
             }

@@ -6,7 +6,7 @@ export type Element = InlineElement | OuterElement | Slide | Text;
 /**
  * Represents elements that can exist at the outermost level of a presentation.
  */
-export type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
+export type OuterElement = Paragraph | HeadingElement | List | BlockQuote | HorizontalLine;
 
 /**
  * Represents elements that can exist inline within other elements.
@@ -48,6 +48,14 @@ export type Image = {
     attributes: { alias: string };
     metadataTags: string[]
 };
+
+/**
+ * Represents a horizontal line.
+ */
+export type HorizontalLine = {
+    type: string;
+    metadataTags: string[];
+}
 
 /**
  * Represents an item within a list.

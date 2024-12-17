@@ -16,6 +16,7 @@ export interface IVisitor {
     visitListNode(element: pm.ListElement): void;
     visitListItemNode(element: pm.ListItemElement): void;
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void;
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void;
     visitSlideNode(element: pm.SlideElement): void;
     visitLaneNode(element: pm.Lane): void;
 }
@@ -44,6 +45,14 @@ export class HtmlVisitor implements IVisitor {
     constructor(reveal_output: boolean = false, images: pt.ImageFile[] = []) {
         this.revealOutput = reveal_output;
         this.images = images;
+    }
+
+    /**
+     * Visits a horizontal line and appends it to the result.
+     * @param elements - The horizontal line element to visit.
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        this.result += "<hr />";
     }
 
     /**
@@ -245,6 +254,14 @@ export class MarkdownVisitor implements IVisitor {
         if ((element instanceof pm.SlideElement)) {
             this.result += "\n";
         }
+    }
+
+    /**
+     * Visits a horizontal line element and appends it to the result.
+     * @param element - The horizontal line element to visit
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        this.result += "___\n\n";
     }
 
     /**
@@ -494,6 +511,15 @@ export class JsonVisitor implements IVisitor {
     }
 
     /**
+     * Visits a horizontal line element and adds it on the stack.
+     * @param element - The horizontal line element to visit.
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        let hr: pt.HorizontalLine = { type: "horizontal_line", metadataTags: element.getMetadata() };
+        this.stack.push(hr);
+    }
+
+    /**
      * Visits an italic node and adds its content to the stack wrapped in an italic annotation.
      * @param element - The italic element to visit.
      */
@@ -677,6 +703,14 @@ export class AnalysisVisitor implements IVisitor {
     }
     
     /**
+     * Visits a horizontal line element. No analysis is performed.
+     * @param element - The horizontal line element to visit.
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        return;
+    }
+
+    /**
      * Visits a bold node. No analysis is performed.
      * @param element - The bold element to visit.
      */
@@ -845,6 +879,17 @@ export class ReductionVisitor implements IVisitor {
                 return;
             }
         });
+    }
+
+    /**
+     * 
+     * @param element - Visits
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        this.checkMetadata(element.getMetadata());
+        if (this.isSlideCompliant) {
+            return;
+        }
     }
 
     /**
