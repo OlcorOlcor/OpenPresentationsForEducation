@@ -153,6 +153,93 @@
             },
             "required": ["type", "content", "attributes", "metadataTags"]
         },
+        "TableData": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["tableData"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Text"},
+                            {"$ref": "#/$defs/InnerWrapperElement"}
+                        ]
+                    }
+                }
+            },
+            "required": ["type", "content"]
+        },
+        "TableHeading": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["tableHeading"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Text"},
+                            {"$ref": "#/$defs/InnerWrapperElement"}
+                        ]
+                    }
+                }
+            },
+            "required": ["type", "content"]
+        },
+        "TableRow": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["tableRow"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/TableData"}, 
+                            {"$ref": "#/$defs/TableHeading"}
+                        ]
+                    }
+                }
+            },
+            "required": ["type", "content"]
+        },
+        "Table": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["table"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/TableRow"}
+                        ]
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "metadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": ["metadataTags"]
+                }
+            },
+            "required": ["type", "content", "attributes"]
+        },
         "InnerWrapperElement": {
             "type": "object",
             "properties": {
@@ -289,7 +376,8 @@
                             {"$ref": "#/$defs/Heading"},
                             {"$ref": "#/$defs/List"},
                             {"$ref": "#/$defs/BlockQuote"},
-                            {"$ref": "#/$defs/HorizontalLine"}
+                            {"$ref": "#/$defs/HorizontalLine"},
+                            {"$ref": "#/$defs/Table"}
                         ]
                     }
                 },
@@ -395,6 +483,10 @@
                     "minimum": 0
                 },
                 "bullet_points": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
+                },
+                "tables": {
                     "type": ["integer", "null"],
                     "minimum": 0
                 }

@@ -151,6 +151,37 @@ export class PresentationParser {
         return new pm.ListElement(listType, content, listJson.metadataTags);
     }
 
+    private getTableHeadingElement(tableHeadingElement: pt.TableHeading): pm.TableHeadingElement {
+        return new pm.TableHeadingElement(this.getInlineContent(tableHeadingElement.content));
+    }
+
+    private getTableDataElement(tableDataElement: pt.TableData): pm.TableDataElement {
+        return new pm.TableDataElement(this.getInlineContent(tableDataElement.content));
+    }
+
+    private getTableRow(tableRowJson: pt.TableRow) : pm.TableRowElement {
+        let content: (pm.TableDataElement | pm.TableHeadingElement)[] = [];
+        tableRowJson.content.forEach(c => {
+            switch (c.type) {
+                case "tableHeading":
+                    content.push(this.getTableHeadingElement(c as pt.TableHeading));
+                    break;
+                case "tableData":
+                    content.push(this.getTableDataElement(c as pt.TableData));
+                    break;
+            }
+        });
+        return new pm.TableRowElement(content);
+    }
+
+    private getTableElement(tableJson: pt.Table): pm.TableElement {
+        let content: pm.TableRowElement[] = [];
+        tableJson.content.forEach(c => {
+            content.push(this.getTableRow(c));
+        });
+        return new pm.TableElement(content, tableJson.attributes.metadataTags);
+    }
+
     /**
      * Converts an array of OuterElement JSON objects to an array of OuterElement objects.
      * @param contentJson - The array of OuterElement JSON objects.
@@ -182,6 +213,9 @@ export class PresentationParser {
                     break;
                 case "horizontal_line":
                     content.push(new pm.HorizontalLineElement((jsonElement as pt.HorizontalLine).metadataTags));
+                    break;
+                case "table":
+                    content.push(this.getTableElement(jsonElement as pt.Table));
                     break;
             }
         });

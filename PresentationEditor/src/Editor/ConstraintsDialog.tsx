@@ -16,6 +16,7 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
     const [links, setLinks] = React.useState<number | null>(constraints.links);
     const [headings, setHeadings] = React.useState<number | null>(constraints.headings);
     const [bulletPoints, setBulletPoints] = React.useState<number | null>(constraints.bullet_points);
+    const [tables, setTables] = React.useState<number | null>(constraints.tables);
 
     useEffect(() => {
         setWords(constraints.words);
@@ -24,10 +25,11 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
         setLinks(constraints.links);
         setHeadings(constraints.headings);
         setBulletPoints(constraints.bullet_points);
+        setTables(constraints.tables);
     }, [constraints])
 
-    function handleSubmit(words: number | null, characters: number | null, images: number | null, links: number | null, headings: number | null, bulletPoints: number | null): void {
-        setConstraints({words: words, characters: characters, images: images, links: links, headings: headings, bullet_points: bulletPoints});
+    function handleSubmit(words: number | null, characters: number | null, images: number | null, links: number | null, headings: number | null, bulletPoints: number | null, tables: number | null): void {
+        setConstraints({words: words, characters: characters, images: images, links: links, headings: headings, bullet_points: bulletPoints, tables: tables});
     }
 
     function handleWordsChange(e: any): void {
@@ -52,6 +54,10 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
 
     function handleBulletPointsChange(e: any): void {
         setBulletPoints(+e.target.value);
+    }
+
+    function handleTablesChange(e: any): void {
+        setTables(+e.target.value);
     }
 
     function handleClose() {
@@ -122,11 +128,21 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
                             inputProps={{type: "number"}}
                         />
                     </FormControl>
+                    <FormControl fullWidth margin="normal">
+                        <TextField
+                            label="Tables"
+                            name="tables"
+                            value={tables}
+                            onChange={handleTablesChange}
+                            variant="outlined"
+                            inputProps={{type: "number"}}
+                        />
+                    </FormControl>
                 </Grid>
                 <Grid item>
                     <Grid container spacing={4}>
                         <Grid item>
-                            <Button type="submit" variant="contained" color="primary" onClick={() => handleSubmit(words, characters, images, links, headings, bulletPoints)}>
+                            <Button type="submit" variant="contained" color="primary" onClick={() => handleSubmit(words, characters, images, links, headings, bulletPoints, tables)}>
                                 Submit
                             </Button>
                         </Grid>

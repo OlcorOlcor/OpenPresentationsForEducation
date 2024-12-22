@@ -151,6 +151,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
                             <Grid item>{ slideAnalysis.links != null && constraints.links != null && slideAnalysis.links > constraints.links && <WarningIcon color="warning"/>}Links: {slideAnalysis.links}</Grid>
                             <Grid item>{ slideAnalysis.headings != null && constraints.headings != null && slideAnalysis.headings > constraints.headings && <WarningIcon color="warning"/>}Headings: {slideAnalysis.headings}</Grid>
                             <Grid item>{slideAnalysis.bullet_points != null && constraints.bullet_points != null && slideAnalysis.bullet_points > constraints.bullet_points && <WarningIcon color="warning"/>}Bullet points: {slideAnalysis.bullet_points}</Grid>
+                            <Grid item>{slideAnalysis.tables != null && constraints.tables != null && slideAnalysis.tables > constraints.tables && <WarningIcon color="warning"/>}Tables: {slideAnalysis.tables}</Grid>
                         </Grid>
                     </Popover>
             </Grid>
