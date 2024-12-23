@@ -1,3 +1,4 @@
+import { ContentCutOutlined } from "@mui/icons-material";
 import { IVisitor, IVisitable } from "./Visitors";
 
 /**
@@ -38,6 +39,114 @@ export class ListItemElement extends BaseElement implements IVisitable {
      */
     accept(visitor: IVisitor): void {
         visitor.visitListItemNode(this);
+    }
+}
+
+/**
+ * Class representing a heading cell in a table
+ * 
+ * The class implements the IVisitable interface.
+ */
+export class TableHeadingElement extends BaseElement implements IVisitable {
+    private content: (TextElement | InlineElement)[];
+    
+    /**
+     * TableHeadingElement constructor.
+     * 
+     * @param content - content of the table heading.
+     */
+    constructor(content: (TextElement | InlineElement)[]) {
+        super();
+        this.content = content;
+    }
+
+    /**
+     * Retrieves the content of the element.
+     * @returns content of the element.
+     */
+    getContent() {
+        return this.content;
+    }
+
+    /**
+     * Accepts the visitor to process this element.
+     * 
+     * @param visitor - the visitor processing the element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitTableHeadingNode(this);
+    }
+}
+
+/**
+ * Class representing a data cell in a table.
+ * 
+ * The class implements the IVisitable interface.
+ */
+export class TableDataElement extends BaseElement implements IVisitable {
+    private content: (TextElement | InlineElement)[];
+    
+    /**
+     * TableDataElement constructor.
+     * 
+     * @param content - content of the table data.
+     */
+    constructor(content: (TextElement | InlineElement)[]) {
+        super();
+        this.content = content;
+    }
+
+    /**
+     * Retrieves the content of the element.
+     * @returns content of the element.
+     */
+    getContent() {
+        return this.content;
+    }
+
+    /**
+     * Accepts the visitor to process this element.
+     * 
+     * @param visitor - the visitor processing the element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitTableDataNode(this);
+    }
+}
+
+/**
+ * Class representing a table row.
+ * 
+ * The class implements the IVisitable interface.
+ */
+export class TableRowElement extends BaseElement implements IVisitable {
+    private content: (TableDataElement | TableHeadingElement)[];
+    
+    /**
+     * TableRowElement constructor.
+     * 
+     * @param content - content of the table row.
+     */
+    constructor(content: (TableDataElement | TableHeadingElement)[]) {
+        super();
+        this.content = content;
+    }
+
+    /**
+     * Retrieves the content of the element.
+     * @returns content of the element.
+     */
+    getContent() {
+        return this.content;
+    }
+
+    /**
+     * Accepts the visitor to process this element.
+     * 
+     * @param visitor - the visitor processing the element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitTableRowNode(this);
     }
 }
 
@@ -282,6 +391,82 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
  */
 export abstract class OuterElement extends BaseElement implements IVisitable {
     abstract accept(visitor: IVisitor): void;
+}
+
+/**
+ * Class representing a table.
+ * 
+ * The class implements the IVisitable interface.
+ */
+export class TableElement extends OuterElement implements IVisitable {
+    private content: TableRowElement[];
+    private metadataTags: string[];
+    /**
+     * TableElement constructor.
+     * 
+     * @param content - content of the table.
+     */
+    constructor(content: TableRowElement[], metadataTags: string[]) {
+        super();
+        this.content = content;
+        this.metadataTags = metadataTags;
+    }
+
+    /**
+     * Retrieves the content of the element.
+     * @returns content of the element.
+     */
+    getContent() {
+        return this.content;
+    }
+
+    /**
+     * Retrieves metadata of the element.
+     * @returns metadata of the element.
+     */
+    getMetadata() {
+        return this.metadataTags;
+    }
+    
+    /**
+     * Accepts the visitor to process this element.
+     * 
+     * @param visitor - the visitor processing the element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitTableNode(this);
+    }
+}
+
+/**
+ * Class for horizontal line elements.
+ * 
+ * The class implements the IVisitable interface
+ */
+export class HorizontalLineElement extends OuterElement implements IVisitable {
+    private metadata: string[];
+
+    constructor(metadata: string[]) {
+        super();
+        this.metadata = metadata;
+    }
+
+    /**
+     * Accepts a visitor to process this element.
+     * 
+     * @param visitor - The visitor processing this element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitHorizontalLineNode(this);   
+    }
+
+    /**
+     * Retrieves metadata of the element.
+     * @returns metadata of the element.
+     */
+    getMetadata() {
+        return this.metadata;
+    }
 }
 
 /**

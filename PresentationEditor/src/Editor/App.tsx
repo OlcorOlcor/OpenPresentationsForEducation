@@ -21,7 +21,7 @@ function App() {
     const [rawCode, setRawCode] = useState<string[][]>([[""],[""]]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
     const [images, setImages] = useState<pt.ImageFile[]>([]);
-    const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null});
+    const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null, tables: null});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
@@ -221,7 +221,7 @@ function App() {
         setLanes([new Lane([new SlideElement([])], "first"), new Lane([new SlideElement([])], "second")]);
         setSelectedLeftLaneIndex(0);
         setSelectedRightLaneIndex(1);
-        setConstraints({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null});
+        setConstraints({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null, tables: null});
         setMetadata([]);
     }
 

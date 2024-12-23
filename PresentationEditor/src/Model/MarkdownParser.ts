@@ -157,6 +157,9 @@ export class MarkdownParser {
                     index.index += 1;
                     slide.content.push(this.handleBlockQuote(array, index));
                     break;
+                case "table_open":
+                    slide.content.push(this.handleTable(array, index));
+                    break;
                 case "metadata":
                     const names: string[] = array[index.index].meta["names"];
                     names.forEach(name => {
@@ -167,11 +170,56 @@ export class MarkdownParser {
                     const pairs = array[index.index].meta.front_matter;
                     slide.attributes.frontMatter = pairs;
                     break;
+                case "hr":
+                    const hr: pt.HorizontalLine = { type: "horizontal_line", metadataTags: this.metadataTags }
+                    this.metadataTags = [];
+                    slide.content.push(hr);
+                    break;
                 default:
                     break;
             }
         }
         return slide;
+    }
+
+    private handleTable(array: Token[], index: RefIndex): pt.Table {
+        let table: pt.Table = { type: "table", content: [], attributes: { metadataTags: this.metadataTags } }
+        this.metadataTags = [];
+        let row = -1;
+        let col = -1;
+        while (index.index < array.length) {
+            index.index++;
+            switch (array[index.index].type) {
+                case "tr_open":
+                    row++;
+                    col = -1;
+                    table.content.push({type: "table_row", content: []});
+                    break;
+                case "th_open":
+                    col++;
+                    table.content[row].content.push({type: "table_heading", content: []});
+                    break;
+                case "td_open":
+                    col++;
+                    table.content[row].content.push({type: "table_data", content: []});
+                    break;
+                case "inline":
+                    const currentCell = table.content[row].content[col];
+                    this.getInline(array[index.index]).forEach(inline => {
+                        currentCell.content.push(inline); 
+                    });
+                    break;
+                case "table_close":
+                    return table;
+                case "tr_close":
+                case "td_close":
+                case "th_close":
+                default:
+                    break;
+            }
+        }
+
+        return table;
     }
 
     /**

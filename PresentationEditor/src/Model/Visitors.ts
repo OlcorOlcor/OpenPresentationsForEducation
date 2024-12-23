@@ -1,3 +1,4 @@
+import { table } from "console";
 import * as pm from "./PresentationModel";
 import * as pt from "./PresentationTypes";
 
@@ -15,7 +16,12 @@ export interface IVisitor {
     visitHeadingNode(element: pm.HeadingElement): void;
     visitListNode(element: pm.ListElement): void;
     visitListItemNode(element: pm.ListItemElement): void;
+    visitTableNode(element: pm.TableElement): void;
+    visitTableRowNode(element: pm.TableRowElement): void;
+    visitTableHeadingNode(element: pm.TableHeadingElement): void;
+    visitTableDataNode(element: pm.TableDataElement): void;
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void;
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void;
     visitSlideNode(element: pm.SlideElement): void;
     visitLaneNode(element: pm.Lane): void;
 }
@@ -44,6 +50,62 @@ export class HtmlVisitor implements IVisitor {
     constructor(reveal_output: boolean = false, images: pt.ImageFile[] = []) {
         this.revealOutput = reveal_output;
         this.images = images;
+    }
+    
+    /**
+     * Visits table element and appends it and its content to the result.
+     * @param element The table element to visit
+     */
+    visitTableNode(element: pm.TableElement): void {
+        this.result += "<table>";
+        element.getContent().forEach(c => {
+            c.accept(this);
+        });
+        this.result += "</table>";
+    }
+
+    /**
+     * Visits table row element and appends it and its content to the result.
+     * @param element The table row element to visit.
+     */
+    visitTableRowNode(element: pm.TableRowElement): void {
+        this.result += "<tr>";
+        element.getContent().forEach(c => {
+            c.accept(this);
+        });
+        this.result += "</tr>";
+    }
+
+    /**
+     * Visits table heading element and appends it and its content to the result.
+     * @param element The table heading element to visit.
+     */
+    visitTableHeadingNode(element: pm.TableHeadingElement): void {
+        this.result += "<th>";
+        element.getContent().forEach(c => {
+            c.accept(this);
+        });
+        this.result += "</th>";
+    }
+
+    /**
+     * Visits table data element and appends it and its content to the result.
+     * @param element The table data element to visit.
+     */
+    visitTableDataNode(element: pm.TableDataElement): void {
+        this.result += "<td>";
+        element.getContent().forEach(c => {
+            c.accept(this);
+        });
+        this.result += "</td>";
+    }
+
+    /**
+     * Visits a horizontal line and appends it to the result.
+     * @param elements - The horizontal line element to visit.
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        this.result += "<hr />";
     }
 
     /**
@@ -213,6 +275,7 @@ export class HtmlVisitor implements IVisitor {
         return this.result;
     }
 }
+
 /**
  * Class that converts the node structure into a markdown format.
  * 
@@ -245,6 +308,60 @@ export class MarkdownVisitor implements IVisitor {
         if ((element instanceof pm.SlideElement)) {
             this.result += "\n";
         }
+    }
+
+    /**
+     * Visits a table element and appends it and its content to the result.
+     * @param element The table element to visit.
+     */
+    visitTableNode(element: pm.TableElement): void {
+        element.getContent().forEach(c => {
+            c.accept(this);
+        });
+        this.result += "\n";
+    }
+
+    /**
+     * Visits a table row element and appends it and its content to the result.
+     * @param element The table row element to visit.
+     */
+    visitTableRowNode(element: pm.TableRowElement): void {
+        let headingRow = element.getContent()[0] instanceof pm.TableHeadingElement;
+        this.result += "|";
+        element.getContent().forEach(c => {
+            this.result += " ";
+            c.accept(this);
+            this.result += " |";
+        });
+
+        if (headingRow) {
+            this.result += "\n";
+            this.result += "|";
+            for (let i = 0; i < element.getContent().length; ++i) {
+                this.result += " --- |";
+            }
+        }
+        this.result += "\n";
+    }
+
+    visitTableHeadingNode(element: pm.TableHeadingElement): void {
+        element.getContent().forEach(c => {
+            c.accept(this);
+        });
+    }
+
+    visitTableDataNode(element: pm.TableDataElement): void {
+        element.getContent().forEach(c => {
+            c.accept(this);
+        });
+    }
+
+    /**
+     * Visits a horizontal line element and appends it to the result.
+     * @param element - The horizontal line element to visit
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        this.result += "___\n\n";
     }
 
     /**
@@ -494,6 +611,67 @@ export class JsonVisitor implements IVisitor {
     }
 
     /**
+     * Visits a horizontal line element and adds it on the stack.
+     * @param element - The horizontal line element to visit.
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        let hr: pt.HorizontalLine = { type: "horizontal_line", metadataTags: element.getMetadata() };
+        this.stack.push(hr);
+    }
+
+    /**
+     * Visits a table element and adds it and its content to the stack.
+     * @param element The table element to visit.
+     */
+    visitTableNode(element: pm.TableElement): void {
+        let table: pt.Table = {type: "table", content: [], attributes: { metadataTags: element.getMetadata()}};
+        element.getContent().forEach(c => {
+            c.accept(this);
+            table.content.push(this.stack.pop());
+        });
+        this.stack.push(table);
+    }
+
+    /**
+     * Visits a table row element and adds it and its content to the stack.
+     * @param element The table row element to visit.
+     */
+    visitTableRowNode(element: pm.TableRowElement): void {
+        let tableRow: pt.TableRow = {type: "tableRow", content: []}
+        element.getContent().forEach(c => {
+            c.accept(this);
+            tableRow.content.push(this.stack.pop());
+        });
+        this.stack.push(tableRow);
+    }
+
+    /**
+     * Visits a table heading element and adds it and its content to the stack.
+     * @param element The table heading element to visit.
+     */
+    visitTableHeadingNode(element: pm.TableHeadingElement): void {
+        let tableHeading: pt.TableHeading = {type: "tableHeading", content: []}
+        element.getContent().forEach(c => {
+            c.accept(this);
+            tableHeading.content.push(this.stack.pop());
+        });
+        this.stack.push(tableHeading);
+    }
+
+    /**
+     * Visits a table data element and adds it and its content to the stack.
+     * @param element The table data element to visit.
+     */
+    visitTableDataNode(element: pm.TableDataElement): void {
+        let tableData: pt.TableData = {type: "tableData", content: []}
+        element.getContent().forEach(c => {
+            c.accept(this);
+            tableData.content.push(this.stack.pop());
+        });
+        this.stack.push(tableData);
+    }
+
+    /**
      * Visits an italic node and adds its content to the stack wrapped in an italic annotation.
      * @param element - The italic element to visit.
      */
@@ -657,6 +835,7 @@ class AnalysisResult {
     links: number = 0;
     headings: number = 0;
     bullet_points: number = 0;
+    tables: number = 0;
 }
 
 /**
@@ -676,6 +855,46 @@ export class AnalysisVisitor implements IVisitor {
         this.result.words += element.getContent().split(' ').length;
     }
     
+    /**
+     * Visits a horizontal line element. No analysis is performed.
+     * @param element - The horizontal line element to visit.
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        return;
+    }
+
+    /**
+     * Visits a table element, incrementing the table count.
+     * @param element - The table element to visit.
+     */
+    visitTableNode(element: pm.TableElement): void {
+        this.result.tables++;
+    }
+
+    /**
+     * Visits a table row element. No analysis is performed.
+     * @param element - The table row element to visit.
+     */
+    visitTableRowNode(element: pm.TableRowElement): void {
+        return;    
+    }
+
+    /**
+     * Visits a table heading element. No analysis is performed.
+     * @param element - The table heading element to visit.
+     */
+    visitTableHeadingNode(element: pm.TableHeadingElement): void {
+        return;
+    }
+
+    /**
+     * Visits a table data element. No analysis is performed.
+     * @param element - The table data element to visit.
+     */
+    visitTableDataNode(element: pm.TableDataElement): void {
+        return;
+    }
+
     /**
      * Visits a bold node. No analysis is performed.
      * @param element - The bold element to visit.
@@ -842,6 +1061,78 @@ export class ReductionVisitor implements IVisitor {
         this.keywords.forEach(k => {
             if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
+                return;
+            }
+        });
+    }
+
+    /**
+     * Visits a horizontal line element, checking for metadata compliance.
+     * 
+     * @param element - The horizontal line element to visit.
+     */
+    visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
+        this.checkMetadata(element.getMetadata());
+        if (this.isSlideCompliant) {
+            return;
+        }
+    }
+
+    /**
+     * Visits table element and checks for compliance.
+     * 
+     * @param element - The table element to visit.
+     */
+    visitTableNode(element: pm.TableElement): void {
+        this.checkMetadata(element.getMetadata());
+        if (this.isSlideCompliant) {
+            return;
+        }
+        element.getContent().forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    /**
+     * Visits table row element and checks for compliance.
+     * 
+     * @param element - The table row element to visit.
+     */
+    visitTableRowNode(element: pm.TableRowElement): void {
+        element.getContent().forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    /**
+     * Visits table heading element and checks for compliance.
+     * 
+     * @param element - The table heading element to visit.
+     */
+    visitTableHeadingNode(element: pm.TableHeadingElement): void {
+        element.getContent().forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
+                return;
+            }
+        });
+    }
+
+    /**
+     * Visits table data element and checks for compliance.
+     * 
+     * @param element - The table data element to visit.
+     */
+    visitTableDataNode(element: pm.TableDataElement): void {
+        element.getContent().forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
                 return;
             }
         });

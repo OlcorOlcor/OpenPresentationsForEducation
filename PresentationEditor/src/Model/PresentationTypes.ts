@@ -6,7 +6,7 @@ export type Element = InlineElement | OuterElement | Slide | Text;
 /**
  * Represents elements that can exist at the outermost level of a presentation.
  */
-export type OuterElement = Paragraph | HeadingElement | List | BlockQuote;
+export type OuterElement = Paragraph | HeadingElement | List | BlockQuote | HorizontalLine | Table;
 
 /**
  * Represents elements that can exist inline within other elements.
@@ -50,6 +50,14 @@ export type Image = {
 };
 
 /**
+ * Represents a horizontal line.
+ */
+export type HorizontalLine = {
+    type: string;
+    metadataTags: string[];
+}
+
+/**
  * Represents an item within a list.
  */
 export type ListItem = {
@@ -77,6 +85,35 @@ export type Paragraph = {
     content: (Text | InlineElement)[];
     attributes: { metadataTags: string[] }
 };
+
+
+/**
+ * Represent a table.
+ */
+export type Table = {
+    type: string;
+    content: TableRow[];
+    attributes: { metadataTags: string[] }
+}
+
+/**
+ * Represents a table row.
+ */
+export type TableRow = {
+    type: string;
+    content: (TableData | TableHeading)[];
+}
+
+
+export type TableData = {
+    type: string;
+    content: (Text | InlineElement)[];
+}
+
+export type TableHeading = {
+    type: string;
+    content: (Text | InlineElement)[];
+}
 
 /**
  * Represents a heading element.
@@ -145,6 +182,7 @@ export type Constraints = {
     links: number | null;
     headings: number | null;
     bullet_points: number | null;
+    tables: number | null;
 }
 
 export type ImageFile = {

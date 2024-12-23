@@ -52,7 +52,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     images
 }) => {
     const [editorView, setEditorView] = useState<boolean>(true);
-    const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0});
+    const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0, tables: 0});
     const [slideMode, setSlideMode] = useState<boolean>(
         lanes[selectedLaneIndex].outputsAsPresentation(),
     );
