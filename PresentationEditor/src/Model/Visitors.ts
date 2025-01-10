@@ -1,4 +1,3 @@
-import { table } from "console";
 import * as pm from "./PresentationModel";
 import * as pt from "./PresentationTypes";
 
@@ -21,6 +20,7 @@ export interface IVisitor {
     visitTableHeadingNode(element: pm.TableHeadingElement): void;
     visitTableDataNode(element: pm.TableDataElement): void;
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void;
+    visitSectionNode(element: pm.Section): void;
     visitHorizontalLineNode(element: pm.HorizontalLineElement): void;
     visitSlideNode(element: pm.SlideElement): void;
     visitLaneNode(element: pm.Lane): void;
@@ -220,6 +220,16 @@ export class HtmlVisitor implements IVisitor {
     }
 
     /**
+     * Visits a section node and wraps its content in <div> tag with its value.
+     * @param element - The block quote element to visit.
+     */
+    visitSectionNode(element: pm.Section): void {
+        this.result += `<div data-${element.getKey()}=${element.getValue()}>`;
+        element.getContent().forEach(c => c.accept(this));
+        this.result += "</div>";
+    }
+
+    /**
      * Visits a block quote node and wraps its content in <blockquote> tags.
      * @param element - The block quote element to visit.
      */
@@ -291,7 +301,7 @@ export class MarkdownVisitor implements IVisitor {
      * Adds metadata to the result string for wrapper elements and the slide element.
      * @param element - The element for which metadata is added.
      */
-    private addMetadata(element: pm.BlockQuoteElement | pm.ParagraphElement | pm.HeadingElement | pm.ListElement | pm.SlideElement): void {
+    private addMetadata(element: pm.BlockQuoteElement | pm.ParagraphElement | pm.HeadingElement | pm.ListElement | pm.SlideElement | pm.Section): void {
         if (!(element instanceof pm.SlideElement)) {
             this.result += "#";
         }
@@ -419,6 +429,18 @@ export class MarkdownVisitor implements IVisitor {
      */
     visitLinkNode(element: pm.LinkElement): void {
         this.result += "[" + element.getAlias()+ "](" + element.getContent()+ ")";
+    }
+
+    /**
+     * Visits a section node, adds the tag and its metadata tags to the result.
+     * @param element - The section element to visit.
+     */
+    visitSectionNode(element: pm.Section): void {
+        if (element.getMetadata().length !== 0) {
+            this.addMetadata(element);
+        }
+        this.result += `<!-- ${element.getKey}: ${element.getValue} -->\n`;
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -772,6 +794,20 @@ export class JsonVisitor implements IVisitor {
     }
 
     /**
+     * Visits a section element and adds its content to the stack wrapped in a section element.
+     * For each child element processed pops one element out of the stack.
+     * @param element - The section element to visit.
+     */
+    visitSectionNode(element: pm.Section): void {
+        let section: pt.Section = {type: "section", content: [], attributes: {key: element.getKey(), value: element.getValue(), metadataTags: element.getMetadata()}}
+        element.getContent().forEach(c => {
+            c.accept(this);
+            section.content.push(this.stack.pop());
+        });
+        this.stack.push(section);
+    }
+
+    /**
      * Visits a blockquote node and adds its content to the stack wrapped in a blockquote element.
      * For each child element processed pops one element out of the stack.
      * @param element - The blockquote element to visit.
@@ -933,6 +969,14 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitLinkNode(element: pm.LinkElement): void {
         this.result.links++;
+    }
+
+    /**
+     * Visists a section node, recursively analyzing its content.
+     * @param element - The section element to visit.
+     */
+    visitSectionNode(element: pm.Section): void {
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -1203,6 +1247,23 @@ export class ReductionVisitor implements IVisitor {
         this.keywords.forEach(k => {
             if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
+                return;
+            }
+        });
+    }
+    /**
+     * Visits a section node, checking its metadata and content for compliance.
+     * 
+     * @param element - The section element to visit.
+     */
+    visitSectionNode(element: pm.Section): void {
+        this.checkMetadata(element.getMetadata());
+        if (this.isSlideCompliant) {
+            return;
+        }
+        element.getContent().forEach(c => {
+            c.accept(this);
+            if (this.isSlideCompliant) {
                 return;
             }
         });

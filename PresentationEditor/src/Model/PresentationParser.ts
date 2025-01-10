@@ -214,12 +214,25 @@ export class PresentationParser {
                 case "horizontal_line":
                     content.push(new pm.HorizontalLineElement((jsonElement as pt.HorizontalLine).metadataTags));
                     break;
+                case "section":
+                    content.push(this.getSectionElement(jsonElement as pt.Section));
+                    break;
                 case "table":
                     content.push(this.getTableElement(jsonElement as pt.Table));
                     break;
             }
         });
         return content;
+    }
+
+    /**
+     * Converts a Section JSON object to a SectionElement
+     * @param sectionJson - The Section JSON object.
+     * @returns The corresponding SecitionElement
+     */
+    private getSectionElement(sectionJson: pt.Section): pm.Section {
+        let content = this.getOuterElementContent(sectionJson.content);
+        return new pm.Section(sectionJson.attributes.key, sectionJson.attributes.value, content, sectionJson.attributes.metadataTags);
     }
 
     /**

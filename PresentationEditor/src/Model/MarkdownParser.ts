@@ -15,6 +15,7 @@ export class MarkdownParser {
     private slideRefs: string[] = [];
     private metadataTags: string[] = [];
     private firstParagraph: boolean = true;
+
     /**
      * Custom rule to handle metadata in markdown.
      * @param state - The state of the markdown parser.
@@ -24,7 +25,6 @@ export class MarkdownParser {
      * @returns True if the rule was successfully applied, false otherwise.
      */
     metadata_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
-        
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
         if (state.src.slice(startPos, startPos + 2) !== "#[") {
@@ -47,6 +47,94 @@ export class MarkdownParser {
         token.meta = {...token.meta, names: names}
         return true;
     }
+
+    /**
+     * Custom rule to handle comments in markdown. These are internally used for metadata tags.
+     * @param state - The state of the markdown parser.
+     * @param startLine - The line where the rule starts.
+     * @param endLine - The line where the rule ends.
+     * @param silent - If true, the rule will be applied silently.
+     * @returns True if the rule was successfully applied, false otherwise.
+     */
+    next_tag_comment_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+        const startPos = state.bMarks[startLine] + state.tShift[startLine];
+        const max = state.eMarks[startLine];
+
+        if (state.src.slice(startPos, startPos + 4) !== "<!--") {
+            return false;
+        }
+
+        const match: string[] = state.src.slice(startPos, max).match(/^<!--(.*): +(.*)-->$/);
+        
+        if (!match) {
+            return false;
+        }
+
+        if (silent) {
+            return true;
+        }
+
+        state.line = startLine + 1;
+        let comment = { key: match[0], val: match[1] };
+        let token = state.push("next_tag_comments", '', 0);
+        token.hidden = true;
+        token.meta = {...token.meta, next_tag_comment: comment}
+        return true;
+    }
+
+    section_tag_comment_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+        const startPos = state.bMarks[startLine] + state.tShift[startLine];
+        const max = state.eMarks[startLine];
+
+        if (state.src.slice(startPos, startPos + 4) !== "<+--") {
+            return false;
+        }
+
+        const match: string[] = state.src.slice(startPos, max).match(/^<\+--(.*): +(.*)-->$/);
+        
+        if (!match) {
+            return false;
+        }
+
+        if (silent) {
+            return true;
+        }
+
+        state.line = startLine + 1;
+        let comment = { key: match[1].trim(), val: match[2].trim() };
+        let token = state.push("section_tag_comment", '', 0);
+        token.hidden = true;
+        token.meta = {...token.meta, section_tag_comment: comment}
+        return true;
+    }
+
+    section_close_tag_comment_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+        const startPos = state.bMarks[startLine] + state.tShift[startLine];
+        const max = state.eMarks[startLine];
+        
+        if (state.src.slice(startPos, startPos + 4) !== "<+--") {
+            return false;
+        }
+        
+        
+        const match: string[] = state.src.slice(startPos, max).match(/^<\+--(.+)--\/>$/);
+        
+        if (!match) {
+            return false;
+        }
+
+        if (silent) {
+            return true;
+        }
+        console.log("test");
+        state.line = startLine + 1;
+        let close_comment = { key: match[1].trim() };
+        let token = state.push("section_close_tag_comment", '', 0);
+        token.hidden = true;
+        token.meta = {...token.meta, section_close_tag_comment: close_comment};
+        return true;
+    }
+
 
     /**
      * Custom rule to handle front matter in markdown.
@@ -116,6 +204,9 @@ export class MarkdownParser {
     public parseMarkdown(markdown: string): pt.Slide {
         let mdit = markdownit();
         mdit.block.ruler.before("paragraph", "metadata", this.metadata_rule);
+        mdit.block.ruler.before("paragraph", "next_tag_comment", this.next_tag_comment_rule);
+        mdit.block.ruler.before("paragraph", "section_tag_comment", this.section_tag_comment_rule);
+        mdit.block.ruler.before("paragraph", "section_close_tag_comment", this.section_close_tag_comment_rule);
         mdit.block.ruler.before("hr", "front_matter", this.front_matter_rule);
         let array = mdit.parse(markdown, {});
         let slide = this.handleArray(array);
@@ -123,7 +214,52 @@ export class MarkdownParser {
             slide.attributes.metadataTags.push(this.slideTag);
         }
         slide.attributes.refs = this.slideRefs;
+        console.log(slide);
         return slide;
+    }
+
+    private getOuterElement(array: Token[], index: RefIndex, ): pt.OuterElement | null {
+        switch (array[index.index].type) {
+            case "bullet_list_open":
+                index.index += 1;
+                return this.handleList(array, index, false);
+            case "ordered_list_open":
+                index.index += 1;
+                return this.handleList(array, index, true);
+            case "paragraph_open":
+                let paragraph = this.handleParagraph(array, index);
+                if (paragraph.content.length === 0) {
+                    break;
+                }
+                return paragraph;
+            case "heading_open":
+                console.log("heading");
+                return this.handleHeading(array, index, array[index.index].markup.length);
+            case "blockquote_open":
+                index.index += 1;
+                return this.handleBlockQuote(array, index);
+            case "table_open":
+                return this.handleTable(array, index);
+            case "metadata":
+                const names: string[] = array[index.index].meta["names"];
+                names.forEach(name => {
+                    this.metadataTags.push(name);
+                });
+                break;
+            case "next_tag_comment": 
+                
+                break;
+            case "section_tag_comment":
+                return this.handleSection(array, index);
+            case "hr":
+                const hr: pt.HorizontalLine = { type: "horizontal_line", metadataTags: this.metadataTags }
+                this.metadataTags = [];
+                return hr;
+            default:
+                console.log(array[index.index].type)
+                break;
+        }
+        return null;
     }
 
     /**
@@ -134,52 +270,45 @@ export class MarkdownParser {
     private handleArray(array: Token[]): pt.Slide {
         let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: [], refs: [], frontMatter: {}}};
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
-            switch (array[index.index].type) {
-                case "bullet_list_open":
-                    index.index += 1;
-                    slide.content.push(this.handleList(array, index, false));
-                    break;
-                case "ordered_list_open":
-                    index.index += 1;
-                    slide.content.push(this.handleList(array, index, true));
-                    break;
-                case "paragraph_open":
-                    let paragraph = this.handleParagraph(array, index);
-                    if (paragraph.content.length === 0) {
-                        break;
-                    }
-                    slide.content.push(paragraph);
-                    break;
-                case "heading_open":
-                    slide.content.push(this.handleHeading(array, index, array[index.index].markup.length));
-                    break;
-                case "blockquote_open":
-                    index.index += 1;
-                    slide.content.push(this.handleBlockQuote(array, index));
-                    break;
-                case "table_open":
-                    slide.content.push(this.handleTable(array, index));
-                    break;
-                case "metadata":
-                    const names: string[] = array[index.index].meta["names"];
-                    names.forEach(name => {
-                        this.metadataTags.push(name);
-                    });
-                    break;
-                case "front_matter":
-                    const pairs = array[index.index].meta.front_matter;
-                    slide.attributes.frontMatter = pairs;
-                    break;
-                case "hr":
-                    const hr: pt.HorizontalLine = { type: "horizontal_line", metadataTags: this.metadataTags }
-                    this.metadataTags = [];
-                    slide.content.push(hr);
-                    break;
-                default:
-                    break;
+            if (array[index.index].type === "front_matter") {
+                const pairs = array[index.index].meta.front_matter;
+                slide.attributes.frontMatter = pairs;
+                continue;
+            }
+            const outerElement = this.getOuterElement(array, index);
+            if (outerElement !== null) {
+                slide.content.push(outerElement);
             }
         }
         return slide;
+    }
+
+    /**
+     * Handles an array of markdown tokens and turns them into a section element.
+     * @param array array of markdown tokens.
+     * @param index current index of the array index.
+     * @returns section element.
+     */
+    private handleSection(array: Token[], index: RefIndex): pt.Section {
+        console.log("getting section");
+        let section: pt.Section = { type: "section", content: [], attributes: {key: array[index.index].meta["section_tag_comment"].key, value: array[index.index].meta["section_tag_comment"].val, metadataTags: this.metadataTags}}
+        index.index += 1;
+        for (index.index + 1; index.index < array.length; ++index.index) {
+            if (array[index.index].type === "section_tag_comment" && array[index.index].meta["section_tag_comment"]?.key === section.attributes.key) {
+                index.index -= 1;
+                return section;
+            }
+            console.log("CURRENT " + array[index.index].type)
+            if (array[index.index].type === "section_close_tag_comment" && array[index.index].meta["section_close_tag_comment"]?.key === section.attributes.key) {
+                console.log("here");
+                return section;
+            }
+            const outerElement = this.getOuterElement(array, index);
+            if (outerElement !== null) {
+                section.content.push(outerElement);
+            }
+        }
+        return section;
     }
 
     private handleTable(array: Token[], index: RefIndex): pt.Table {

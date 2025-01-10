@@ -1,4 +1,3 @@
-import { ContentCutOutlined } from "@mui/icons-material";
 import { IVisitor, IVisitable } from "./Visitors";
 
 /**
@@ -391,6 +390,68 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
  */
 export abstract class OuterElement extends BaseElement implements IVisitable {
     abstract accept(visitor: IVisitor): void;
+}
+
+export class Section extends OuterElement implements IVisitable {
+    private content: OuterElement[];
+    private metadataTags: string[];
+    private key: string;
+    private value: string;
+
+    /**
+     * Section constructor.
+     * 
+     * @param content - content of the section.
+     * @param metadataTags - metadata tags fo the section.
+     */
+    constructor(key: string, value: string, content: OuterElement[], metadataTags: string[]) {
+        super();
+        this.key = key;
+        this.value = value;
+        this.content = content;
+        this.metadataTags = metadataTags;
+    }
+
+    /**
+     * Retrieves the key of the section.
+     * @returns key of the section.
+     */
+    getKey(): string {
+        return this.key;
+    }
+
+    /**
+     * Retrieves the value of the section.
+     * @return value of the section.
+     */
+    getValue(): string {
+        return this.value;
+    }
+
+    /**
+     * Retrieves the content of the element.
+     * @returns content of the element.
+     */
+    getContent() {
+        return this.content;
+    }
+
+    /**
+     * Retrieves metadata of the element.
+     * @returns metadata of the element.
+     */
+    getMetadata() {
+        return this.metadataTags;
+    }
+
+    /**
+     * Accepts the visitor to process this element.
+     * 
+     * @param visitor - the visitor processing the element.
+     */
+    accept(visitor: IVisitor): void {
+        visitor.visitSectionNode(this);
+    }
 }
 
 /**

@@ -6,7 +6,7 @@ export type Element = InlineElement | OuterElement | Slide | Text;
 /**
  * Represents elements that can exist at the outermost level of a presentation.
  */
-export type OuterElement = Paragraph | HeadingElement | List | BlockQuote | HorizontalLine | Table;
+export type OuterElement = Paragraph | HeadingElement | List | BlockQuote | HorizontalLine | Table | Section;
 
 /**
  * Represents elements that can exist inline within other elements.
@@ -105,11 +105,17 @@ export type TableRow = {
 }
 
 
+/**
+ * Represents table data cell.
+ */
 export type TableData = {
     type: string;
     content: (Text | InlineElement)[];
 }
 
+/**
+ * Represents table heading cell.
+ */
 export type TableHeading = {
     type: string;
     content: (Text | InlineElement)[];
@@ -127,6 +133,20 @@ export type HeadingElement = {
     };
     
 };
+
+
+/**
+ * Represents a section element.
+ */
+export type Section = {
+    type: string;
+    content: OuterElement[];
+    attributes: {
+        key: string;
+        value: string;
+        metadataTags: string[];
+    }
+}
 
 /**
  * Represents a block quote element.
