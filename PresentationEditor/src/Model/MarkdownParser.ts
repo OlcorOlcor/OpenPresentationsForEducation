@@ -126,7 +126,6 @@ export class MarkdownParser {
         if (silent) {
             return true;
         }
-        console.log("test");
         state.line = startLine + 1;
         let close_comment = { key: match[1].trim() };
         let token = state.push("section_close_tag_comment", '', 0);
@@ -214,7 +213,6 @@ export class MarkdownParser {
             slide.attributes.metadataTags.push(this.slideTag);
         }
         slide.attributes.refs = this.slideRefs;
-        console.log(slide);
         return slide;
     }
 
@@ -233,7 +231,6 @@ export class MarkdownParser {
                 }
                 return paragraph;
             case "heading_open":
-                console.log("heading");
                 return this.handleHeading(array, index, array[index.index].markup.length);
             case "blockquote_open":
                 index.index += 1;
@@ -256,7 +253,6 @@ export class MarkdownParser {
                 this.metadataTags = [];
                 return hr;
             default:
-                console.log(array[index.index].type)
                 break;
         }
         return null;
@@ -290,7 +286,6 @@ export class MarkdownParser {
      * @returns section element.
      */
     private handleSection(array: Token[], index: RefIndex): pt.Section {
-        console.log("getting section");
         let section: pt.Section = { type: "section", content: [], attributes: {key: array[index.index].meta["section_tag_comment"].key, value: array[index.index].meta["section_tag_comment"].val, metadataTags: this.metadataTags}}
         index.index += 1;
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -298,9 +293,7 @@ export class MarkdownParser {
                 index.index -= 1;
                 return section;
             }
-            console.log("CURRENT " + array[index.index].type)
             if (array[index.index].type === "section_close_tag_comment" && array[index.index].meta["section_close_tag_comment"]?.key === section.attributes.key) {
-                console.log("here");
                 return section;
             }
             const outerElement = this.getOuterElement(array, index);
