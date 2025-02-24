@@ -13,7 +13,8 @@ class RefIndex {
 export class MarkdownParser {
     private slideTag: string = "";
     private slideRefs: string[] = [];
-    private metadataTags: string[] = [];
+    private globalMetadataTags: string[] = [];
+    private metadataTags: { [key: string]: string } = {};
     private firstParagraph: boolean = true;
 
     /**
@@ -24,39 +25,38 @@ export class MarkdownParser {
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    metadata_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    metadataRule(state: any, startLine: any, endLine: any, silent: any): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
-        if (state.src.slice(startPos, startPos + 2) !== "#[") {
+        if (state.src.slice(startPos, startPos + 4) !== "<!--") {
             return false;
         }
-        const match: string[] = state.src.slice(startPos, max).match(/^#\[(.*)\]$/);
+        if (state.src.slice(startPos, endLine).indexOf(":") >= 0) {
+            return false;
+        }
+        const match: string[] = state.src.slice(startPos, max).match(/^<!-- ([^:]+) -->$/);
         if (!match) {
             return false;
         }
         if (silent) {
             return true;
         }
-        let names: string[] = [];
-        match[1].split(",").forEach(part => {
-            names.push(part.trim());
-        })
         state.line = startLine + 1;
-        let token = state.push("metadata", '', 0);
+        let token = state.push("global_metadata", '', 0);
         token.hidden = true;
-        token.meta = {...token.meta, names: names}
+        token.meta = {...token.meta, name: match[1]}
         return true;
     }
 
     /**
-     * Custom rule to handle comments in markdown. These are internally used for metadata tags.
+     * Custom rule to handle metadata tags.
      * @param state - The state of the markdown parser.
      * @param startLine - The line where the rule starts.
      * @param endLine - The line where the rule ends.
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    next_tag_comment_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    metadataTagRule(state: any, startLine: any, endLine: any, silent: any): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
 
@@ -75,22 +75,28 @@ export class MarkdownParser {
         }
 
         state.line = startLine + 1;
-        let comment = { key: match[0], val: match[1] };
-        let token = state.push("next_tag_comments", '', 0);
+        let token = state.push("metadata_tag", '', 0);
         token.hidden = true;
-        token.meta = {...token.meta, next_tag_comment: comment}
+        token.meta = {...token.meta, key: match[1].trim(), val: match[2].trim()}
         return true;
     }
-
-    section_tag_comment_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    /**
+     * Custom rule for section closing tag in markdown.
+     * @param state - The state of the markdown parser.
+     * @param startLine - The line where the rule starts.
+     * @param endLine - The line where the rule ends.
+     * @param silent - If true, the rule will be applied silently.
+     * @returns True if the rule was successfully applied, false otherwise.
+     */
+    sectionTagRule(state: any, startLine: any, endLine: any, silent: any): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
 
-        if (state.src.slice(startPos, startPos + 4) !== "<+--") {
+        if (state.src.slice(startPos, startPos + 4) !== "<!--") {
             return false;
         }
 
-        const match: string[] = state.src.slice(startPos, max).match(/^<\+--(.*): +(.*)-->$/);
+        const match: string[] = state.src.slice(startPos, max).match(/^<!-- \+(.*): +(.*)-->$/);
         
         if (!match) {
             return false;
@@ -102,22 +108,25 @@ export class MarkdownParser {
 
         state.line = startLine + 1;
         let comment = { key: match[1].trim(), val: match[2].trim() };
-        let token = state.push("section_tag_comment", '', 0);
+        let token = state.push("section_tag", '', 0);
         token.hidden = true;
-        token.meta = {...token.meta, section_tag_comment: comment}
+        token.meta = {...token.meta, section_tag: comment}
         return true;
     }
 
-    section_close_tag_comment_rule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    /**
+     * Custom rule for section closing tag in markdown.
+     * @param state - The state of the markdown parser.
+     * @param startLine - The line where the rule starts.
+     * @param endLine - The line where the rule ends.
+     * @param silent - If true, the rule will be applied silently.
+     * @returns True if the rule was successfully applied, false otherwise.
+     */
+    sectionCloseTagRule(state: any, startLine: any, endLine: any, silent: any): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
         
-        if (state.src.slice(startPos, startPos + 4) !== "<+--") {
-            return false;
-        }
-        
-        
-        const match: string[] = state.src.slice(startPos, max).match(/^<\+--(.+)--\/>$/);
+        const match: string[] = state.src.slice(startPos, max).match(/^<!-- \/ -->$/);
         
         if (!match) {
             return false;
@@ -126,11 +135,10 @@ export class MarkdownParser {
         if (silent) {
             return true;
         }
+
         state.line = startLine + 1;
-        let close_comment = { key: match[1].trim() };
-        let token = state.push("section_close_tag_comment", '', 0);
+        let token = state.push("section_close_tag", '', 0);
         token.hidden = true;
-        token.meta = {...token.meta, section_close_tag_comment: close_comment};
         return true;
     }
 
@@ -143,7 +151,7 @@ export class MarkdownParser {
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    front_matter_rule(state: any, startLine: any, endLine: any, silent: any) {
+    frontMatterRule(state: any, startLine: any, endLine: any, silent: any) {
         
         if (startLine !== 0) {
             return false;
@@ -202,20 +210,26 @@ export class MarkdownParser {
      */
     public parseMarkdown(markdown: string): pt.Slide {
         let mdit = markdownit();
-        mdit.block.ruler.before("paragraph", "metadata", this.metadata_rule);
-        mdit.block.ruler.before("paragraph", "next_tag_comment", this.next_tag_comment_rule);
-        mdit.block.ruler.before("paragraph", "section_tag_comment", this.section_tag_comment_rule);
-        mdit.block.ruler.before("paragraph", "section_close_tag_comment", this.section_close_tag_comment_rule);
-        mdit.block.ruler.before("hr", "front_matter", this.front_matter_rule);
+        mdit.block.ruler.before("paragraph", "global_metadata", this.metadataRule);
+        mdit.block.ruler.before("paragraph", "metadata_tag", this.metadataTagRule);
+        mdit.block.ruler.before("metadata_tag", "section_tag", this.sectionTagRule);
+        mdit.block.ruler.before("global_metadata", "section_close_tag", this.sectionCloseTagRule);
+        mdit.block.ruler.before("hr", "front_matter", this.frontMatterRule);
         let array = mdit.parse(markdown, {});
         let slide = this.handleArray(array);
         if (this.slideTag !== "") {
-            slide.attributes.metadataTags.push(this.slideTag);
+            slide.attributes.globalMetadataTags.push(this.slideTag);
         }
         slide.attributes.refs = this.slideRefs;
         return slide;
     }
 
+    /**
+     * Parses the given token array and turns them into an outer element.
+     * @param array - The array of markdown tokens.
+     * @param index - Index within the array.
+     * @returns The createed outer element.
+     */
     private getOuterElement(array: Token[], index: RefIndex, ): pt.OuterElement | null {
         switch (array[index.index].type) {
             case "bullet_list_open":
@@ -237,20 +251,18 @@ export class MarkdownParser {
                 return this.handleBlockQuote(array, index);
             case "table_open":
                 return this.handleTable(array, index);
-            case "metadata":
-                const names: string[] = array[index.index].meta["names"];
-                names.forEach(name => {
-                    this.metadataTags.push(name);
-                });
+            case "global_metadata":
+                const tag_name: string = array[index.index].meta["name"];
+                this.globalMetadataTags.push(tag_name);
                 break;
-            case "next_tag_comment": 
-                
+            case "metadata_tag":
+                this.metadataTags[array[index.index].meta["key"]] = array[index.index].meta["val"];
                 break;
-            case "section_tag_comment":
+            case "section_tag":
                 return this.handleSection(array, index);
             case "hr":
-                const hr: pt.HorizontalLine = { type: "horizontal_line", metadataTags: this.metadataTags }
-                this.metadataTags = [];
+                const hr: pt.HorizontalLine = { type: "horizontal_line", attributes: { globalMetadataTags: this.globalMetadataTags, metadata: {} } }
+                this.globalMetadataTags = [];
                 return hr;
             default:
                 break;
@@ -264,7 +276,7 @@ export class MarkdownParser {
      * @returns The parsed slide.
      */
     private handleArray(array: Token[]): pt.Slide {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: { metadataTags: [], refs: [], frontMatter: {}}};
+        let slide: pt.Slide = {type: "slide", content: [], attributes: { globalMetadataTags: [], metadata: {}, refs: [], frontMatter: {}}};
         for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
             if (array[index.index].type === "front_matter") {
                 const pairs = array[index.index].meta.front_matter;
@@ -279,6 +291,7 @@ export class MarkdownParser {
         return slide;
     }
 
+    private sectionStack: string[] = [];
     /**
      * Handles an array of markdown tokens and turns them into a section element.
      * @param array array of markdown tokens.
@@ -286,16 +299,24 @@ export class MarkdownParser {
      * @returns section element.
      */
     private handleSection(array: Token[], index: RefIndex): pt.Section {
-        let section: pt.Section = { type: "section", content: [], attributes: {key: array[index.index].meta["section_tag_comment"].key, value: array[index.index].meta["section_tag_comment"].val, metadataTags: this.metadataTags}}
+        let section: pt.Section = { type: "section", content: [], attributes: {key: array[index.index].meta["section_tag"].key, value: array[index.index].meta["section_tag"].val, globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags}}
+        this.globalMetadataTags = [];
+        this.metadataTags = {};
         index.index += 1;
         for (index.index + 1; index.index < array.length; ++index.index) {
-            if (array[index.index].type === "section_tag_comment" && array[index.index].meta["section_tag_comment"]?.key === section.attributes.key) {
-                index.index -= 1;
+            if (array[index.index].type === "section_tag") {
+                if (array[index.index].meta["section_tag"].key === this.sectionStack[this.sectionStack.length - 1] || array[index.index].meta["section_tag"].key === section.attributes.key) {
+                    this.sectionStack.pop();
+                    index.index -= 1;
+                    return section;
+                }
+            }
+            if (array[index.index].type === "section_close_tag") {
+                this.sectionStack.pop();
+                console.log("here pop");
                 return section;
             }
-            if (array[index.index].type === "section_close_tag_comment" && array[index.index].meta["section_close_tag_comment"]?.key === section.attributes.key) {
-                return section;
-            }
+            this.sectionStack.push(section.attributes.key);
             const outerElement = this.getOuterElement(array, index);
             if (outerElement !== null) {
                 section.content.push(outerElement);
@@ -304,9 +325,16 @@ export class MarkdownParser {
         return section;
     }
 
+    /**
+     * Handles an array of markdown tokens and turns them into a table element.
+     * @param array - The array of markdown tokens.
+     * @param index - Index within the array.
+     * @returns The parsed table element.
+     */
     private handleTable(array: Token[], index: RefIndex): pt.Table {
-        let table: pt.Table = { type: "table", content: [], attributes: { metadataTags: this.metadataTags } }
-        this.metadataTags = [];
+        let table: pt.Table = { type: "table", content: [], attributes: { globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags } }
+        this.globalMetadataTags = [];
+        this.metadataTags = {};
         let row = -1;
         let col = -1;
         while (index.index < array.length) {
@@ -351,8 +379,9 @@ export class MarkdownParser {
      * @returns The parsed BlockQuote element.
      */
     private handleBlockQuote(array: Token[], index: RefIndex): pt.BlockQuote {
-        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], attributes: { metadataTags: this.metadataTags }};
-        this.metadataTags = [];
+        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], attributes: { globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags }};
+        this.globalMetadataTags = [];
+        this.metadataTags = {};
         let done: boolean = false;
         for (; index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
@@ -404,10 +433,10 @@ export class MarkdownParser {
      * @returns The parsed Paragraph element.
      */
     private handleParagraph(array: Token[], index: RefIndex): pt.Paragraph {
-        let paragraph: pt.Paragraph = { type: "paragraph", content: [], attributes: { metadataTags: this.metadataTags }};
-        this.metadataTags = [];
+        let paragraph: pt.Paragraph = { type: "paragraph", content: [], attributes: { globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags }};
+        this.globalMetadataTags = [];
+        this.metadataTags = {};
         for (index.index + 1; index.index < array.length; ++index.index) {
-
             if (array[index.index].type === "paragraph_close") {
                 break;
             }
@@ -449,8 +478,9 @@ export class MarkdownParser {
      * @returns The parsed Heading element.
      */
     private handleHeading(array: Token[], index: RefIndex, level: number): pt.HeadingElement {
-        let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: level, metadataTags: this.metadataTags }};
-        this.metadataTags = [];
+        let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: level, globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags }};
+        this.globalMetadataTags = [];
+        this.metadataTags = {};
         for (index.index + 1; index.index < array.length; ++index.index) {
             if (array[index.index].type === "heading_close") {
                 break;
@@ -472,8 +502,9 @@ export class MarkdownParser {
      * @returns The parsed List element.
      */
     private handleList(array: Token[], index: RefIndex, ordered: boolean): pt.List {
-        let list: pt.List = { type: "list", content: [], attributes: { listType: ordered ? "ordered" : "unordered"},  metadataTags: this.metadataTags };
-        this.metadataTags = [];
+        let list: pt.List = { type: "list", content: [], attributes: { listType: ordered ? "ordered" : "unordered", globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags}};
+        this.globalMetadataTags = [];
+        this.metadataTags = {};
         let done: boolean = false;
         for (index.index + 1; index.index < array.length; ++index.index) {
             switch (array[index.index].type) {
@@ -567,10 +598,9 @@ export class MarkdownParser {
                         let link: pt.Link = {
                             type: "link",
                             content: [link_href],
-                            attributes: { alias: child.content },
-                            metadataTags: []
+                            attributes: { alias: child.content }
                         };
-                        this.metadataTags = [];
+                        this.globalMetadataTags = [];
                         if (stack.length === 0) {
                             inlineElements.push(link);
                             break;
@@ -584,10 +614,9 @@ export class MarkdownParser {
                         let image: pt.Image = {
                             type: "image",
                             content: [img_href],
-                            attributes: { alias: child.content },
-                            metadataTags: this.metadataTags
+                            attributes: { alias: child.content }
                         };
-                        this.metadataTags = [];
+                        this.globalMetadataTags = [];
                         if (stack.length === 0) {
                             inlineElements.push(image);
                             break;
@@ -611,6 +640,9 @@ export class MarkdownParser {
                     stack.pop();
                     break;
                 case "link_close":
+                    break;
+                case "section_close_tag":
+                    console.log("closing");
                     break;
                 default:
                     // TODO handle default

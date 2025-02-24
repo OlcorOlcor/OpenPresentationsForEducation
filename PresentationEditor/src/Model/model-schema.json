@@ -28,14 +28,23 @@
                     "type": "string",
                     "enum": ["horizontal_line"]
                 },
-                "metadataTags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "globalMetadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "metadata": {
+                            "type": "object"
+                        }
                     }
                 }
+                
             },
-            "required": ["type", "metadataTags"]
+            "required": ["type"]
         },
         "Link": {
             "type": "object",
@@ -58,15 +67,9 @@
                         }
                     },
                     "required": ["alias"]
-                },
-                "metadataTags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
-            "required": ["type", "content", "attributes", "metadataTags"]
+            "required": ["type", "content", "attributes"]
         },
         "Image": {
             "type": "object",
@@ -89,15 +92,9 @@
                         }
                     },
                     "required": ["alias"]
-                },
-                "metadataTags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
-            "required": ["type", "content", "attributes", "metadataTags"]
+            "required": ["type", "content", "attributes"]
         },
         "ListItem": {
             "type": "object",
@@ -140,15 +137,18 @@
                         "listType": {
                             "type": "string",
                             "enum": ["ordered", "unordered"]
+                        },
+                        "globalMetadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "metadata": {
+                            "type": "object"
                         }
                     },
-                    "required": ["listType"]
-                },
-                "metadataTags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "required": ["listType", "globalMetadataTags", "metadata"]
                 }
             },
             "required": ["type", "content", "attributes", "metadataTags"]
@@ -228,14 +228,17 @@
                 "attributes": {
                     "type": "object",
                     "properties": {
-                        "metadataTags": {
+                        "globalMetadataTags": {
                             "type": "array",
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        "metadata": {
+                            "type": "object"
                         }
                     },
-                    "required": ["metadataTags"]
+                    "required": ["globalMetadataTags", "metadata"]
                 }
             },
             "required": ["type", "content", "attributes"]
@@ -255,6 +258,50 @@
                             {"$ref": "#/$defs/InnerWrapperElement"}
                         ]
                     }
+                }
+            }
+        },
+        "Section": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["section"]
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/$defs/Paragraph"},
+                            {"$ref": "#/$defs/Heading"},
+                            {"$ref": "#/$defs/List"},
+                            {"$ref": "#/$defs/BlockQuote"},
+                            {"$ref": "#/$defs/HorizontalLine"},
+                            {"$ref": "#/$defs/Table"},
+                            {"$ref": "#/$defs/Section"}
+                        ]
+                    }
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "globalMetadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "metadata": {
+                            "type": "object"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["globalMetadataTags", "metadata", "value", "key"]
                 }
             }
         },
@@ -279,14 +326,17 @@
                 "attributes": {
                     "type": "object",
                     "properties": {
-                        "metadataTags": {
+                        "globalMetadataTags": {
                             "type": "array",
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        "metadata": {
+                            "type": "object"
                         }
                     },
-                    "required": ["metadataTags"]
+                    "required": ["globalMetadataTags", "metadata"]
                 }
                 
             },
@@ -316,14 +366,17 @@
                             "minimum": 1,
                             "maximum": 6
                         },
-                        "metadataTags": {
+                        "globalMetadataTags": {
                             "type": "array",
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        "metadata": {
+                            "type": "object"
                         }
                     },
-                    "required": ["level", "metadataTags"]
+                    "required": ["level", "globalMetadataTags", "metadata"]
                 }
             },
             "required": ["type", "content", "attributes"]
@@ -349,14 +402,17 @@
                 "attributes": {
                     "type": "object",
                     "properties": {
-                        "metadataTags": {
+                        "globalMetadataTags": {
                             "type": "array",
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        "metadata": {
+                            "type": "object"
                         }
                     },
-                    "required": ["metadataTags"]
+                    "required": ["globalMetadataTags", "metadata"]
                 }
             },
             "required": ["type", "content", "attributes"]
@@ -377,27 +433,31 @@
                             {"$ref": "#/$defs/List"},
                             {"$ref": "#/$defs/BlockQuote"},
                             {"$ref": "#/$defs/HorizontalLine"},
-                            {"$ref": "#/$defs/Table"}
+                            {"$ref": "#/$defs/Table"},
+                            {"$ref": "#/$defs/Section"}
                         ]
                     }
                 },
                 "attributes": {
                     "type": "object",
                     "properties": {
-                        "metadataTags": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }, 
                         "refs": {
                             "type": "array",
                             "items": {
                                 "type": "string"
                             }
-                        }
+                        },
+                        "globalMetadataTags": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "metadata": {
+                            "type": "object"
+                        } 
                     },
-                    "required": ["metadataTags", "refs"]
+                    "required": ["refs", "globalMetadataTags", "metadata"]
                 }
             },
             "required": ["type", "content", "attributes"]
@@ -443,7 +503,7 @@
                 ]
             }
         },
-        "metadata": {
+        "globalMetadata": {
             "type": "array",
             "items": {
                 "type": "object",

@@ -84,7 +84,7 @@ export class PresentationParser {
     private getLinkElement(linkJson: pt.Link): pm.LinkElement {
         let content: string = "";
         linkJson.content.forEach((c) => (content += c));
-        return new pm.LinkElement(content, linkJson.attributes.alias, linkJson.metadataTags);
+        return new pm.LinkElement(content, linkJson.attributes.alias);
     }
 
     /**
@@ -95,7 +95,7 @@ export class PresentationParser {
     private getImageElement(imageJson: pt.Image): pm.ImageElement {
         let content: string = "";
         imageJson.content.forEach((c) => (content += c));
-        return new pm.ImageElement(content, imageJson.attributes.alias, imageJson.metadataTags);
+        return new pm.ImageElement(content, imageJson.attributes.alias);
     }
 
     /**
@@ -105,7 +105,7 @@ export class PresentationParser {
      */
     private getParagraphElement(paragraphJson: pt.Paragraph): pm.ParagraphElement {
         let elements = this.getInlineContent(paragraphJson.content);
-        return new pm.ParagraphElement(elements, paragraphJson.attributes.metadataTags);
+        return new pm.ParagraphElement(elements, paragraphJson.attributes.globalMetadataTags, paragraphJson.attributes.metadata);
     }
 
     /**
@@ -116,7 +116,7 @@ export class PresentationParser {
     private getHeadingElement(headingJson: pt.HeadingElement): pm.HeadingElement {
         let level: number = headingJson.attributes.level;
         let content = this.getInlineContent(headingJson.content);
-        return new pm.HeadingElement(level, content, headingJson.attributes.metadataTags);
+        return new pm.HeadingElement(level, content, headingJson.attributes.globalMetadataTags, headingJson.attributes.metadata);
     }
 
     /**
@@ -148,7 +148,7 @@ export class PresentationParser {
                     break;
             }
         });
-        return new pm.ListElement(listType, content, listJson.metadataTags);
+        return new pm.ListElement(listType, content, listJson.attributes.globalMetadataTags, listJson.attributes.metadata);
     }
 
     private getTableHeadingElement(tableHeadingElement: pt.TableHeading): pm.TableHeadingElement {
@@ -179,7 +179,7 @@ export class PresentationParser {
         tableJson.content.forEach(c => {
             content.push(this.getTableRow(c));
         });
-        return new pm.TableElement(content, tableJson.attributes.metadataTags);
+        return new pm.TableElement(content, tableJson.attributes.globalMetadataTags, tableJson.attributes.metadata);
     }
 
     /**
@@ -212,7 +212,7 @@ export class PresentationParser {
                     );
                     break;
                 case "horizontal_line":
-                    content.push(new pm.HorizontalLineElement((jsonElement as pt.HorizontalLine).metadataTags));
+                    content.push(new pm.HorizontalLineElement((jsonElement as pt.HorizontalLine).attributes.globalMetadataTags, (jsonElement as pt.HorizontalLine).attributes.metadata));
                     break;
                 case "section":
                     content.push(this.getSectionElement(jsonElement as pt.Section));
@@ -232,7 +232,7 @@ export class PresentationParser {
      */
     private getSectionElement(sectionJson: pt.Section): pm.Section {
         let content = this.getOuterElementContent(sectionJson.content);
-        return new pm.Section(sectionJson.attributes.key, sectionJson.attributes.value, content, sectionJson.attributes.metadataTags);
+        return new pm.Section(sectionJson.attributes.key, sectionJson.attributes.value, content, sectionJson.attributes.globalMetadataTags, sectionJson.attributes.metadata);
     }
 
     /**
@@ -242,7 +242,7 @@ export class PresentationParser {
      */
     private getBlockQuoteElement(blockQuoteJson: pt.BlockQuote): pm.BlockQuoteElement {
         let content = this.getOuterElementContent(blockQuoteJson.content);
-        return new pm.BlockQuoteElement(content, blockQuoteJson.attributes.metadataTags);
+        return new pm.BlockQuoteElement(content, blockQuoteJson.attributes.globalMetadataTags, blockQuoteJson.attributes.metadata);
     }
 
     /**
@@ -252,7 +252,7 @@ export class PresentationParser {
      */
     private createSlide(jsonSlide: pt.Slide): pm.SlideElement {
         let elements = this.getOuterElementContent(jsonSlide.content);
-        let slide = new pm.SlideElement(elements, true, jsonSlide.attributes.metadataTags, jsonSlide.attributes.refs, jsonSlide.attributes.frontMatter);
+        let slide = new pm.SlideElement(elements, true, jsonSlide.attributes.globalMetadataTags, jsonSlide.attributes.refs, jsonSlide.attributes.frontMatter);
         return slide;
     }
 

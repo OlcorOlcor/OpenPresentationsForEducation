@@ -205,7 +205,7 @@ function App() {
     }
 
     function exportPresentationAsReveal() {
-        let visitor = new HtmlVisitor(true);
+        let visitor = new HtmlVisitor(true, [], metadata);
         // TODO only works on the first lane for now
         if (lanes.length === 0) {
             return;
@@ -271,6 +271,7 @@ function App() {
                                     imported={imported}
                                     setImported={setImported}
                                     images={images}
+                                    metadata={metadata}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
@@ -296,6 +297,7 @@ function App() {
                                     imported={imported}
                                     setImported={setImported}
                                     images={images}
+                                    metadata={metadata}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
@@ -323,6 +325,7 @@ function App() {
                                 imported={imported}
                                 setImported={setImported}
                                 images={images}
+                                metadata={metadata}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
                     </Grid>

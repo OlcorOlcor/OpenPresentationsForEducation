@@ -281,7 +281,6 @@ export class CodeElement extends InlineWrapperElement implements IVisitable {
 export class LinkElement extends InlineLeafElement implements IVisitable {
     private content: string;
     private alias: string;
-    private metadata: string[];
     /**
      * Constructs a LinkElement.
      * 
@@ -289,11 +288,10 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
      * @param alias - The alias for the link.
      * @parama metadata
      */
-    public constructor(content: string, alias: string, metadata: string[]) {
+    public constructor(content: string, alias: string) {
         super();
         this.content = content;
         this.alias = alias;
-        this.metadata = metadata;
     }
 
     /**
@@ -311,10 +309,6 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
     getAlias(): string {
         return this.alias;
     }
-
-    getMetadata(): string[] {
-        return this.metadata;
-    }
     
     /**
      * Accepts a visitor to process this element.
@@ -329,12 +323,11 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
 /**
  * Represents an image element.
  * 
- * This class implement the IVisitable interface.
+ * This class implements the IVisitable interface.
  */  
 export class ImageElement extends InlineLeafElement implements IVisitable {
     private content: string;
     private alias: string;
-    private metadata: string[];
     /**
      * Constructs an ImageElement.
      * 
@@ -342,11 +335,10 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
      * @param alias - The alias for the image.
      * @param metadata - The metadata of the image.
      */
-    public constructor(content: string, alias: string, metadata: string[]) {
+    public constructor(content: string, alias: string) {
         super();
         this.content = content;
         this.alias = alias;
-        this.metadata = metadata;
     }
 
     /**
@@ -373,28 +365,38 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
     accept(visitor: IVisitor): void {
         visitor.visitImageNode(this);
     }
-
-    /**
-     * Retrieves the metadata of the element.
-     * @returns Metadata of the elements;
-     */
-    getMetadata(): string[] {
-        return this.metadata;
-    }
 }
 
 /**
  * Abstract class for outer elements.
  * 
- * Outer elements can be contain directly within a slide element.
+ * Outer elements can be contained directly within a slide element.
  */
 export abstract class OuterElement extends BaseElement implements IVisitable {
+    protected globalMetadataTags: string[] = [];
+    protected metadata: {[key: string]: string} = {};
+
+    /**
+     * Retrieves global metadata tags of the element.
+     * @returns Global metadata tags of the element.
+     */
+    getGlobalMetadata() {
+        return this.globalMetadataTags;
+    }
+
+    /**
+     * Retrieves metadata of the element.
+     * @returns metadata of the element.
+     */
+    getMetadata() {
+        return this.metadata;
+    }
+
     abstract accept(visitor: IVisitor): void;
 }
 
 export class Section extends OuterElement implements IVisitable {
     private content: OuterElement[];
-    private metadataTags: string[];
     private key: string;
     private value: string;
 
@@ -402,14 +404,15 @@ export class Section extends OuterElement implements IVisitable {
      * Section constructor.
      * 
      * @param content - content of the section.
-     * @param metadataTags - metadata tags fo the section.
+     * @param globalMetadataTags - metadata tags fo the section.
      */
-    constructor(key: string, value: string, content: OuterElement[], metadataTags: string[]) {
+    constructor(key: string, value: string, content: OuterElement[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
         super();
         this.key = key;
         this.value = value;
         this.content = content;
-        this.metadataTags = metadataTags;
+        this.globalMetadataTags = globalMetadataTags;
+        this.metadata = metadata;
     }
 
     /**
@@ -437,14 +440,6 @@ export class Section extends OuterElement implements IVisitable {
     }
 
     /**
-     * Retrieves metadata of the element.
-     * @returns metadata of the element.
-     */
-    getMetadata() {
-        return this.metadataTags;
-    }
-
-    /**
      * Accepts the visitor to process this element.
      * 
      * @param visitor - the visitor processing the element.
@@ -461,16 +456,17 @@ export class Section extends OuterElement implements IVisitable {
  */
 export class TableElement extends OuterElement implements IVisitable {
     private content: TableRowElement[];
-    private metadataTags: string[];
+
     /**
      * TableElement constructor.
      * 
      * @param content - content of the table.
      */
-    constructor(content: TableRowElement[], metadataTags: string[]) {
+    constructor(content: TableRowElement[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
         super();
         this.content = content;
-        this.metadataTags = metadataTags;
+        this.globalMetadataTags = globalMetadataTags;
+        this.metadata = metadata;
     }
 
     /**
@@ -481,14 +477,6 @@ export class TableElement extends OuterElement implements IVisitable {
         return this.content;
     }
 
-    /**
-     * Retrieves metadata of the element.
-     * @returns metadata of the element.
-     */
-    getMetadata() {
-        return this.metadataTags;
-    }
-    
     /**
      * Accepts the visitor to process this element.
      * 
@@ -505,10 +493,10 @@ export class TableElement extends OuterElement implements IVisitable {
  * The class implements the IVisitable interface
  */
 export class HorizontalLineElement extends OuterElement implements IVisitable {
-    private metadata: string[];
 
-    constructor(metadata: string[]) {
+    constructor(globalMetadataTags: string[], metadata: {[key: string]: string}) {
         super();
+        this.globalMetadataTags = globalMetadataTags;
         this.metadata = metadata;
     }
 
@@ -520,14 +508,6 @@ export class HorizontalLineElement extends OuterElement implements IVisitable {
     accept(visitor: IVisitor): void {
         visitor.visitHorizontalLineNode(this);   
     }
-
-    /**
-     * Retrieves metadata of the element.
-     * @returns metadata of the element.
-     */
-    getMetadata() {
-        return this.metadata;
-    }
 }
 
 /**
@@ -537,17 +517,17 @@ export class HorizontalLineElement extends OuterElement implements IVisitable {
  */
 export class ParagraphElement extends OuterElement implements IVisitable {
     private content: (TextElement | InlineElement)[];
-    private metadata: string[];
 
     /**
      * Constructs a ParagraphElement.
      * 
      * @param content - The content of the paragraph.
-     * @param metadata - The metadata tags for the paragraph.
+     * @param globalMetadataTags - The metadata tags for the paragraph.
      */
-    public constructor(content: (TextElement | InlineElement)[], metadata: string[]) {
+    public constructor(content: (TextElement | InlineElement)[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
         super();
         this.content = content;
+        this.globalMetadataTags = globalMetadataTags;
         this.metadata = metadata;
     }
 
@@ -557,14 +537,6 @@ export class ParagraphElement extends OuterElement implements IVisitable {
      */
     getContent(): (TextElement | InlineElement)[] {
         return this.content;
-    }
-
-    /**
-     * Retrieves the metadata of the element.
-     * @returns Metadata of the elements;
-     */
-    getMetadata(): string[] {
-        return this.metadata;
     }
 
     /**
@@ -585,19 +557,19 @@ export class ParagraphElement extends OuterElement implements IVisitable {
 export class HeadingElement extends OuterElement implements IVisitable {
     private content: (TextElement | InlineElement)[];
     private level: number;
-    private metadata: string[];
 
     /**
      * Constructs a HeadingElement.
      * 
      * @param level - The level of the heading.
      * @param content - The content of the heading.
-     * @param metadata - The metadata tags for the heading.
+     * @param globalMetadataTags - The metadata tags for the heading.
      */
-    public constructor(level: number, content: (TextElement | InlineElement)[], metadata: string[]) {
+    public constructor(level: number, content: (TextElement | InlineElement)[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
         super();
         this.content = content;
         this.level = level;
+        this.globalMetadataTags = globalMetadataTags;
         this.metadata = metadata;
     }
 
@@ -607,14 +579,6 @@ export class HeadingElement extends OuterElement implements IVisitable {
      */
     getContent(): (TextElement | InlineElement)[] {
         return this.content;
-    }
-
-    /**
-     * Retrieves the metadata of the element.
-     * @returns Metadata of the elements;
-     */
-    getMetadata(): string[] {
-        return this.metadata;
     }
 
     /**
@@ -643,19 +607,19 @@ export class HeadingElement extends OuterElement implements IVisitable {
 export class ListElement extends OuterElement implements IVisitable {
     private content: (ListItemElement | ListElement)[];
     private listType: string;
-    private metadata: string[];
 
     /**
      * Constructs a ListElement.
      * 
      * @param listType - The type of the list ("ordered" or "unordered").
      * @param content - The content of the list.
-     * @param metadata - The metadata tags for the list.
+     * @param globalMetadataTags - The metadata tags for the list.
      */
-    public constructor(listType: string, content: (ListItemElement | ListElement)[], metadata: string[]) {
+    public constructor(listType: string, content: (ListItemElement | ListElement)[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
         super();
         this.content = content;
         this.listType = listType;
+        this.globalMetadataTags = globalMetadataTags;
         this.metadata = metadata;
     }
 
@@ -665,14 +629,6 @@ export class ListElement extends OuterElement implements IVisitable {
      */
     getContent(): (TextElement | InlineElement)[] {
         return this.content;
-    }
-
-    /**
-     * Retrieves the metadata of the element.
-     * @returns Metadata of the elements;
-     */
-    getMetadata(): string[] {
-        return this.metadata;
     }
 
     /**
@@ -700,17 +656,17 @@ export class ListElement extends OuterElement implements IVisitable {
  */
 export class BlockQuoteElement extends OuterElement implements IVisitable {
     private content: OuterElement[];
-    private metadata: string[] = [];
 
     /**
      * Constructs a BlockQuoteElement.
      * 
      * @param content - The content of the blockquote.
-     * @param metadata - The metadata tags for the blockquote.
+     * @param globalMetadataTags - The metadata tags for the blockquote.
      */
-    public constructor(content: OuterElement[], metadata: string[]) {
+    public constructor(content: OuterElement[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
         super();
         this.content = content;
+        this.globalMetadataTags = globalMetadataTags;
         this.metadata = metadata;
     }
 
@@ -720,14 +676,6 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
      */
     getContent(): OuterElement[] {
         return this.content;
-    }
-
-    /**
-     * Retrieves the metadata of the element.
-     * @returns Metadata of the elements;
-     */
-    getMetadata(): string[] {
-        return this.metadata;
     }
 
     /**
@@ -748,18 +696,21 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
 export class SlideElement extends BaseElement implements IVisitable {
     private content: OuterElement[];
     private active: boolean = false;
-    private metadata: string[] = [];
+    private globalMetadataTags: string[] = [];
+    private metadata: {[key: string]: string};
     private refs: string[] = [];
     private frontMatter: {[key: string]: any};
+
     /**
      * Constructs a SlideElement.
      * 
      * @param content - The content of the slide.
      */
-    public constructor(content: OuterElement[], active: boolean = false, metadata: string[] = [], refs: string[] = [], frontMatter: {[key: string]: string} = {}) {
+    public constructor(content: OuterElement[], active: boolean = false, globalMetadataTags: string[] = [], refs: string[] = [], frontMatter: {[key: string]: string} = {}, metadata: {[key: string]: string} = {}) {
         super();
         this.content = content;
         this.active = active;
+        this.globalMetadataTags = globalMetadataTags;
         this.metadata = metadata;
         this.refs = refs;
         this.frontMatter = frontMatter;
@@ -774,13 +725,25 @@ export class SlideElement extends BaseElement implements IVisitable {
     }
 
     /**
-     * Retrieves the metadata of the element.
-     * @returns Metadata of the elements;
+     * Retrieves global metadata tags of the element.
+     * @returns Global metadata tags of the element.
      */
-    getMetadata(): string[] {
+    getGlobalMetadata(): string[] {
+        return this.globalMetadataTags;
+    }
+
+    /**
+     * Retrieves metadata of the element.
+     * @returns metadata of the element.
+     */
+    getMetadata() {
         return this.metadata;
     }
 
+    /**
+     * Retrieves the front matter of the slide.
+     * @returns The front matter of the slide.
+     */
     getFrontMatter(): {[key: string]: any} {
         return this.frontMatter;
     }

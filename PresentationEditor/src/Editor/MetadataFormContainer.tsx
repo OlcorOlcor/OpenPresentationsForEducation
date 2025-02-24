@@ -38,7 +38,7 @@ const MetadataListContainer: React.FC<MetadataListContainerProps>  = ({metadata,
     function addAttribute() {
         setAttributes(oldAttributes => {
             let newAttributes = {...oldAttributes};
-            newAttributes["key " + numberOfKeysAdded] = "";
+            newAttributes["key" + numberOfKeysAdded] = "";
             setNumberOfKeysAdded(numberOfKeysAdded + 1);
             return newAttributes;
         });

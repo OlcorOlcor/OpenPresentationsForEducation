@@ -4,8 +4,7 @@ import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
 import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
-import { Constraints, ImageFile } from "../Model/PresentationTypes";
-
+import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
 interface EditorModuleProps {
     editorData: string;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
@@ -23,6 +22,7 @@ interface EditorModuleProps {
     slideAnalysis: Constraints;
     updateEditor(): void;
     images: ImageFile[];
+    metadata: Metadata[];
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
@@ -41,7 +41,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     constraints,
     slideAnalysis,
     updateEditor,
-    images
+    images,
+    metadata
 }) => {
     // const [selectedView, setSelectedView] = useState<any>(null);
 
@@ -90,7 +91,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                 if (slides[selectedSlideIndex] == null) {
                     return <Preview data={""} />;
                 }
-                let visitor = new HtmlVisitor();
+                let visitor = new HtmlVisitor(false, images, metadata);
                 visitor.visitSlideNode(slides[selectedSlideIndex]!);
                 const data = visitor.getResult();
                 return <Preview data={data} />;
@@ -133,7 +134,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                 <Preview data={""} />
             ) : (
                 (() => {
-                    let visitor = new HtmlVisitor(false, images);
+                    let visitor = new HtmlVisitor(false, images, metadata);
                     visitor.visitSlideNode(slides[selectedSlideIndex]!);
                     return <Preview data={visitor.getResult()} />;
                 })()

@@ -35,8 +35,10 @@ export type TextAnnotation = {
 export type Link = {
     type: string;
     content: string[];
-    attributes: { alias: string };
-    metadataTags: string[];
+    attributes: { 
+        alias: string 
+    };
+    
 };
 
 /**
@@ -45,8 +47,9 @@ export type Link = {
 export type Image = {
     type: string;
     content: string[];
-    attributes: { alias: string };
-    metadataTags: string[]
+    attributes: { 
+        alias: string;
+    };
 };
 
 /**
@@ -54,7 +57,10 @@ export type Image = {
  */
 export type HorizontalLine = {
     type: string;
-    metadataTags: string[];
+    attributes: {
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
+    }
 }
 
 /**
@@ -73,8 +79,9 @@ export type List = {
     content: (List | ListItem)[];
     attributes: { 
         listType: string;
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     };
-    metadataTags: string[];
 };
 
 /**
@@ -83,7 +90,10 @@ export type List = {
 export type Paragraph = {
     type: string;
     content: (Text | InlineElement)[];
-    attributes: { metadataTags: string[] }
+    attributes: { 
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
+    }
 };
 
 
@@ -93,7 +103,10 @@ export type Paragraph = {
 export type Table = {
     type: string;
     content: TableRow[];
-    attributes: { metadataTags: string[] }
+    attributes: { 
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
+    }
 }
 
 /**
@@ -129,7 +142,8 @@ export type HeadingElement = {
     content: (Text | InlineElement)[];
     attributes: { 
         level: number;
-        metadataTags: string[]
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     };
     
 };
@@ -144,7 +158,8 @@ export type Section = {
     attributes: {
         key: string;
         value: string;
-        metadataTags: string[];
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     }
 }
 
@@ -155,7 +170,8 @@ export type BlockQuote = {
     type: string;
     content: OuterElement[];
     attributes: { 
-        metadataTags: string[]
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     }
 };
 
@@ -166,9 +182,10 @@ export type Slide = {
     type: string;
     content: OuterElement[];
     attributes: { 
-        metadataTags: string[];
         refs: string[];
         frontMatter: { [key: string]: any }
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     };
 };
 
