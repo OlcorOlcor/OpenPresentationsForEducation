@@ -6,7 +6,7 @@ export type Element = InlineElement | OuterElement | Slide | Text;
 /**
  * Represents elements that can exist at the outermost level of a presentation.
  */
-export type OuterElement = Paragraph | HeadingElement | List | BlockQuote | HorizontalLine | Table;
+export type OuterElement = Paragraph | HeadingElement | List | BlockQuote | HorizontalLine | Table | Section;
 
 /**
  * Represents elements that can exist inline within other elements.
@@ -35,8 +35,10 @@ export type TextAnnotation = {
 export type Link = {
     type: string;
     content: string[];
-    attributes: { alias: string };
-    metadataTags: string[];
+    attributes: { 
+        alias: string 
+    };
+    
 };
 
 /**
@@ -45,8 +47,9 @@ export type Link = {
 export type Image = {
     type: string;
     content: string[];
-    attributes: { alias: string };
-    metadataTags: string[]
+    attributes: { 
+        alias: string;
+    };
 };
 
 /**
@@ -54,7 +57,10 @@ export type Image = {
  */
 export type HorizontalLine = {
     type: string;
-    metadataTags: string[];
+    attributes: {
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
+    }
 }
 
 /**
@@ -73,8 +79,9 @@ export type List = {
     content: (List | ListItem)[];
     attributes: { 
         listType: string;
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     };
-    metadataTags: string[];
 };
 
 /**
@@ -83,7 +90,10 @@ export type List = {
 export type Paragraph = {
     type: string;
     content: (Text | InlineElement)[];
-    attributes: { metadataTags: string[] }
+    attributes: { 
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
+    }
 };
 
 
@@ -93,7 +103,10 @@ export type Paragraph = {
 export type Table = {
     type: string;
     content: TableRow[];
-    attributes: { metadataTags: string[] }
+    attributes: { 
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
+    }
 }
 
 /**
@@ -105,11 +118,17 @@ export type TableRow = {
 }
 
 
+/**
+ * Represents table data cell.
+ */
 export type TableData = {
     type: string;
     content: (Text | InlineElement)[];
 }
 
+/**
+ * Represents table heading cell.
+ */
 export type TableHeading = {
     type: string;
     content: (Text | InlineElement)[];
@@ -123,10 +142,26 @@ export type HeadingElement = {
     content: (Text | InlineElement)[];
     attributes: { 
         level: number;
-        metadataTags: string[]
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     };
     
 };
+
+
+/**
+ * Represents a section element.
+ */
+export type Section = {
+    type: string;
+    content: OuterElement[];
+    attributes: {
+        key: string;
+        value: string;
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
+    }
+}
 
 /**
  * Represents a block quote element.
@@ -135,7 +170,8 @@ export type BlockQuote = {
     type: string;
     content: OuterElement[];
     attributes: { 
-        metadataTags: string[]
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     }
 };
 
@@ -146,9 +182,10 @@ export type Slide = {
     type: string;
     content: OuterElement[];
     attributes: { 
-        metadataTags: string[];
         refs: string[];
         frontMatter: { [key: string]: any }
+        globalMetadataTags: string[];
+        metadata: { [key: string]: string };
     };
 };
 
