@@ -5,7 +5,7 @@ interface PreviewProps {
 }
 
 const Preview: React.FC<PreviewProps> = ({ data }) => {
-    return <div dangerouslySetInnerHTML={{ __html: data }}></div>;
+    return <div className="preview" dangerouslySetInnerHTML={{ __html: data }}></div>;
 };
 
 export default Preview;

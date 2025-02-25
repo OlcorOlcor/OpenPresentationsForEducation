@@ -5,6 +5,7 @@ import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
+import { useEffect, useState } from "react";
 interface EditorModuleProps {
     editorData: string;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
@@ -23,6 +24,7 @@ interface EditorModuleProps {
     updateEditor(): void;
     images: ImageFile[];
     metadata: Metadata[];
+    frontMatter: any;
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
@@ -42,8 +44,44 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     slideAnalysis,
     updateEditor,
     images,
-    metadata
+    metadata,
+    frontMatter
 }) => {
+
+    useEffect(() => {
+        console.log(frontMatter);
+        if (!frontMatter.layout) {
+            return;
+        }
+        let layout: string;
+        switch (frontMatter.layout) {
+            case "column_2":
+                layout = "column_2.css";
+            break;
+            case "column_3":
+                layout = "column_3.css";
+            break;
+            case "column_1":
+            default:
+                return;
+        }
+        const linkElement: HTMLLinkElement | null = document.getElementById("preview-stylesheet") as HTMLLinkElement;
+        
+        
+        if (linkElement) {
+            linkElement.href = `./presentation_css/${layout}`;
+            console.log(`./presentation_css/${layout}`);
+            return;
+        }
+            console.log('here');
+            let newLink = document.createElement("link");
+            newLink.id = "preview-stylesheet";
+            newLink.rel = "stylesheet";
+            newLink.href = `./presentation_css/${layout}`;
+            console.log(`./presentation_css/${layout}`)
+            document.head.appendChild(newLink);
+    }, [frontMatter]);
+
     // const [selectedView, setSelectedView] = useState<any>(null);
 
     //useEffect(() => {
@@ -68,35 +106,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     function editorChange(editorData: string): void {
         setEditorData(editorData);
         //regenerateSlide(selectedSlideIndex);
-    }
-
-    function getView(): any {
-        if (editorView) {
-            //updateEditor();
-            if (slides[selectedSlideIndex] != null && slides[selectedSlideIndex]!.isActive()) {
-                return (
-                    <EditorContainer
-                        data={editorData}
-                        onEditorChange={editorChange}
-                    />
-                );
-            } else {
-                return <div></div>;
-            }
-        } else {
-            if (!slideMode) {
-                const data = editorData;
-                return <Preview data={data} />;
-            } else {
-                if (slides[selectedSlideIndex] == null) {
-                    return <Preview data={""} />;
-                }
-                let visitor = new HtmlVisitor(false, images, metadata);
-                visitor.visitSlideNode(slides[selectedSlideIndex]!);
-                const data = visitor.getResult();
-                return <Preview data={data} />;
-            }
-        }
     }
 
     function activateSlide() {
