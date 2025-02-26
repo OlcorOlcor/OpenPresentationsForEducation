@@ -6,7 +6,11 @@ You can choose a CSS file for each slide of your presentation.
 To do so, you need to specify the `style` attribute in the front matter of the slide.
 You can also specify the layout of the slide with the keyword `layout`.
 ## Styles
-TODO
+You can set text color by defining a metadata tag with the following syntax:
+```markdown
+<!-- color: red -->
+```
+You can chose any of the following colors red, blue, purple, black, gray, green, lime, pink
 ## Layouts
 There are three supported layouts.
 ### Single column
