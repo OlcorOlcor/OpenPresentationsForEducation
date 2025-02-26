@@ -1,0 +1,38 @@
+.slide-select-container {
+    display: flex;
+    padding: 10px 0;
+}
+  
+.slide-item {
+    flex: 0 0 auto;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.new-item {
+    border: 1px solid blue;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: lightblue;
+}
+
+.slide-item:hover {
+    background-color: lightgray
+}
+
+.selected {
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+.active {
+    background-color: lightgray !important;
+}
+
+.inactive {
+    color: lightgray !important;
+    background-color: rgb(34, 34, 34) !important;
+}
