@@ -70,15 +70,12 @@ const EditorModule: React.FC<EditorModuleProps> = ({
         
         if (linkElement) {
             linkElement.href = `./presentation_css/${layout}`;
-            console.log(`./presentation_css/${layout}`);
             return;
         }
-            console.log('here');
             let newLink = document.createElement("link");
             newLink.id = "preview-stylesheet";
             newLink.rel = "stylesheet";
             newLink.href = `./presentation_css/${layout}`;
-            console.log(`./presentation_css/${layout}`)
             document.head.appendChild(newLink);
     }, [frontMatter]);
 
