@@ -58,6 +58,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     const [slideMode, setSlideMode] = useState<boolean>(
         lanes[selectedLaneIndex].outputsAsPresentation(),
     );
+    const [frontMatter, setFrontMatter] = useState<any>(lanes[selectedLaneIndex].getContent()[selectedSlideIndex]?.getFrontMatter())
     let ignoreSync = useRef<boolean>(true);
     useEffect(() => {
         ignoreSync.current = true;
@@ -148,6 +149,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                 let analysisVisitor = new AnalysisVisitor();
                 analysisVisitor.visitSlideNode(updatedSlide);
                 setSlideAnalysis(analysisVisitor.getResult());
+                setFrontMatter(updatedSlide.getFrontMatter());
             }
             updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName(), updatedLanes[selectedLaneIndex].outputsAsPresentation());
             return updatedLanes;
@@ -198,6 +200,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     updateEditor={updateEditor}
                     images={images}
                     metadata={metadata}
+                    frontMatter={frontMatter}
                 />
             </Grid>
         </Grid>
