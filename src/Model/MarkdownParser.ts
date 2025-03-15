@@ -343,15 +343,15 @@ export class MarkdownParser {
                 case "tr_open":
                     row++;
                     col = -1;
-                    table.content.push({type: "table_row", content: []});
+                    table.content.push({type: "tableRow", content: []});
                     break;
                 case "th_open":
                     col++;
-                    table.content[row].content.push({type: "table_heading", content: []});
+                    table.content[row].content.push({type: "tableHeading", content: []});
                     break;
                 case "td_open":
                     col++;
-                    table.content[row].content.push({type: "table_data", content: []});
+                    table.content[row].content.push({type: "tableData", content: []});
                     break;
                 case "inline":
                     const currentCell = table.content[row].content[col];
