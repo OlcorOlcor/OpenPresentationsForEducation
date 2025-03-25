@@ -6,6 +6,11 @@ import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
 import { useEffect, useState } from "react";
+import "./css/preview_css/default.css";
+//import "./css/preview_css/column_1.css";
+import "./css/preview_css/column_2.css";
+import "./css/preview_css/column_3.css";
+
 interface EditorModuleProps {
     editorData: string;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
@@ -48,35 +53,14 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     frontMatter
 }) => {
 
+    const [previewStyleClass, setPreviewStyleClass] = useState<string>("column_1");
+    
     useEffect(() => {
         console.log(frontMatter);
         if (!frontMatter.layout) {
             return;
         }
-        let layout: string;
-        switch (frontMatter.layout) {
-            case "column_2":
-                layout = "column_2.css";
-            break;
-            case "column_3":
-                layout = "column_3.css";
-            break;
-            case "column_1":
-            default:
-                return;
-        }
-        const linkElement: HTMLLinkElement | null = document.getElementById("preview-stylesheet") as HTMLLinkElement;
-        
-        
-        if (linkElement) {
-            linkElement.href = `./presentation_css/${layout}`;
-            return;
-        }
-            let newLink = document.createElement("link");
-            newLink.id = "preview-stylesheet";
-            newLink.rel = "stylesheet";
-            newLink.href = `./presentation_css/${layout}`;
-            document.head.appendChild(newLink);
+        setPreviewStyleClass(frontMatter.layout);
     }, [frontMatter]);
 
     // const [selectedView, setSelectedView] = useState<any>(null);
@@ -135,14 +119,14 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                     <div></div>
                 )
             ) : !slideMode ? (
-                <Preview data={editorData} />
+                <Preview data={editorData} layout={previewStyleClass}/>
             ) : slides[selectedSlideIndex] == null ? (
-                <Preview data={""} />
+                <Preview data={""} layout={""}/>
             ) : (
                 (() => {
                     let visitor = new HtmlVisitor(false, images, metadata);
                     visitor.visitSlideNode(slides[selectedSlideIndex]!);
-                    return <Preview data={visitor.getResult()} />;
+                    return <Preview data={visitor.getResult()} layout={previewStyleClass}/>;
                 })()
             )}
         </Grid>

@@ -1,9 +1,11 @@
-.preview div[data-col="1"] p {
-    color: red;
-    
+.preview {
+    display: flex;
+}
+
+.column_2 div[data-col="1"] {
     flex: 1;
 }
 
-.preview div[data-col="2"] {
+.column_2 div[data-col="2"] {
     flex: 1;
 }
