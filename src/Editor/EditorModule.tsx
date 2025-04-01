@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid";
 import EditorContainer from "./EditorContainer";
-import { HtmlVisitor, MarkdownVisitor } from "../Model/Visitors";
+import { HtmlVisitor } from "../Model/Visitors/HtmlVisitor";
 import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";

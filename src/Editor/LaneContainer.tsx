@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import EditorModule from "./EditorModule";
 import { Lane, SlideElement } from "../Model/PresentationModel";
-import { AnalysisVisitor, MarkdownVisitor } from "../Model/Visitors";
+import { AnalysisVisitor } from "../Model/Visitors/AnalysisVisitor";
 import LaneMenu from "./LaneMenu";
 import { MarkdownParser } from "../Model/MarkdownParser";
 import { PresentationParser } from "../Model/PresentationParser";
