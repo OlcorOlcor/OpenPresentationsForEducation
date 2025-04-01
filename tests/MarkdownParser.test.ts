@@ -1,7 +1,6 @@
+import { expect, test } from 'vitest'
 import { MarkdownParser } from "../src/Model/MarkdownParser";
-import {test, expect} from "@jest/globals";
 import * as pt from "../src/Model/PresentationTypes";
-import exp from "constants";
 
 function getBaseResult(): pt.Slide {
     return {type: "slide", content: [], attributes: { frontMatter: {}, globalMetadataTags: [], metadata: {}, refs: [] }};
@@ -45,6 +44,7 @@ test("simple text", () => {
     (expected.content[0] as pt.Paragraph).content.push(getText("text"));
     expect(parsedSlide).toEqual(expected);
 });
+
 
 test("italic annotation", () => {
     const parsedSlide = parser.parseMarkdown("*text*");
