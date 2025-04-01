@@ -34,6 +34,7 @@ export class MarkdownVisitor implements IVisitor {
      * @param element The table element to visit.
      */
     visitTableNode(element: pm.TableElement): void {
+        this.addMetadata(element);
         element.getContent().forEach(c => {
             c.accept(this);
         });
@@ -211,6 +212,7 @@ export class MarkdownVisitor implements IVisitor {
                     element.getListType() === "ordered" ? counter + ". " : "- ";
             }
             c.accept(this);
+            counter++;
             if (c instanceof pm.ListItemElement) {
                 this.result += "\n";
             }
