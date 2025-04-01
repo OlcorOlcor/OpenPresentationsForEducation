@@ -25,7 +25,7 @@ export class HtmlVisitor implements IVisitor {
     private addMetadata(element: pm.OuterElement): void {
         let metadata = element.getMetadata();
         Object.keys(metadata).forEach(k => {
-            this.result += "data-" + k + "=" + metadata[k] + " ";
+            this.result += " data-" + k + "=" + metadata[k];
         });
         let localGlobalMetadata = element.getGlobalMetadata();
         if (localGlobalMetadata.length === 0) {
@@ -35,7 +35,7 @@ export class HtmlVisitor implements IVisitor {
             localGlobalMetadata.forEach(lgm => {
                 if (gm.name === lgm) {
                     Object.keys(gm.attributes).forEach(k => {
-                        this.result += "data-" + k + "=" + gm.attributes[k] + " ";
+                        this.result += " data-" + k + "=" + gm.attributes[k];
                     });
                 }
             })
@@ -47,7 +47,7 @@ export class HtmlVisitor implements IVisitor {
      * @param element The table element to visit
      */
     visitTableNode(element: pm.TableElement): void {
-        this.result += "<table ";
+        this.result += "<table";
         this.addMetadata(element);
         this.result += ">";
         element.getContent().forEach(c => {
@@ -172,7 +172,7 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The paragraph element to visit.
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
-        this.result += "<p ";
+        this.result += "<p";
         this.addMetadata(element);
         this.result += ">";
         element.getContent().forEach((c) => c.accept(this));
@@ -184,7 +184,7 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The heading element to visit.
      */
     visitHeadingNode(element: pm.HeadingElement): void {
-        this.result += "<h" + element.getLevel() + " ";
+        this.result += "<h" + element.getLevel();
         this.addMetadata(element);
         this.result += ">";
         element.getContent().forEach((c) => c.accept(this));
@@ -196,7 +196,7 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        this.result += element.getListType() === "ordered" ? "<ol " : "<ul ";
+        this.result += element.getListType() === "ordered" ? "<ol" : "<ul";
         this.addMetadata(element);
         this.result += ">";
         element.getContent().forEach((c) => {
@@ -222,7 +222,7 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The block quote element to visit.
      */
     visitSectionNode(element: pm.Section): void {
-        this.result += `<div data-${element.getKey()}=${element.getValue()} `;
+        this.result += `<div data-${element.getKey()}=${element.getValue()}`;
         this.addMetadata(element);
         this.result += ">";
         element.getContent().forEach(c => c.accept(this));
@@ -234,7 +234,7 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The block quote element to visit.
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        this.result += "<blockquote ";
+        this.result += "<blockquote";
         this.addMetadata(element);
         this.result += ">";
         element.getContent().forEach((c) => {
