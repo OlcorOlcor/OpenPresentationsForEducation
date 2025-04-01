@@ -1,4 +1,5 @@
-import { IVisitor, IVisitable } from "./Visitors";
+import { IVisitor } from "./Visitors/IVisitor";
+import { IVisitable } from "./Visitors/IVisitable";
 
 /**
  * Base class for all elements.
