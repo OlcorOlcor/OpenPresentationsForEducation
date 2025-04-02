@@ -4,7 +4,7 @@ import * as pm from "../PresentationModel";
 /**
  * Represents the results of analyzing the node structure.
  */
-class AnalysisResult {
+export class AnalysisResult {
     words: number = 0;
     characters: number = 0;
     images: number = 0;
@@ -45,6 +45,7 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitTableNode(element: pm.TableElement): void {
         this.result.tables++;
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -52,7 +53,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The table row element to visit.
      */
     visitTableRowNode(element: pm.TableRowElement): void {
-        return;    
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -60,7 +61,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The table heading element to visit.
      */
     visitTableHeadingNode(element: pm.TableHeadingElement): void {
-        return;
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -68,7 +69,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The table data element to visit.
      */
     visitTableDataNode(element: pm.TableDataElement): void {
-        return;
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -76,7 +77,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The bold element to visit.
      */
     visitBoldNode(element: pm.BoldElement): void {
-        return;
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -84,7 +85,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The italic element to visit.
      */
     visitItalicNode(element: pm.ItalicElement): void {
-        return;
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -92,7 +93,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The code element to visit.
      */
     visitCodeNode(element: pm.CodeElement): void {
-        return;
+        element.getContent().forEach(c => c.accept(this));
     }
 
     /**
@@ -109,6 +110,8 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitLinkNode(element: pm.LinkElement): void {
         this.result.links++;
+        this.result.characters += element.getAlias().length;
+        this.result.words += element.getAlias().split(' ').length;
     }
 
     /**
