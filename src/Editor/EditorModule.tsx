@@ -53,7 +53,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     frontMatter
 }) => {
 
-    const [previewStyleClass, setPreviewStyleClass] = useState<string>("column_1");
+    const [previewStyleClass, setPreviewStyleClass] = useState<string>("");
     
     useEffect(() => {
         console.log(frontMatter);

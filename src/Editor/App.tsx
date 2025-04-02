@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
-import { Lane, SlideElement } from "../Model/PresentationModel";
+import { BoldElement, HeadingElement, Lane, LinkElement, ParagraphElement, SlideElement, TextElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
 import AppMenu from "./Menu";
@@ -16,22 +16,25 @@ import Ajv from "ajv";
 import { ViewMode } from "./ViewMode";
 
 function App() {
+
+    const introSlide: string = "# Welcome to **Open Slides (working title)**\n\nYou can start working on your presentation right away, or you can click [here]() for a tutorial presentation.";
+
     const [lanes, setLanes] = useState<Lane[]>([
-        new Lane([new SlideElement([])], "first"),
+        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides (working title)")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement("", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
-    const [rawCode, setRawCode] = useState<string[][]>([[""],[""]]);
+    const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[introSlide]]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
     const [images, setImages] = useState<pt.ImageFile[]>([]);
     const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null, tables: null});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
         useState<number>(0);
     const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
-        useState<number>(1);
+        useState<number>(0);
     const [imported, setImported] = useState<boolean>(false);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.SPLIT);
-    const [leftEditorData, setLeftEditorData] = useState<string>("");
-    const [rightEditorData, setRightEditorData] = useState<string>("");
+    const [leftEditorData, setLeftEditorData] = useState<string>(introSlide);
+    const [rightEditorData, setRightEditorData] = useState<string>(introSlide);
     const [selectedLeftSlideIndex, setSelectedLeftSlideIndex] = useState<number>(0);
     const [selectedRightSlideIndex, setSelectedRightSlideIndex] = useState<number>(0);
 
@@ -274,6 +277,7 @@ function App() {
                                     setImported={setImported}
                                     images={images}
                                     metadata={metadata}
+                                    initialView={true}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
@@ -300,6 +304,7 @@ function App() {
                                     setImported={setImported}
                                     images={images}
                                     metadata={metadata}
+                                    initialView={false}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
@@ -328,6 +333,7 @@ function App() {
                                 setImported={setImported}
                                 images={images}
                                 metadata={metadata}
+                                initialView={true}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
                     </Grid>

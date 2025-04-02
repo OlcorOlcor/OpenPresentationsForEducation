@@ -29,6 +29,7 @@ interface LaneContainerProps {
     setImported: React.Dispatch<React.SetStateAction<boolean>>;
     images: ImageFile[];
     metadata: Metadata[];
+    initialView: boolean;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -51,9 +52,10 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     imported,
     setImported,
     images,
-    metadata
+    metadata,
+    initialView
 }) => {
-    const [editorView, setEditorView] = useState<boolean>(true);
+    const [editorView, setEditorView] = useState<boolean>(initialView);
     const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0, tables: 0});
     const [slideMode, setSlideMode] = useState<boolean>(
         lanes[selectedLaneIndex].outputsAsPresentation(),
