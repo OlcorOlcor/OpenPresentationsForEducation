@@ -1,6 +1,6 @@
-.preview {
+/* .preview {
     display: flex;
-}
+} */
 
 .column_3 div[data-col="1"] {
     flex: 1;
