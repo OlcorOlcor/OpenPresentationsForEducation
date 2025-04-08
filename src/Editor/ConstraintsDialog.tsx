@@ -1,4 +1,4 @@
-import { Button, Dialog, FormControl, Grid, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, Grid, TextField } from "@mui/material";
 import React, { useEffect } from "react";
 import { Constraints } from "../Model/PresentationTypes";
 
@@ -28,8 +28,9 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
         setTables(constraints.tables);
     }, [constraints])
 
-    function handleSubmit(words: number | null, characters: number | null, images: number | null, links: number | null, headings: number | null, bulletPoints: number | null, tables: number | null): void {
+    function handleSubmit(): void {
         setConstraints({words: words, characters: characters, images: images, links: links, headings: headings, bullet_points: bulletPoints, tables: tables});
+        setDialogOpen(false);
     }
 
     function handleWordsChange(e: any): void {
@@ -61,100 +62,102 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
     }
 
     function handleClose() {
+        setWords(constraints.words);
+        setCharacters(constraints.characters);
+        setLinks(constraints.links);
+        setImages(constraints.images);
+        setTables(constraints.tables);
+        setHeadings(constraints.headings);
+        setBulletPoints(constraints.bullet_points);
         setDialogOpen(false);
     }
 
     return (
-        <Dialog open={dialogOpen} onClose={handleClose} maxWidth="md" fullWidth>
-            <Grid container>
-                <Grid item>
-                    <FormControl fullWidth margin="normal">
-                        <TextField
-                            label="Words"
-                            name="words"
-                            value={words}
-                            onChange={handleWordsChange}
-                            variant="outlined"
-                            inputProps={{type: "number"}}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <TextField
-                            label="Characters"
-                            name="characters"
-                            value={characters}
-                            onChange={handleCharactersChange}
-                            variant="outlined"
-                            inputProps={{type: "number"}}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <TextField
-                            label="Images"
-                            name="images"
-                            value={images}
-                            onChange={handleImagesChange}
-                            variant="outlined"
-                            inputProps={{type: "number"}}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <TextField
-                            label="Links"
-                            name="links"
-                            value={links}
-                            onChange={handleLinksChange}
-                            variant="outlined"
-                            inputProps={{type: "number"}}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <TextField
-                            label="Headings"
-                            name="headings"
-                            value={headings}
-                            onChange={handleHeadingsChange}
-                            variant="outlined"
-                            inputProps={{type: "number"}}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <TextField
-                            label="Bullet points"
-                            name="bulletPoints"
-                            value={bulletPoints}
-                            onChange={handleBulletPointsChange}
-                            variant="outlined"
-                            inputProps={{type: "number"}}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <TextField
-                            label="Tables"
-                            name="tables"
-                            value={tables}
-                            onChange={handleTablesChange}
-                            variant="outlined"
-                            inputProps={{type: "number"}}
-                        />
-                    </FormControl>
-                </Grid>
-                <Grid item>
-                    <Grid container spacing={4}>
-                        <Grid item>
-                            <Button type="submit" variant="contained" color="primary" onClick={() => handleSubmit(words, characters, images, links, headings, bulletPoints, tables)}>
-                                Submit
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button color="primary" variant="contained" onClick={handleClose}>
-                                Cancel
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    
-                </Grid>
-            </Grid>
+        <Dialog
+            open={dialogOpen}
+            onClose={handleClose}
+        >
+            <DialogTitle>Constraints</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Here you can set contrainst that will be applied to your slides.
+                </DialogContentText>
+                <TextField
+                    type="text"
+                    label="Words"
+                    name="words"
+                    value={words}
+                    onChange={handleWordsChange}
+                    variant="standard" 
+                    margin="dense"
+                    fullWidth
+                    inputProps={{type: "number"}}
+                />
+                <TextField
+                    label="Characters"
+                    name="characters"
+                    value={characters}
+                    onChange={handleCharactersChange}
+                    variant="standard" 
+                    margin="dense"
+                    fullWidth
+                    inputProps={{type: "number"}}
+                />
+                <TextField
+                    label="Images"
+                    name="images"
+                    value={images}
+                    onChange={handleImagesChange}
+                    variant="standard" 
+                    margin="dense"
+                    fullWidth
+                    inputProps={{type: "number"}}
+                />
+                <TextField
+                    label="Links"
+                    name="links"
+                    value={links}
+                    onChange={handleLinksChange}
+                    variant="standard" 
+                    margin="dense"
+                    fullWidth
+                    inputProps={{type: "number"}}
+                />
+                <TextField
+                    label="Headings"
+                    name="headings"
+                    value={headings}
+                    onChange={handleHeadingsChange}
+                    variant="standard" 
+                    margin="dense"
+                    fullWidth
+                    inputProps={{type: "number"}}
+                />
+                <TextField
+                    label="Bullet points"
+                    name="bulletPoints"
+                    value={bulletPoints}
+                    onChange={handleBulletPointsChange}
+                    variant="standard" 
+                    margin="dense"
+                    fullWidth
+                    inputProps={{type: "number"}}
+                />
+                <TextField
+                    label="Tables"
+                    name="tables"
+                    value={tables}
+                    onChange={handleTablesChange}
+                    variant="standard" 
+                    margin="dense"
+                    fullWidth
+                    inputProps={{type: "number"}}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleSubmit}>Submit</Button>
+            </DialogActions>
         </Dialog>
     )
 }

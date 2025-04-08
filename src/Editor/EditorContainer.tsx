@@ -23,11 +23,23 @@ const EditorContainer: React.FC<EditorProps> = ({ data, onEditorChange }) => {
     return (
         <Editor
             value={data}
+            height={"100%"}
             defaultLanguage="markdown"
             language="markdown"
             onMount={handleMount}
             options={{
-                minimap: { enabled: false }
+                minimap: { enabled: false },
+                wordWrap: "on",
+                scrollbar: {
+                    vertical: "auto",
+                    horizontal: "auto",
+                    handleMouseWheel: true,
+                    useShadows: false,
+                    alwaysConsumeMouseWheel: false
+                },
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+                overviewRulerLanes: 0,
             }}
         />
     );

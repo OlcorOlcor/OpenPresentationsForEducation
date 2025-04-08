@@ -123,14 +123,14 @@ const AppMenu: React.FC<MenuProps> = ({
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" style={{padding: "0 1%"}}>
             <Toolbar disableGutters>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                    <a href=".">
-                        <Typography variant="h5" component="div" sx={{ display: 'flex', alignItems: 'center'}}>
+                <Typography variant="h5" component="div" sx={{ display: "flex", alignItems: "center", marginRight: "3%", whiteSpace: "nowrap"}}>
+                        <a href=".">
                             Open Slide Editor
-                        </Typography>
-                    </a>
+                        </a>
+                    </Typography>
                     <Button
                         color="inherit"
                         onClick={handleFileClick}
