@@ -1,7 +1,6 @@
 import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select} from "@mui/material";
 import { Lane, SlideElement } from "../Model/PresentationModel";
 import React, { useState } from "react";
-import EditLaneContainer from "./EditLaneContainer";
 import LaneDialog from "./LaneDialog";
 
 interface LaneMenuProps {
@@ -43,14 +42,15 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     }
 
     return (
-        <Grid container justifyContent="center" alignItems="center" spacing={4}>
-            <Grid item xs={6}>
-                <FormControl fullWidth>
+        <Grid container justifyContent="center" alignItems="center" spacing={2}>
+            <Grid item xs={12} md={6}>
+                <FormControl fullWidth size="small">
                     <InputLabel id="laneSelectLabel">Active lane:</InputLabel>
                     <Select
                         labelId="laneSelectLabel"
                         id="laneSelect"
                         value={selectedLaneIndex}
+                        label="Active lane:"
                         onChange={handleLaneChange}
                     >
                         {lanes.map((lane, index) => (
@@ -61,14 +61,15 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item xs={6}>
-            <FormControl fullWidth>
+            <Grid item xs={12} md={6}>
+                <FormControl fullWidth size="small">
                     <InputLabel id="mode-select-label">View:</InputLabel>
                     <Select
                         labelId="mode-select-label"
                         id="mode-select"
                         value={editorView ? "editor" : "preview"}
                         onChange={handleViewChange}
+                        label="View:"
                     >
                         <MenuItem value="editor">Editor</MenuItem>
                         <MenuItem value="preview">Preview</MenuItem>
@@ -76,6 +77,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                 </FormControl>
             </Grid>
         </Grid>
+
     );
 };
 

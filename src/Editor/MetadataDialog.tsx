@@ -1,8 +1,8 @@
-import {Button, Dialog, Grid} from "@mui/material";
+import {Avatar, Button, Dialog, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText} from "@mui/material";
 import React, {useState} from "react";
 import { Metadata } from "../Model/PresentationTypes";
-import ItemListContainer from "./ItemListContainer";
-import MetadataFormContainer from "./MetadataFormContainer";
+import { Add } from "@mui/icons-material";
+import MetadataFormDialog from "./MetadataFormDialog";
 
 interface MetadataDialogProps {
     dialogOpen: boolean;
@@ -13,13 +13,15 @@ interface MetadataDialogProps {
 
 const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpen, metadata, setMetadata}) => {
     const [selectedMetadataIndex, setSelectedMetadataIndex] = useState<number>(-1);
-    
-    function handleClose() {
-        setDialogOpen(false);
+    const [formDialogOpen, setFormDialogOpen] = useState<boolean>(false);
+
+    function handleListItemClick(index: number) {
+        setSelectedMetadataIndex(index);
+        setFormDialogOpen(true);
     }
 
-    function selectMetadata(index: number): void {
-        setSelectedMetadataIndex(index);
+    function handleClose() {
+        setDialogOpen(false);
     }
 
     function handleSubmit(name: string, attributes: object) {
@@ -53,18 +55,34 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
     }
 
     return (
-        <Dialog open={dialogOpen} onClose={handleClose} maxWidth="md" fullWidth>
-            <Grid container style={{height: "500px"}}>
-                <Grid item xs={6} style={{overflowY: "auto" , height: "100%"}}>
-                    <ItemListContainer items={metadata} selectItem={selectMetadata} addItem={addMetadata} deleteItem={deleteMetadata} selectedItemIndex={selectedMetadataIndex}/>
-                </Grid>
-                <Grid item xs={6} style={{height: "100%"}}>
-                    {selectedMetadataIndex !== -1 ? (
-                        <MetadataFormContainer metadata={metadata} selectedMetadataIndex={selectedMetadataIndex} selectMetadata={selectMetadata} handleSubmit={handleSubmit} />
-                    ) : <div></div>
-                    }
-                </Grid>
-            </Grid>
+        <Dialog onClose={handleClose} open={dialogOpen}>
+        <DialogTitle>Global metadata</DialogTitle>
+            <List sx={{ pt: 0 }}>
+                {metadata.map((meta, i) => (
+                <ListItem disablePadding key={i}>
+                    <ListItemButton onClick={() => handleListItemClick(i)}>
+                    <ListItemText primary={meta.name} />
+                    </ListItemButton>
+                </ListItem>
+                ))}
+                <ListItem disablePadding>
+                <ListItemButton
+                    autoFocus
+                    onClick={() => addMetadata()}
+                >
+                    <ListItemAvatar>
+                    <Avatar>
+                        <Add />
+                    </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary="Add tag" />
+                </ListItemButton>
+                </ListItem>
+            </List>
+            { metadata[selectedMetadataIndex] !== undefined &&  metadata[selectedMetadataIndex] !== null ? (
+                <MetadataFormDialog metadata={metadata[selectedMetadataIndex]} handleSubmit={handleSubmit} dialogOpen={formDialogOpen} setDialogOpen={setFormDialogOpen} deleteMetadata={deleteMetadata}></MetadataFormDialog>
+                ) : (<></>)
+            }
         </Dialog>
     )
 } 

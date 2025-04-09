@@ -89,7 +89,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
     }
 
     return (
-        <Grid container spacing={1}>
+        <Grid container spacing={1} style={{marginBottom: "3%"}}>
             <Grid item xs>
                 <Pagination
                     count={elements.length}

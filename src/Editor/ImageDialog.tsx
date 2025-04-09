@@ -1,9 +1,10 @@
-import { Dialog, Grid } from "@mui/material";
-import React, { useState } from "react";
-import ItemListContainer from "./ItemListContainer";
+import { Avatar, Dialog, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from "@mui/material";
+import { Lane } from "../Model/PresentationModel";
+import React, { useEffect, useState } from "react";
+import { Add, Image } from "@mui/icons-material";
+import LaneFormDialog from "./LaneFormDialogue";
 import { ImageFile } from "../Model/PresentationTypes";
-import ImagePreviewContainer from "./ImagePreviewContainer";
-
+import ImageFormDialog from "./ImageFormDialog";
 
 interface ImageDialogProps {
     dialogOpen: boolean;
@@ -12,15 +13,11 @@ interface ImageDialogProps {
     setImages: React.Dispatch<React.SetStateAction<ImageFile[]>>;
 }
 
-const ImageDialog: React.FC<ImageDialogProps> = ({
-    dialogOpen,
-    setDialogOpen,
-    images,
-    setImages
-}) => {
+const ImageDialog: React.FC<ImageDialogProps> = ({dialogOpen, setDialogOpen, images, setImages}) => {
     const [selectedImageIndex, setSelectedImageIndex] = useState<number>(-1);
+    const [formDialogOpen, setFormDialogOpen] = useState<boolean>(false);
 
-    function cancel() {
+    function handleClose() {
         setDialogOpen(false);
     }
 
@@ -50,45 +47,69 @@ const ImageDialog: React.FC<ImageDialogProps> = ({
         });
     }
 
-    function selectImage(index: number) {
-        setSelectedImageIndex(index);
-    }
-
     function deleteImage() {
         setImages(oldImages => {
             let newImages = oldImages.filter((_, index) => selectedImageIndex !== index);
-            if (selectedImageIndex > 0) {
-                setSelectedImageIndex(selectedImageIndex - 1);
-            }
-            if (newImages.length === 0) {
-                setSelectedImageIndex(-1);
-            }
+            return newImages;
+        });
+        setDialogOpen(false);
+    }
 
+    function updateImage(name: string) {
+        setImages(oldImages => {
+            let newImages = [...oldImages]
+            newImages[selectedImageIndex] = {name: name, fileBase64: newImages[selectedImageIndex].fileBase64};
             return newImages;
         });
     }
-
-    function updateImage(image: ImageFile) {
-        setImages(oldImages => {
-            let newImages = [...oldImages]
-            newImages[selectedImageIndex] = image;
-            return newImages;
-        })
+    
+    function handleListItemClick(index: number) {
+        setSelectedImageIndex(index);
+        setFormDialogOpen(true);
     }
 
     return (
-        <Dialog open={dialogOpen} onClose={cancel} maxWidth="md" fullWidth>
-            <Grid container style={{ height: "500px" }}>
-                <Grid item xs={6} style={{ overflowY: "auto", height: "100%" }}>
-                    <ItemListContainer items={images} selectItem={selectImage} addItem={addImage} deleteItem={deleteImage} selectedItemIndex={selectedImageIndex}></ItemListContainer>
-                </Grid>
-                <Grid item xs={6} style={{ height: "100%" }}>
-                    { selectedImageIndex !== -1 ?
-                        <ImagePreviewContainer image={images[selectedImageIndex]} updateImage={updateImage}></ImagePreviewContainer>
-                        : <div></div>
-                    }
-                </Grid>
-            </Grid>
+        <Dialog onClose={handleClose} open={dialogOpen}>
+            <DialogTitle>Images</DialogTitle>
+            <List sx={{ pt: 0 }}>
+                {images.map((img, i) => (
+                <ListItem disablePadding key={i}>
+                    <Tooltip
+                        title={
+                            <img
+                            src={img.fileBase64}
+                            alt={img.name}
+                            style={{ width: 100, height: 'auto', objectFit: 'contain' }}
+                            />
+                        }
+                    arrow
+                    placement="right"
+                    >
+                    <ListItemButton onClick={() => handleListItemClick(i)}>
+                        <ListItemAvatar>
+                        <Avatar>
+                            <Image />
+                        </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary={img.name} />
+                    </ListItemButton>
+                    </Tooltip>
+                </ListItem>
+                ))}
+                <ListItem disablePadding>
+                <ListItemButton autoFocus onClick={addImage}>
+                    <ListItemAvatar>
+                    <Avatar>
+                        <Add />
+                    </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary="Add image" />
+                </ListItemButton>
+                </ListItem>
+            </List>
+            {images[selectedImageIndex] !== undefined && images[selectedImageIndex] !== null 
+            ? (<ImageFormDialog image={images[selectedImageIndex]} dialogOpen={formDialogOpen} setDialogOpen={setFormDialogOpen} deleteImage={deleteImage} handleSubmit={updateImage}></ImageFormDialog>) 
+            : (<></>)}
         </Dialog>
     )
 }

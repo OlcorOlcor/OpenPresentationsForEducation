@@ -167,7 +167,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     return (
-        <Grid container direction="column" style={{ height: "100%" }} spacing={2}>
+        <Grid container direction="column" style={{ height: "100%", padding: "0 2%"}} spacing={2}>
             <Grid item>
                 <LaneMenu
                     lanes={lanes}
