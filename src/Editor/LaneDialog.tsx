@@ -1,7 +1,6 @@
 import { Avatar, Dialog, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
 import { Lane } from "../Model/PresentationModel";
 import React, { useEffect, useState } from "react";
-import ItemListContainer from "./ItemListContainer";
 import { Add } from "@mui/icons-material";
 import LaneFormDialog from "./LaneFormDialogue";
 
@@ -33,14 +32,6 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
             newLanes[selectedLaneIndex] = newLane;
             return newLanes;
         });
-    }
-
-    function cancel() {
-        setDialogOpen(false);
-    }
-
-    function selectLaneIndex(index: number) {
-        setSelectedLaneIndex(index);
     }
 
     function handleListItemClick(index: number) {
@@ -80,7 +71,10 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
                 </ListItemButton>
                 </ListItem>
             </List>
-            <LaneFormDialog lane={lanes[selectedLaneIndex]} dialogOpen={formDialogOpen} setDialogOpen={setFormDialogOpen} editLane={editCurrentLane} deleteLane={deleteCurrentLane} />
+            {lanes[selectedLaneIndex] !== undefined && lanes[selectedLaneIndex] !== null 
+            ? (<LaneFormDialog lane={lanes[selectedLaneIndex]} dialogOpen={formDialogOpen} setDialogOpen={setFormDialogOpen} editLane={editCurrentLane} deleteLane={deleteCurrentLane} />) 
+            : (<></>)}
+            
         </Dialog>
     )
 }
