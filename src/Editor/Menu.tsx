@@ -4,13 +4,13 @@ import "./css/Menu.css";
 import MetadataDialog from "./MetadataDialog";
 import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import ConstraintsDialog from "./ConstraintsDialog";
 import MenuIcon from '@mui/icons-material/Menu';
 import LaneDialog from "./LaneDialog";
 import { Lane } from "../Model/PresentationModel";
 import { ViewMode } from "./ViewMode";
 import ImageDialog from "./ImageDialog";
-
 interface MenuProps {
     importPresentation(file: File): void;
     exportPresentationAsJson(): void;
@@ -53,7 +53,28 @@ const AppMenu: React.FC<MenuProps> = ({
     const [exportOpen, setExportOpen] = useState(false);
     const [anchorElFile, setAnchorElFile] = useState(null);
     const [anchorElView, setAnchorElView] = useState(null);
+    const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState<null | HTMLElement>(null);
+    const [mobileSubmenuAnchorEl, setMobileSubmenuAnchorEl] = useState<{ [key: string]: HTMLElement | null }>({ file: null, view: null });
+
+    const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setMobileMenuAnchorEl(event.currentTarget);
+    };
+
+    const handleMobileMenuClose = () => {
+        setMobileMenuAnchorEl(null);
+        setMobileSubmenuAnchorEl({ file: null, view: null });
+    };
+
+    const handleSubmenuOpen = (menuKey: string) => (event: React.MouseEvent<HTMLElement>) => {
+        setMobileSubmenuAnchorEl(prev => ({ ...prev, [menuKey]: event.currentTarget }));
+    };
+
+    const handleSubmenuClose = (menuKey: string) => {
+        setMobileSubmenuAnchorEl(prev => ({ ...prev, [menuKey]: null }));
+    };
 
     function openMetadata() {
         setMetadataDialogOpen(true);
@@ -85,7 +106,7 @@ const AppMenu: React.FC<MenuProps> = ({
     function handleImportClick() {
         handleFileClose();
         if (fileInputRef.current != null) {
-           fileInputRef.current.click();
+            fileInputRef.current.click();
         }
     }
 
@@ -102,7 +123,7 @@ const AppMenu: React.FC<MenuProps> = ({
     function handleFileClick(event: any) {
         setAnchorElFile(event.currentTarget);
     };
-    
+
     function handleFileClose() {
         setAnchorElFile(null);
     };
@@ -116,55 +137,32 @@ const AppMenu: React.FC<MenuProps> = ({
     function handleViewClick(event: any) {
         setAnchorElView(event.currentTarget);
     };
-    
+
     function handleViewClose(vm: ViewMode) {
         setAnchorElView(null);
         setViewMode(vm);
     };
 
     return (
-        <AppBar position="static" style={{padding: "0 1%"}}>
-            <Toolbar disableGutters>
+        <AppBar position="static" style={{ padding: "0 1%" }}>
+            <Toolbar disableGutters sx={{ justifyContent: "space-between", width: "100%" }}>
+                <Typography variant="h5" component="div" sx={{ display: "flex", alignItems: "center", marginRight: "3%", whiteSpace: "nowrap" }}>
+                    <a href=".">Open Slide Editor</a>
+                </Typography>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <Typography variant="h5" component="div" sx={{ display: "flex", alignItems: "center", marginRight: "3%", whiteSpace: "nowrap"}}>
-                        <a href=".">
-                            Open Slide Editor
-                        </a>
-                    </Typography>
-                    <Button
-                        color="inherit"
-                        onClick={handleFileClick}
-                        aria-controls="file-menu"
-                        aria-haspopup="true"
-                        endIcon={<KeyboardArrowDownIcon />}
-                    >
+                    <Button color="inherit" onClick={handleFileClick} aria-controls="file-menu" aria-haspopup="true" endIcon={<KeyboardArrowDownIcon />}>
                         File
                     </Button>
-                    <Menu
-                        id="file-menu"
-                        anchorEl={anchorElFile}
-                        open={Boolean(anchorElFile)}
-                        onClose={handleFileClose}
-                    >
+                    <Menu id="file-menu" anchorEl={anchorElFile} open={Boolean(anchorElFile)} onClose={handleFileClose}>
                         <MenuItem onClick={newFile}>New</MenuItem>
                         <MenuItem onClick={handleImportClick}>Open</MenuItem>
                         <MenuItem onClick={handleFileClose}>Save</MenuItem>
+                        <MenuItem onClick={exportJson}>Export</MenuItem>
                     </Menu>
-                    <Button
-                        color="inherit"
-                        onClick={handleViewClick}
-                        aria-controls="view-menu"
-                        aria-haspopup="true"
-                        endIcon={<KeyboardArrowDownIcon />}
-                    >
+                    <Button color="inherit" onClick={handleViewClick} aria-controls="view-menu" aria-haspopup="true" endIcon={<KeyboardArrowDownIcon />}>
                         View
                     </Button>
-                    <Menu
-                        id="view-menu"
-                        anchorEl={anchorElView}
-                        open={Boolean(anchorElView)}
-                        onClose={handleViewClose}
-                    >
+                    <Menu id="view-menu" anchorEl={anchorElView} open={Boolean(anchorElView)} onClose={handleViewClose}>
                         <MenuItem onClick={() => handleViewClose(ViewMode.SINGLE)}>Single view</MenuItem>
                         <MenuItem onClick={() => handleViewClose(ViewMode.SPLIT)}>Side by side</MenuItem>
                     </Menu>
@@ -172,29 +170,47 @@ const AppMenu: React.FC<MenuProps> = ({
                     <Button color="inherit" onClick={openMetadata}>Metadata</Button>
                     <Button color="inherit" onClick={openConstraints}>Constraints</Button>
                     <Button color="inherit" onClick={openImages}>Images</Button>
-                    <Button color="inherit" onClick={exportJson}>Export</Button>
+                </Box>
+                <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                    <IconButton size="large" color="inherit" aria-label="open menu" onClick={handleMobileMenuOpen}>
+                        <MenuIcon />
+                    </IconButton>
                 </Box>
             </Toolbar>
-            <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ ml: 2, display: { md: 'none' } }}
-            >
-                <MenuIcon />
-            </IconButton>
+            <Menu anchorEl={mobileMenuAnchorEl} open={isMobileMenuOpen} onClose={handleMobileMenuClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }}>
+                <MenuItem onClick={handleSubmenuOpen("file")}>
+                    File
+                    <KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} />
+                </MenuItem>
+                <Menu
+                    anchorEl={mobileSubmenuAnchorEl.file}
+                    open={Boolean(mobileSubmenuAnchorEl.file)}
+                    onClose={() => handleSubmenuClose("file")}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                >
+                    <MenuItem onClick={() => { newFile(); handleMobileMenuClose(); }}>New</MenuItem>
+                    <MenuItem onClick={() => { handleImportClick(); handleMobileMenuClose(); }}>Open</MenuItem>
+                    <MenuItem onClick={() => { exportJson(); handleMobileMenuClose(); }}>Export</MenuItem>
+                </Menu>
+                <MenuItem onClick={handleSubmenuOpen("view")}>
+                    View
+                    <KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} />
+                </MenuItem>
+                <Menu anchorEl={mobileSubmenuAnchorEl.view} open={Boolean(mobileSubmenuAnchorEl.view)} onClose={() => handleSubmenuClose("view")} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                    <MenuItem onClick={() => { handleViewClose(ViewMode.SINGLE); handleMobileMenuClose(); }}>Single View</MenuItem>
+                    <MenuItem onClick={() => { handleViewClose(ViewMode.SPLIT); handleMobileMenuClose(); }}>Side by Side</MenuItem>
+                </Menu>
+                <MenuItem onClick={() => { openLanes(); handleMobileMenuClose(); }}>Lanes</MenuItem>
+                <MenuItem onClick={() => { openMetadata(); handleMobileMenuClose(); }}>Metadata</MenuItem>
+                <MenuItem onClick={() => { openConstraints(); handleMobileMenuClose(); }}>Constraints</MenuItem>
+                <MenuItem onClick={() => { openImages(); handleMobileMenuClose(); }}>Images</MenuItem>
+            </Menu>
             <MetadataDialog dialogOpen={metadataDialogOpen} setDialogOpen={setMetadataDialogOpen} metadata={metadata} setMetadata={setMetadata} />
             <ConstraintsDialog dialogOpen={constraintsDialogOpen} setDialogOpen={setConstraintsDialogOpen} constraints={constraints} setConstraints={setConstraints} />
-            <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => {}}/>
+            <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => { }} />
             <ImageDialog dialogOpen={imageDialogOpen} setDialogOpen={setImageDialogOpen} images={images} setImages={setImages}></ImageDialog>
-            <input
-                type="file"
-                accept=".json"
-                style={{ display: "none" }}
-                ref={fileInputRef}
-                onChange={handleFileChange}
-            />
+            <input type="file" accept=".json" style={{ display: "none" }} ref={fileInputRef} onChange={handleFileChange} />
         </AppBar>
     );
 };
