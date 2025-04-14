@@ -82,5 +82,50 @@ test("table", () => {
 });
 
 test("image", () => {
-    
+    let visitor = new JsonVisitor();
+    let paragraph = new pm.ParagraphElement([new pm.ImageElement("./img", "img")], [], {});
+    let lane = getLane([paragraph]);
+    let expected = getExpected([{type: "paragraph", content: [{type: "image", content: ["./img"], attributes: {alias: "img"}}], attributes: {globalMetadataTags: [], metadata: {}}}]);
+    visitor.visitLaneNode(lane);
+    expect(visitor.getResult()).toEqual(expected);
+});
+
+test("link", () => {
+    let visitor = new JsonVisitor();
+    let paragraph = new pm.ParagraphElement([new pm.LinkElement("www.google.com", "google")], [], {});
+    let lane = getLane([paragraph]);
+    let expected = getExpected([{type: "paragraph", content: [{type: "link", content: ["www.google.com"], attributes: {alias: "google"}}], attributes: {globalMetadataTags: [], metadata: {}}}]);
+    visitor.visitLaneNode(lane);
+    expect(visitor.getResult()).toEqual(expected);
+});
+
+test("ordered list", () => {
+    let visitor = new JsonVisitor();
+    let item1 = new pm.ListItemElement([getText("item1")]);
+    let item2 = new pm.ListItemElement([getText("item2")]);
+    let list = new pm.ListElement("ordered", [item1, item2], [], {});
+    let lane = getLane([list]);
+    let expected = getExpected([{type: "list", content: [{type: "listItem", content: [{type: "text", content: ["item1"]}]}, {type: "listItem", content: [{type: "text", content: ["item2"]}]}], attributes: {listType: "ordered", globalMetadataTags: [], metadata: {}}}]);
+    visitor.visitLaneNode(lane);
+    expect(visitor.getResult()).toEqual(expected);
+});
+
+test("unordered list", () => {
+    let visitor = new JsonVisitor();
+    let item1 = new pm.ListItemElement([getText("item1")]);
+    let item2 = new pm.ListItemElement([getText("item2")]);
+    let list = new pm.ListElement("unordered", [item1, item2], [], {});
+    let lane = getLane([list]);
+    let expected = getExpected([{type: "list", content: [{type: "listItem", content: [{type: "text", content: ["item1"]}]}, {type: "listItem", content: [{type: "text", content: ["item2"]}]}], attributes: {listType: "unordered", globalMetadataTags: [], metadata: {}}}]);
+    visitor.visitLaneNode(lane);
+    expect(visitor.getResult()).toEqual(expected);
+});
+
+test("blockquote", () => {
+    let visitor = new JsonVisitor();
+    let bq = new pm.BlockQuoteElement([new pm.ParagraphElement([getText("text")], [], {})], [], {});
+    let lane = getLane([bq]);
+    let expected = getExpected([{type: "blockquote", content: [{type: "paragraph", content: [{type: "text", content: ["text"]}], attributes: {globalMetadataTags: [], metadata: {}}}], attributes: {globalMetadataTags: [], metadata: {}}}]);
+    visitor.visitLaneNode(lane);
+    expect(visitor.getResult()).toEqual(expected);
 });
