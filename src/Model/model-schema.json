@@ -569,15 +569,15 @@
         },
         "styles": {
             "type": "object",
-            "patternProperties": {
-                "^[^{}]+$": { 
-                "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
                 }
             },
-            "additionalProperties": false
+            "required": ["name", "content"]
         }
     }
 }
