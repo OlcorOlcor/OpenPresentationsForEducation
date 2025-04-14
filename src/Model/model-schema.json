@@ -566,6 +566,18 @@
                 },
                 "required": ["name", "fileBase64"]
             }
+        },
+        "styles": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                }
+            },
+            "required": ["name", "content"]
         }
     }
 }
