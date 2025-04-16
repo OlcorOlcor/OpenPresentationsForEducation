@@ -26,11 +26,10 @@ function EditorApp() {
     const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[introSlide]]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
     const [images, setImages] = useState<pt.ImageFile[]>([]);
+    const [styles, setStyles] = useState<pt.Styles>({name: "", content: ""});
     const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null, tables: null});
-    const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] =
-        useState<number>(0);
-    const [selectedRightLaneIndex, setSelectedRightLaneIndex] =
-        useState<number>(0);
+    const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] = useState<number>(0);
+    const [selectedRightLaneIndex, setSelectedRightLaneIndex] = useState<number>(0);
     const [imported, setImported] = useState<boolean>(false);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.SPLIT);
     const [leftEditorData, setLeftEditorData] = useState<string>(introSlide);
@@ -184,6 +183,7 @@ function EditorApp() {
             }
             setMetadata(json.metadata);
             setConstraints(json.constraints);
+            setStyles(json.styles);
             setImages(json.imageFiles);
             let lanes = parser.getLanes(json.lanes);
             setLanes(lanes);
@@ -204,9 +204,15 @@ function EditorApp() {
             visitor.visitLaneNode(lane);
             jsonLanes.push(visitor.getResult());
         });
-        let exportJson = {lanes: jsonLanes, metadata: metadata, constraints: constraints, imageFiles: images};
+        let exportJson = {lanes: jsonLanes, metadata: metadata, constraints: constraints, imageFiles: images, styles: styles};
         const blob = new Blob([JSON.stringify(exportJson)], { type: "json" });
         saveAs(blob, "output.json");
+    }
+
+    function exportCss() {
+        const blob = new Blob([styles.content], {type: "text"});
+        let fileName: string = styles.name !== "" ? styles.name : "style";
+        saveAs(blob, fileName + ".css");
     }
 
     function exportPresentationAsReveal() {
@@ -249,6 +255,7 @@ function EditorApp() {
                     setViewMode={setViewMode}
                     images={images}
                     setImages={setImages}
+                    exportCss={exportCss}
                 />
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>
