@@ -197,6 +197,15 @@ function EditorApp() {
         reader.readAsText(file);
     }
 
+    function importStyle(file: File) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            let content = e.target?.result as string;
+            setStyles({name: file.name, content: content});
+        }
+        reader.readAsText(file);
+    }
+
     function exportPresentationAsJSON() {
         let visitor = new JsonVisitor();
         let jsonLanes: pt.Lane[] = [];
@@ -212,7 +221,7 @@ function EditorApp() {
     function exportCss() {
         const blob = new Blob([styles.content], {type: "text"});
         let fileName: string = styles.name !== "" ? styles.name : "style";
-        saveAs(blob, fileName + ".css");
+        saveAs(blob, fileName);
     }
 
     function exportPresentationAsReveal() {
@@ -256,6 +265,7 @@ function EditorApp() {
                     images={images}
                     setImages={setImages}
                     exportCss={exportCss}
+                    newStyle={importStyle}
                 />
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>

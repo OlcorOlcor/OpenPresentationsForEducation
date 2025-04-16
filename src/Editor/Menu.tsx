@@ -12,7 +12,7 @@ import LaneDialog from "./LaneDialog";
 import { Lane } from "../Model/PresentationModel";
 import { ViewMode } from "./ViewMode";
 import ImageDialog from "./ImageDialog";
-import { EventRepeat } from "@mui/icons-material";
+
 interface MenuProps {
     importPresentation(file: File): void;
     exportPresentationAsJson(): void;
@@ -30,6 +30,7 @@ interface MenuProps {
     images: ImageFile[];
     setImages: React.Dispatch<React.SetStateAction<ImageFile[]>>;
     exportCss(): void;
+    newStyle(file: File): void;
 }
 
 const AppMenu: React.FC<MenuProps> = ({
@@ -48,7 +49,8 @@ const AppMenu: React.FC<MenuProps> = ({
     setViewMode,
     images,
     setImages,
-    exportCss
+    exportCss,
+    newStyle
 }) => {
     const [metadataDialogOpen, setMetadataDialogOpen] = useState<boolean>(false);
     const [constraintsDialogOpen, setConstraintsDialogOpen] = useState<boolean>(false);
@@ -63,7 +65,7 @@ const AppMenu: React.FC<MenuProps> = ({
 
     const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
-
+    const styleInputRef = React.useRef<HTMLInputElement>(null);
 
     const handleExportClose = () => {
         setAnchorElExport(null);
@@ -113,10 +115,24 @@ const AppMenu: React.FC<MenuProps> = ({
         }
     }
 
+    function handleStyleFileChange(event: any) {
+        const file = event.target.files[0];
+        if (file) {
+            newStyle(file);
+        }
+    }
+
     function handleImportClick() {
         handleFileClose();
         if (fileInputRef.current != null) {
             fileInputRef.current.click();
+        }
+    }
+
+    function handleStylesImportClick() {
+        handleFileClose();
+        if (styleInputRef.current != null) {
+            styleInputRef.current.click();
         }
     }
 
@@ -171,6 +187,7 @@ const AppMenu: React.FC<MenuProps> = ({
                         <MenuItem onClick={newFile}>New</MenuItem>
                         <MenuItem onClick={handleImportClick}>Open</MenuItem>
                         <MenuItem onClick={handleFileClose}>Save</MenuItem>
+                        <MenuItem onClick={handleStylesImportClick}>Import style</MenuItem>
                         <MenuItem onClick={handleExportClick}>Export <KeyboardArrowRightIcon /></MenuItem>
                         <Menu id="export-menu" anchorEl={anchorElExport} open={Boolean(anchorElExport)} onClose={handleExportClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }}>
                             <MenuItem onClick={exportJson}>Export JSON</MenuItem>
@@ -229,6 +246,7 @@ const AppMenu: React.FC<MenuProps> = ({
             <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => { }} />
             <ImageDialog dialogOpen={imageDialogOpen} setDialogOpen={setImageDialogOpen} images={images} setImages={setImages}></ImageDialog>
             <input type="file" accept=".json" style={{ display: "none" }} ref={fileInputRef} onChange={handleFileChange} />
+            <input type="file" accept=".css" style={{ display: "none" }} ref={styleInputRef} onChange={handleStyleFileChange} />
         </AppBar>
     );
 };
