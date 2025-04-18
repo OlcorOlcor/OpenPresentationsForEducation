@@ -210,6 +210,14 @@ export type Metadata = {
 }
 
 /**
+ * Represents styles used in the presentation.
+ */
+export type Styles = {
+    name: string;
+    content: string;
+}
+
+/**
  * Represents constraints that apply to each slide.
  */
 export type Constraints = {
@@ -235,4 +243,5 @@ export type Presentation = {
     metadata: Metadata[];
     constraints: Constraints;
     imageFiles: ImageFile[];
+    styles: Styles;
 }
