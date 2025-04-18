@@ -16,14 +16,11 @@ function LandingPage() {
                 px: 2,
             }}
         >
-            <Container maxWidth="sm">
-                <Typography variant="h2" gutterBottom>
+            <Container style={{width: "100%"}}>
+                <Typography variant="h2" style={{width: "100%", marginBottom: "5%"}}>
                     Welcome to Open Slides
                 </Typography>
-                <Typography variant="h6" paragraph>
-
-                </Typography>
-                <Button variant="contained" color="secondary" size="large" onClick={() => navigate("/app")}>
+                <Button variant="contained" color="primary" size="large" onClick={() => navigate("/app")}>
                     Get Started
                 </Button>
             </Container>
