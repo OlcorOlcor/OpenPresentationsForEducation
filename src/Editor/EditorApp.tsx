@@ -197,7 +197,7 @@ function EditorApp() {
         reader.readAsText(file);
     }
 
-    function importStyle(file: File) {
+    function importStyleFromFile(file: File) {
         let reader = new FileReader();
         reader.onload = (e) => {
             let content = e.target?.result as string;
@@ -265,7 +265,8 @@ function EditorApp() {
                     images={images}
                     setImages={setImages}
                     exportCss={exportCss}
-                    newStyle={importStyle}
+                    newStyle={importStyleFromFile}
+                    setStyle={setStyles}
                 />
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>
