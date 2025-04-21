@@ -109,8 +109,8 @@ const MetadataFormDialog: React.FC<MetadataFormDialogProps> = ({metadata, handle
                 <Button onClick={deleteTag} color="error">Delete tag</Button>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleFormSubmit}>Submit</Button>
+                <Button onClick={handleClose} color="secondary">Cancel</Button>
+                <Button onClick={handleFormSubmit} color="primary">Submit</Button>
             </DialogActions>
         </Dialog>
     )

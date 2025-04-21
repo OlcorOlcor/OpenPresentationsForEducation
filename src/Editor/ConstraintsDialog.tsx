@@ -155,8 +155,8 @@ const ConstraintsDialog: React.FC<ConstraintsDialogProps> = ({dialogOpen, setDia
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit}>Submit</Button>
+                <Button onClick={handleClose} color="secondary">Cancel</Button>
+                <Button onClick={handleSubmit} color="primary">Submit</Button>
             </DialogActions>
         </Dialog>
     )

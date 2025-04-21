@@ -54,8 +54,8 @@ const LaneFormDialog: React.FC<LaneEditDialogProps> = ({ lane, dialogOpen, setDi
                 <Button onClick={deleteLane} color="error">Delete lane</Button>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit}>Submit</Button>
+                <Button onClick={handleClose} color="secondary">Cancel</Button>
+                <Button onClick={handleSubmit} color="primary">Submit</Button>
             </DialogActions>
         </Dialog>
     )

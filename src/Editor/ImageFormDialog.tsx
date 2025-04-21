@@ -56,8 +56,8 @@ const ImageFormDialog: React.FC<ImageFormDialogProps> = ({image, dialogOpen, set
                 <Button onClick={deleteImage} color="error">Delete image</Button>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleFormSubmit}>Submit</Button>
+                <Button onClick={handleClose} color="secondary">Cancel</Button>
+                <Button onClick={handleFormSubmit} color="primary">Submit</Button>
             </DialogActions>
         </Dialog>
     )
