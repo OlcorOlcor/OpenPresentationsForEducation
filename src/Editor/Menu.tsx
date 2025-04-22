@@ -74,7 +74,7 @@ const AppMenu: React.FC<MenuProps> = ({
     const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const styleInputRef = React.useRef<HTMLInputElement>(null);
-    const { toggleColorMode } = useColorMode();
+    const { mode, toggleColorMode } = useColorMode();
 
     const handleExportClose = () => {
         setAnchorElExport(null);
@@ -203,7 +203,7 @@ const AppMenu: React.FC<MenuProps> = ({
                 </Typography>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <IconButton onClick={toggleColorMode} color="inherit">
-                    <DarkModeIcon />
+                    {mode === "light" ? (<DarkModeIcon />) : (<LightModeIcon/>)}
                 </IconButton>
                     <Button color="inherit" onClick={handleFileClick} aria-controls="file-menu" aria-haspopup="true" endIcon={<KeyboardArrowDownIcon />}>
                         File
