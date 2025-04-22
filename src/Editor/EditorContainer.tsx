@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
+import { useColorMode } from "./ThemeContext"
 
 interface EditorProps {
     data: string;
@@ -8,6 +9,7 @@ interface EditorProps {
 
 const EditorContainer: React.FC<EditorProps> = ({ data, onEditorChange }) => {
     const timeout = useRef<NodeJS.Timeout | null>(null);
+    const { mode } = useColorMode();
 
     function handleMount(editor: any) {
         editor.onDidChangeModelContent(() => {
@@ -27,6 +29,7 @@ const EditorContainer: React.FC<EditorProps> = ({ data, onEditorChange }) => {
             defaultLanguage="markdown"
             language="markdown"
             onMount={handleMount}
+            theme={(mode === "light") ? "vs-light" : "vs-dark"}
             options={{
                 minimap: { enabled: false },
                 wordWrap: "on",

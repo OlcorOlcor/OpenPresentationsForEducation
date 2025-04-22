@@ -1,8 +1,7 @@
-import { Avatar, Dialog, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
+import { Avatar, Box, Button, Checkbox, Dialog, DialogTitle, FormControlLabel, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, TextField } from "@mui/material";
 import { Lane } from "../Model/PresentationModel";
 import React, { useEffect, useState } from "react";
 import { Add } from "@mui/icons-material";
-import LaneFormDialog from "./LaneFormDialogue";
 
 interface LaneEditDialogProps {
     lanes: Lane[];
@@ -16,7 +15,15 @@ interface LaneEditDialogProps {
 
 const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialogOpen, setLanes, addLane, deleteLane, selectLane}) => {
     const [selectedLaneIndex, setSelectedLaneIndex] = useState<number>(0);
-    const [formDialogOpen, setFormDialogOpen] = useState<boolean>(false);
+    const [name, setName] = useState<string>("");
+    const [outputType, setOutputType] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (lanes[selectedLaneIndex] !== undefined && lanes[selectedLaneIndex] !== null) {
+            setName(lanes[selectedLaneIndex].getName());
+            setOutputType(lanes[selectedLaneIndex].outputsAsPresentation());
+        }
+    }, [selectedLaneIndex, lanes]);
 
     function handleClose() {
         if (selectedLaneIndex !== -1) {
@@ -25,7 +32,7 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
         setDialogOpen(false);
     }
 
-    function editCurrentLane(name: string, outputType: boolean) {
+    function editCurrentLane() {
         setLanes(prev => {
             let newLanes = [...prev];
             let newLane = new Lane(newLanes[selectedLaneIndex].getContent(), name, outputType);
@@ -36,45 +43,74 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
 
     function handleListItemClick(index: number) {
         setSelectedLaneIndex(index);
-        setFormDialogOpen(true);
     }
 
     function deleteCurrentLane() {
         let index = selectedLaneIndex;
         setSelectedLaneIndex((index >= 1) ? index - 1 : 0);
         deleteLane(selectedLaneIndex);
-        setFormDialogOpen(false);
     }
 
     return (
-        <Dialog onClose={handleClose} open={dialogOpen}>
+        <Dialog onClose={handleClose} open={dialogOpen} fullWidth maxWidth="md">
         <DialogTitle>Lanes</DialogTitle>
-            <List sx={{ pt: 0 }}>
-                {lanes.map((lane, i) => (
-                <ListItem disablePadding key={i}>
-                    <ListItemButton onClick={() => handleListItemClick(i)}>
-                    <ListItemText primary={lane.getName()} />
-                    </ListItemButton>
-                </ListItem>
-                ))}
-                <ListItem disablePadding>
-                <ListItemButton
-                    autoFocus
-                    onClick={() => addLane()}
-                >
-                    <ListItemAvatar>
-                    <Avatar>
-                        <Add />
-                    </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary="Add lane" />
-                </ListItemButton>
-                </ListItem>
-            </List>
-            {lanes[selectedLaneIndex] !== undefined && lanes[selectedLaneIndex] !== null 
-            ? (<LaneFormDialog lane={lanes[selectedLaneIndex]} dialogOpen={formDialogOpen} setDialogOpen={setFormDialogOpen} editLane={editCurrentLane} deleteLane={deleteCurrentLane} />) 
-            : (<></>)}
-            
+            <Grid container sx={{ minHeight: 450, padding: 2}}>
+                <Grid item xs={4}>
+                    <List sx={{ pt: 0 }}>
+                        {lanes.map((lane, i) => (
+                        <ListItem disablePadding key={i} >
+                            <ListItemButton style={{textAlign: "center"}} onClick={() => handleListItemClick(i)}>
+                            <ListItemText primary={lane.getName()} />
+                            </ListItemButton>
+                        </ListItem>
+                        ))}
+                        <ListItem disablePadding>
+                        <ListItemButton
+                            autoFocus
+                            onClick={() => addLane()}
+                        >
+                            <ListItemAvatar>
+                            <Avatar>
+                                <Add />
+                            </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Add lane" />
+                        </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Grid>
+                <Grid item xs={8}>
+                    {lanes[selectedLaneIndex] !== undefined && lanes[selectedLaneIndex] !== null 
+                    ? (
+                        <Grid container direction={"column"} height={"100%"}>
+                            <Grid item xs>
+                                <TextField required style={{marginBottom: "5%"}}margin="dense" id="name" name="name" label="Name" type="text" fullWidth variant="standard" value={name} onChange={(e) => setName(e.target.value)}/>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox checked={outputType} />
+                                    }
+                                    label="Output as presentation"
+                                    onChange={() => {setOutputType(!outputType)}}
+                                />
+                            </Grid>
+                            <Grid item style={{paddingLeft: "max", alignContent: "rigth"}}>
+                                <Box display="flex" justifyContent="flex-end" gap={4}>
+                                    <Button color="error" onClick={deleteCurrentLane}>
+                                        Delete lane
+                                    </Button>
+                                    <Button color="secondary" onClick={handleClose}>
+                                        Close
+                                    </Button>
+                                    <Button color="primary" onClick={editCurrentLane}>
+                                        Save
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    ) 
+                    : (<p>Select a lane to edit</p>)}
+                </Grid>
+            </Grid>
         </Dialog>
     )
 }

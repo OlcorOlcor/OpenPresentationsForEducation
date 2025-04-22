@@ -47,6 +47,18 @@ function EditorApp() {
         }
     }, [imported]);
 
+    useEffect(() => {
+        if (lanes.length >= 1 && selectedLeftLaneIndex === -1) {
+            setSelectedLeftLaneIndex(0);
+        }
+        if (lanes.length >= 1 && selectedRightLaneIndex === -1) {
+            setSelectedRightLaneIndex(0);
+        }
+    }, [lanes]);
+
+    const observer = new ResizeObserver((entries) => {});
+    observer.observe(document.querySelector("body")!);
+
     function addLane() {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
@@ -57,22 +69,18 @@ function EditorApp() {
             } else if (selectedRightLaneIndex !== -1) {
                 numberOfSlides = lanes[selectedRightLaneIndex].getContent().length;
             }
-            for (let i = 0; i < numberOfSlides; ++i) {
+            slides.push(new SlideElement([], false, [], [], {}, {}));
+            for (let i = 1; i < numberOfSlides; ++i) {
                 slides.push(null);
             }
             updatedLanes.push(new Lane(slides, oldLanes.length.toString()));
-            if (selectedLeftLaneIndex === -1) {
-                setSelectedLeftLaneIndex(updatedLanes.length - 1);
-            } else if (selectedRightLaneIndex === -1) {
-                setSelectedRightLaneIndex(updatedLanes.length - 1);
-            }
             return updatedLanes;
         });
         setRawCode((oldCode) => {
             let updatedCode = [...oldCode];
             updatedCode.push([""]);
             return updatedCode;
-        })
+        });
     }
     
     function deleteLane(index: number): void {
@@ -87,7 +95,11 @@ function EditorApp() {
             } else {
                 index = -1;
             }
-            if (leftLane) {
+            if (updatedLanes.length === 0) {
+                setSelectedLeftLaneIndex(-1);
+                setSelectedRightLaneIndex(-1);
+            }
+            else if (leftLane) {
                 setSelectedLeftLaneIndex(index);
                 if (index === -1) {
                     setSelectedRightLaneIndex(0);

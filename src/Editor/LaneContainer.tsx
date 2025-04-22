@@ -131,7 +131,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let updatedSlides = [...updatedLanes[selectedLaneIndex].getContent()];
             let active = (updatedSlides[index] == null) ? true : !updatedSlides[index]!.isActive();
-            let updatedSlide = (updatedSlides[index] == null) ? new SlideElement([]) : new SlideElement(updatedSlides[index]!.getContent(), active);
+            let updatedSlide = (updatedSlides[index] == null) ? new SlideElement([], active) : new SlideElement(updatedSlides[index]!.getContent(), active);
             updatedSlides[index] = updatedSlide;
             updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName(), updatedLanes[selectedLaneIndex].outputsAsPresentation());
             return updatedLanes;

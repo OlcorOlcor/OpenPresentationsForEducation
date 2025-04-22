@@ -13,6 +13,9 @@ import { Lane } from "../Model/PresentationModel";
 import { ViewMode } from "./ViewMode";
 import ImageDialog from "./ImageDialog";
 import StyleURLDialog from "./StyleURLDialog";
+import { useColorMode } from './ThemeContext';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 interface MenuProps {
     importPresentation(file: File): void;
@@ -71,6 +74,7 @@ const AppMenu: React.FC<MenuProps> = ({
     const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const styleInputRef = React.useRef<HTMLInputElement>(null);
+    const { mode, toggleColorMode } = useColorMode();
 
     const handleExportClose = () => {
         setAnchorElExport(null);
@@ -198,6 +202,9 @@ const AppMenu: React.FC<MenuProps> = ({
                     <a href=".">Open Slide Editor</a>
                 </Typography>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                <IconButton onClick={toggleColorMode} color="inherit">
+                    {mode === "light" ? (<DarkModeIcon />) : (<LightModeIcon/>)}
+                </IconButton>
                     <Button color="inherit" onClick={handleFileClick} aria-controls="file-menu" aria-haspopup="true" endIcon={<KeyboardArrowDownIcon />}>
                         File
                     </Button>
