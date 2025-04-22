@@ -2,7 +2,6 @@ import { Avatar, Box, Button, Dialog, DialogTitle, Grid, List, ListItem, ListIte
 import React, { useEffect, useState } from "react";
 import { Add, Image } from "@mui/icons-material";
 import { ImageFile } from "../Model/PresentationTypes";
-import ImageFormDialog from "./ImageFormDialog";
 
 interface ImageDialogProps {
     dialogOpen: boolean;
