@@ -14,6 +14,7 @@ import EmptyLane from "./EmptyLane";
 import modelSchema from "../Model/model-schema.json";
 import Ajv from "ajv";
 import { ViewMode } from "./ViewMode";
+import { useLocation } from "react-router-dom";
 
 function EditorApp() {
 
@@ -36,6 +37,7 @@ function EditorApp() {
     const [rightEditorData, setRightEditorData] = useState<string>(introSlide);
     const [selectedLeftSlideIndex, setSelectedLeftSlideIndex] = useState<number>(0);
     const [selectedRightSlideIndex, setSelectedRightSlideIndex] = useState<number>(0);
+    const location = useLocation();
 
     useEffect(() => {
         if (imported) {
@@ -46,6 +48,31 @@ function EditorApp() {
             setImported(false);
         }
     }, [imported]);
+
+    useEffect(() => {
+        console.log("test");
+        const params = new URLSearchParams(location.search);
+        console.log(params.get("tutorial"));
+        if (params.get("tutorial") === "true") {
+            fetch("tutorial_presentation.json")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Tutorial file not found.");
+                }
+                console.log(response.text());
+                return response.blob();
+            })
+            .then((blob) => {
+                console.log(blob.text());
+                const file = new File([blob], "tutorial_presentation.json", { type: "application/json" });
+                importPresentation(file);
+            })
+            .catch((err) => {
+                console.error("Failed to load tutorial:", err);
+                alert("Failed to load tutorial presentation.");
+            });
+        }
+    }, []);
 
     useEffect(() => {
         if (lanes.length >= 1 && selectedLeftLaneIndex === -1) {
