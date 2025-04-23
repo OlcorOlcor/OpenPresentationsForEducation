@@ -18,10 +18,10 @@ import { useLocation } from "react-router-dom";
 
 function EditorApp() {
 
-    const introSlide: string = "# Welcome to **Open Slides (working title)**\n\nYou can start working on your presentation right away, or you can click [here]() for a tutorial presentation.";
+    const introSlide: string = "# Welcome to **Open Slides (working title)**\n\nYou can start working on your presentation right away, or you can click [here](.#/app?tutorial=true) for a tutorial presentation.";
 
     const [lanes, setLanes] = useState<Lane[]>([
-        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides (working title)")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement("", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
+        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides (working title)")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement(".#/app?tutorial=true", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
     const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[introSlide]]);
@@ -68,7 +68,7 @@ function EditorApp() {
                 alert("Failed to load tutorial presentation.");
             });
         }
-    }, []);
+    }, [location]);
 
     useEffect(() => {
         if (lanes.length >= 1 && selectedLeftLaneIndex === -1) {
