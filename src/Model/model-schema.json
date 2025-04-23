@@ -151,7 +151,7 @@
                     "required": ["listType", "globalMetadataTags", "metadata"]
                 }
             },
-            "required": ["type", "content", "attributes", "metadataTags"]
+            "required": ["type", "content", "attributes"]
         },
         "TableData": {
             "type": "object",
