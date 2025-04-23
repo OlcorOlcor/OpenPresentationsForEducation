@@ -250,9 +250,12 @@ function EditorApp() {
     }
 
     function newProject() {
-        setLanes([new Lane([new SlideElement([])], "first"), new Lane([new SlideElement([])], "second")]);
+        setLanes([new Lane([new SlideElement([], false)], "first"), new Lane([new SlideElement([], false)], "second")]);
         setSelectedLeftLaneIndex(0);
         setSelectedRightLaneIndex(1);
+        setRawCode([[""], [""]]);
+        setLeftEditorData("");
+        setRightEditorData("");
         setConstraints({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null, tables: null});
         setMetadata([]);
     }
