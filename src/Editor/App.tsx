@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import EditorApp from './EditorApp';
 import { ThemeModeProvider } from './ThemeContext';
@@ -6,12 +6,12 @@ import { ThemeModeProvider } from './ThemeContext';
 function App() {
     
   return (
-    <Router>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/app" element={<ThemeModeProvider><EditorApp /></ThemeModeProvider>}/>
       </Routes>
-    </Router>
+    </HashRouter>
   );
 }
 
