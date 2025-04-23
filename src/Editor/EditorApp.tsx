@@ -50,20 +50,16 @@ function EditorApp() {
     }, [imported]);
 
     useEffect(() => {
-        console.log("test");
         const params = new URLSearchParams(location.search);
-        console.log(params.get("tutorial"));
         if (params.get("tutorial") === "true") {
             fetch("tutorial_presentation.json")
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Tutorial file not found.");
                 }
-                console.log(response.text());
                 return response.blob();
             })
             .then((blob) => {
-                console.log(blob.text());
                 const file = new File([blob], "tutorial_presentation.json", { type: "application/json" });
                 importPresentation(file);
             })
