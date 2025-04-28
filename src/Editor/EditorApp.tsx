@@ -40,6 +40,33 @@ function EditorApp() {
     const location = useLocation();
 
     useEffect(() => {
+        const listener = (event: any) => {
+            if (event.ctrlKey && event.altKey && event.key === "s") {
+                event.preventDefault();
+                exportPresentationAsJSON();
+            } else if (event.ctrlKey && event.altKey && event.key === "n") {
+                event.preventDefault();
+                newProject();
+            } else if (event.ctrlKey && event.altKey && event.key === "m") {
+                event.preventDefault();
+                setLanes((oldLanes) => {
+                    let updatedLanes = [...oldLanes];
+                    let resultLanes: Lane[] = [];
+                    updatedLanes.forEach((lane) => {
+                        resultLanes.push(new Lane([...lane.getContent(), null], lane.getName(), lane.outputsAsPresentation()));
+                    });
+                    return resultLanes;
+                });
+            } 
+        }
+        window.addEventListener("keydown", listener);
+
+        return () => {
+            window.removeEventListener("keydown", listener);
+        }
+    }, []);
+
+    useEffect(() => {
         if (imported) {
             setLeftEditorData(rawCode[0][0]);
             if (rawCode.length > 1) {
