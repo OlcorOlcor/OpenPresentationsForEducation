@@ -22,6 +22,7 @@ interface EditorModuleProps {
     addSlide(): void;
     addSlideAt(index: number): void;
     setSlideActive(index: number): void;
+    reorderSlides(oldIndex: number, newIndex: number): void;
     deleteSlideAt(index: number): void;
     regenerateSlide(index: number): void;
     constraints: Constraints;
@@ -42,6 +43,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     slideMode,
     addSlide,
     addSlideAt,
+    reorderSlides,
     setSlideActive,
     deleteSlideAt,
     regenerateSlide,
@@ -104,6 +106,7 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                 elements={slides}
                 onSelect={selectSlide}
                 onActivate={activateSlide}
+                reorderSlides={reorderSlides}
                 constraints={constraints}
                 slideAnalysis={slideAnalysis}
             />
