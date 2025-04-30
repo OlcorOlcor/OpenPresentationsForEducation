@@ -7,6 +7,7 @@ import LaneMenu from "./LaneMenu";
 import { MarkdownParser } from "../Model/MarkdownParser";
 import { PresentationParser } from "../Model/PresentationParser";
 import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
+import { arrayMove } from "@dnd-kit/sortable";
 
 interface LaneContainerProps {
     lanes: Lane[];
@@ -110,6 +111,17 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         });
     }
 
+    function reoderSlides(oldIndex: number, newIndex: number) {
+        setLanes(oldLanes => {
+            const updatedLanes = [...oldLanes];
+            const lane = updatedLanes[selectedLaneIndex];
+            const slides = lane.getContent();
+            const newSlides = arrayMove(slides, oldIndex, newIndex);
+            updatedLanes[selectedLaneIndex] = new Lane(newSlides, lane.getName(), lane.outputsAsPresentation());
+            return updatedLanes;
+        });
+    }
+
     function deleteSlideAt(index: number) {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
@@ -194,6 +206,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     slideMode={slideMode}
                     addSlide={addSlide}
                     addSlideAt={addSlideAt}
+                    reorderSlides={reoderSlides}
                     setSlideActive={setSlideActive}
                     deleteSlideAt={deleteSlideAt}
                     regenerateSlide={regenerateSlide}

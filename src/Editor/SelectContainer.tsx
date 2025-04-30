@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./css/SlideSelect.css";
-import { IconButton, Button, Pagination, PaginationItem, Popover, Tooltip, Grid, Fab, Box, ButtonGroup } from "@mui/material";
+import { Button, Popover, Tooltip, Grid, ButtonGroup } from "@mui/material";
 import { SlideElement } from "../Model/PresentationModel";
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Constraints } from "../Model/PresentationTypes";
 import AddIcon from '@mui/icons-material/Add';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ToggleOffIcon from '@mui/icons-material/ToggleOff';
-import ToggleOnIcon from '@mui/icons-material/ToggleOn';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent} from "@dnd-kit/core";
+import { SortableContext, horizontalListSortingStrategy} from "@dnd-kit/sortable";
+import SortableSlideItem from "./SlideItem";
+
 interface SelectContainerProps {
     elements: (SlideElement | null)[];
     selectedSlideIndex: number;
@@ -20,6 +21,7 @@ interface SelectContainerProps {
     onAddAfter: () => void;
     onDelete: () => void;
     onActivate: () => void;
+    reorderSlides: (oldIndex: number, newIndex: number) => void;
     constraints: Constraints;
     slideAnalysis: Constraints;
 }
@@ -32,12 +34,14 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
     onDelete,
     onAddAfter,
     onActivate,
+    reorderSlides,
     constraints,
     slideAnalysis
 }) => {
     const [infoOpen, setInfoOpen] = useState<boolean>(false);
     const [warningMessageOpen, setWarningMessageOpen] = useState<boolean>(false);
     const iconRef = useRef<HTMLButtonElement>(null);
+    const sensors = useSensors(useSensor(PointerSensor));
     
     useEffect(() => {
         if (!isSlideCorrect()) {
@@ -88,35 +92,39 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
         return true;
     }
 
+
+    function handleDragEnd(event: DragEndEvent) {
+        if (!event.over) return;
+
+        const oldIndex = Number(event.active.id.toString().replace("slide-", ""));
+        const newIndex = Number(event.over.id.toString().replace("slide-", ""));
+
+        if (oldIndex !== newIndex) {
+            reorderSlides(oldIndex, newIndex);
+        } else {
+            select(newIndex);
+        }
+    }
+
     return (
         <Grid container spacing={1} style={{marginBottom: "3%"}}>
             <Grid item xs>
-                <Pagination
-                    count={elements.length}
-                    shape="rounded"
-                    variant="outlined"
-                    page={selectedSlideIndex + 1}
-                    onChange={(_, number) => select(number - 1)}
-                    renderItem={(item) => {
-                        if (
-                            item.type === "start-ellipsis" ||
-                            item.type === "end-ellipsis" ||
-                            item.type === "previous" ||
-                            item.type === "next"
-                        ) {
-                            return <PaginationItem {...item} />;
-                        }
-                        return (
-                            <PaginationItem
-                                {...item}
-                                className={`
-                                    ${elements[(item.page as number) - 1]?.isActive() ? "active" : "inactive"} 
-                                    ${((item.page as number) - 1) === selectedSlideIndex ? "selected" : ""}
-                                `}
-                            />
-                        );
-                    }}
-                />
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={elements.map((_, idx) => `slide-${idx}`)} strategy={horizontalListSortingStrategy}>
+                        <div style={{ display: "flex", flexDirection: "row", marginBottom: "1rem" }}>
+                            {elements.map((el, index) => (
+                                <SortableSlideItem
+                                    key={`slide-${index}`}
+                                    id={`slide-${index}`}
+                                    index={index}
+                                    isActive={el?.isActive() ?? false}
+                                    isSelected={index === selectedSlideIndex}
+                                    onClick={() => select(index)}
+                                />
+                            ))}
+                        </div>
+                    </SortableContext>
+                </DndContext>
             </Grid>
             <Grid item>
                 <ButtonGroup>

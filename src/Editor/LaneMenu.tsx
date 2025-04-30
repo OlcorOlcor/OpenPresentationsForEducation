@@ -43,7 +43,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
 
     return (
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={6} md={6}>
                 <FormControl fullWidth size="small">
                     <InputLabel id="laneSelectLabel">Active lane:</InputLabel>
                     <Select
@@ -61,7 +61,7 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={6} md={6}>
                 <FormControl fullWidth size="small">
                     <InputLabel id="mode-select-label">View:</InputLabel>
                     <Select

@@ -15,6 +15,7 @@ import modelSchema from "../Model/model-schema.json";
 import Ajv from "ajv";
 import { ViewMode } from "./ViewMode";
 import { useLocation } from "react-router-dom";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 function EditorApp() {
 
@@ -38,6 +39,9 @@ function EditorApp() {
     const [selectedLeftSlideIndex, setSelectedLeftSlideIndex] = useState<number>(0);
     const [selectedRightSlideIndex, setSelectedRightSlideIndex] = useState<number>(0);
     const location = useLocation();
+
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));  
 
     useEffect(() => {
         const listener = (event: any) => {
@@ -336,7 +340,7 @@ function EditorApp() {
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>
                 {viewMode === ViewMode.SPLIT ? (
-                    <Grid container style={{height: "100%"}} spacing={2}>
+                    <Grid container direction={isSmallScreen ? "column" : "row"} style={{height: "100%"}} spacing={2}>
                         <Grid item xs={6} style={{height: "100%"}}>
                             {selectedLeftLaneIndex !== -1 && lanes[selectedLeftLaneIndex] ? (
                                 <LaneContainer
