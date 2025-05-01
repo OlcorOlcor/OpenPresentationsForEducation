@@ -118,6 +118,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             const slides = lane.getContent();
             const newSlides = arrayMove(slides, oldIndex, newIndex);
             updatedLanes[selectedLaneIndex] = new Lane(newSlides, lane.getName(), lane.outputsAsPresentation());
+            setSelectedSlideIndex(newIndex);
             return updatedLanes;
         });
     }

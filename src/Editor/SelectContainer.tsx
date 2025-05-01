@@ -9,7 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent} from "@dnd-kit/core";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent, DragStartEvent} from "@dnd-kit/core";
 import { SortableContext, horizontalListSortingStrategy} from "@dnd-kit/sortable";
 import SortableSlideItem from "./SlideItem";
 
@@ -98,18 +98,20 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
 
         const oldIndex = Number(event.active.id.toString().replace("slide-", ""));
         const newIndex = Number(event.over.id.toString().replace("slide-", ""));
-
+        
         if (oldIndex !== newIndex) {
             reorderSlides(oldIndex, newIndex);
-        } else {
-            select(newIndex);
         }
+    }
+
+    function handleDragStart(event: DragStartEvent) {
+        select(Number(event.active.id.toString().replace("slide-", "")));
     }
 
     return (
         <Grid container spacing={1} style={{marginBottom: "3%"}}>
             <Grid item xs>
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
                     <SortableContext items={elements.map((_, idx) => `slide-${idx}`)} strategy={horizontalListSortingStrategy}>
                         <div style={{ display: "flex", flexDirection: "row", marginBottom: "1rem" }}>
                             {elements.map((el, index) => (
