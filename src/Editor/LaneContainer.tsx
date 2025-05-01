@@ -74,6 +74,10 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }, [selectedLaneIndex]);
 
     useEffect(() => {
+        updateEditor();
+    }, [rawCode])
+
+    useEffect(() => {
         if (!ignoreSync.current) {
             regenerateSlide(selectedSlideIndex);
         }
@@ -117,6 +121,11 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             const lane = updatedLanes[selectedLaneIndex];
             const slides = lane.getContent();
             const newSlides = arrayMove(slides, oldIndex, newIndex);
+            setRawCode((oldCode => {
+                const newCode = [...oldCode];
+                newCode[selectedLaneIndex] = arrayMove(rawCode, oldIndex, newIndex);
+                return newCode;
+            }));
             updatedLanes[selectedLaneIndex] = new Lane(newSlides, lane.getName(), lane.outputsAsPresentation());
             return updatedLanes;
         });
