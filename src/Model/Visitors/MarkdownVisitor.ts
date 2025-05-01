@@ -187,7 +187,7 @@ export class MarkdownVisitor implements IVisitor {
         }
         this.result += " ";
         element.getContent().forEach((c) => c.accept(this));
-        this.result += "\n";
+        this.result += "\n\n";
     }
 
     /**
