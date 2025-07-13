@@ -31,6 +31,7 @@ interface LaneContainerProps {
     images: ImageFile[];
     metadata: Metadata[];
     initialView: boolean;
+    css: string;
 }
 
 const LaneContainer: React.FC<LaneContainerProps> = ({
@@ -54,7 +55,8 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     setImported,
     images,
     metadata,
-    initialView
+    initialView,
+    css
 }) => {
     const [editorView, setEditorView] = useState<boolean>(initialView);
     const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0, tables: 0});
@@ -226,6 +228,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     images={images}
                     metadata={metadata}
                     frontMatter={frontMatter}
+                    css={css}
                 />
             </Grid>
         </Grid>

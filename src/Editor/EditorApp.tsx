@@ -365,6 +365,7 @@ function EditorApp() {
                                     images={images}
                                     metadata={metadata}
                                     initialView={true}
+                                    css={styles.content}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid>
@@ -392,6 +393,7 @@ function EditorApp() {
                                     images={images}
                                     metadata={metadata}
                                     initialView={false}
+                                    css={styles.content}
                                 />
                             ) : ( <EmptyLane addLane={addLane}/> ) }
                         </Grid> 
@@ -421,6 +423,7 @@ function EditorApp() {
                                 images={images}
                                 metadata={metadata}
                                 initialView={true}
+                                css={styles.content}
                             />
                         ) : ( <EmptyLane addLane={addLane}/> ) }
                     </Grid>

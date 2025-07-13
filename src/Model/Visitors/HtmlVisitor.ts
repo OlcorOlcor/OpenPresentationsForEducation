@@ -252,7 +252,14 @@ export class HtmlVisitor implements IVisitor {
             this.result += "<section>";
         }
         element.getContent().forEach((c) => {
+            this.result += "<div style=\"height: 100%\" ";
+            const fm = element.getFrontMatter();
+            Object.keys(element.getFrontMatter()).forEach(k => {
+                this.result += " data-" + k + "=" + fm[k];
+            });
+            this.result += ">";
             c.accept(this);
+            this.result += "</div>"
         });
         if (this.revealOutput) {
             this.result += "</section>";

@@ -31,6 +31,7 @@ interface EditorModuleProps {
     images: ImageFile[];
     metadata: Metadata[];
     frontMatter: any;
+    css: string;
 }
 
 const EditorModule: React.FC<EditorModuleProps> = ({
@@ -52,7 +53,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     updateEditor,
     images,
     metadata,
-    frontMatter
+    frontMatter,
+    css
 }) => {
 
     const [previewStyleClass, setPreviewStyleClass] = useState<string>("");
@@ -122,14 +124,14 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                     <div></div>
                 )
             ) : !slideMode ? (
-                <Preview data={editorData} layout={previewStyleClass}/>
+                <Preview html={editorData} css={css} layout={previewStyleClass}/>
             ) : slides[selectedSlideIndex] == null ? (
-                <Preview data={""} layout={""}/>
+                <Preview html={""} css={""} layout={""}/>
             ) : (
                 (() => {
                     let visitor = new HtmlVisitor(false, images, metadata);
                     visitor.visitSlideNode(slides[selectedSlideIndex]!);
-                    return <Preview data={visitor.getResult()} layout={previewStyleClass}/>;
+                    return <Preview html={visitor.getResult()} css={css} layout={previewStyleClass}/>;
                 })()
             )}
         </Grid>
