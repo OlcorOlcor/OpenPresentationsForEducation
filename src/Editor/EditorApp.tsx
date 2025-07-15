@@ -18,11 +18,10 @@ import { useLocation } from "react-router-dom";
 import { useMediaQuery, useTheme } from "@mui/material";
 
 function EditorApp() {
-
-    const introSlide: string = "# Welcome to **Open Slides**\n\nYou can start working on your presentation right away, or you can click [here](.#/editor?tutorial=true) for a tutorial presentation.";
+    const introSlide: string = "# Welcome to **Open Slides**\n\nYou can start working on your presentation right away, or you load a new presentation or a tutorial in File > New!";
 
     const [lanes, setLanes] = useState<Lane[]>([
-        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement(".#/editor?tutorial=true", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
+        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you load a new presentation or a tutorial in File > New!")], [], {})], true)], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
     const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[introSlide]]);
@@ -336,7 +335,7 @@ function EditorApp() {
     }
 
     function loadTutorial() {
-        fetch("/tutorial_presentation.json")
+        fetch("tutorial_presentation.json")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Tutorial file not found.");
