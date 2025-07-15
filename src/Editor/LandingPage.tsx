@@ -20,7 +20,7 @@ function LandingPage() {
                 <Typography variant="h2" style={{width: "100%", marginBottom: "5%"}}>
                     Welcome to Open Slides
                 </Typography>
-                <Button variant="contained" color="primary" size="large" onClick={() => navigate("/app")}>
+                <Button variant="contained" color="primary" size="large" onClick={() => navigate("/editor")}>
                     Get Started
                 </Button>
             </Container>

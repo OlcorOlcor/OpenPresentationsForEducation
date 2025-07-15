@@ -197,7 +197,6 @@ export type Lane = {
     content: (Slide | null)[];
     attributes: { 
         name: string; 
-        compile: boolean 
     };
 };
 

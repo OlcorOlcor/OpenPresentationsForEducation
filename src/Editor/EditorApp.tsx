@@ -4,7 +4,7 @@ import "./css/App.css";
 import { BoldElement, HeadingElement, Lane, LinkElement, ParagraphElement, SlideElement, TextElement } from "../Model/PresentationModel";
 import { PresentationParser } from "../Model/PresentationParser";
 import LaneContainer from "./LaneContainer";
-import AppMenu from "./Menu";
+import AppMenu from "./AppMenu";
 import { HtmlVisitor } from "../Model/Visitors/HtmlVisitor";
 import { JsonVisitor } from "../Model/Visitors/JsonVisitor";
 import { MarkdownVisitor } from "../Model/Visitors/MarkdownVisitor";
@@ -19,10 +19,10 @@ import { useMediaQuery, useTheme } from "@mui/material";
 
 function EditorApp() {
 
-    const introSlide: string = "# Welcome to **Open Slides (working title)**\n\nYou can start working on your presentation right away, or you can click [here](.#/app?tutorial=true) for a tutorial presentation.";
+    const introSlide: string = "# Welcome to **Open Slides**\n\nYou can start working on your presentation right away, or you can click [here](.#/app?tutorial=true) for a tutorial presentation.";
 
     const [lanes, setLanes] = useState<Lane[]>([
-        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides (working title)")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement(".#/app?tutorial=true", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
+        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement(".#/app?tutorial=true", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
     const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[introSlide]]);
@@ -57,7 +57,7 @@ function EditorApp() {
                     let updatedLanes = [...oldLanes];
                     let resultLanes: Lane[] = [];
                     updatedLanes.forEach((lane) => {
-                        resultLanes.push(new Lane([...lane.getContent(), null], lane.getName(), lane.outputsAsPresentation()));
+                        resultLanes.push(new Lane([...lane.getContent(), null], lane.getName()));
                     });
                     return resultLanes;
                 });
@@ -181,13 +181,6 @@ function EditorApp() {
         }
     }
 
-    function swapLane() {
-        const leftIndex = selectedLeftLaneIndex;
-        const rightIndex = selectedRightLaneIndex;
-        setSelectedLeftLaneIndex(rightIndex);
-        setSelectedRightLaneIndex(leftIndex);
-    }
-
     function selectLeftLane(index: number) {
         setSelectedLeftLaneIndex(index);
     }
@@ -284,6 +277,35 @@ function EditorApp() {
         saveAs(blob, "output.json");
     }
 
+    async function exportPresentationToURL(url: string) {
+        let visitor = new JsonVisitor();
+        let jsonLanes: pt.Lane[] = [];
+
+        lanes.forEach(lane => {
+            visitor.visitLaneNode(lane);
+            jsonLanes.push(visitor.getResult());
+        });
+
+        const exportJson = {lanes: jsonLanes, metadata, constraints, imageFiles: images, styles};
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(exportJson)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to upload. Status ${response.status}: ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+        }
+    }
+
+
     function exportCss() {
         const blob = new Blob([styles.content], {type: "text"});
         let fileName: string = styles.name !== "" ? styles.name : "style";
@@ -291,14 +313,33 @@ function EditorApp() {
     }
 
     function exportPresentationAsReveal() {
-        let visitor = new HtmlVisitor(true, [], metadata);
+        let visitor = new HtmlVisitor(true, images, metadata);
         // TODO only works on the first lane for now
         if (lanes.length === 0) {
             return;
         }
         let lane = lanes[0];
         visitor.visitLaneNode(lane);
-        let res = visitor.getResult();
+        let res: string = "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css\" /><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css\" />";
+        res += "<style>" + styles.content + "</style>"
+        res += "</head><body>";
+        res += visitor.getResult();
+        res += "<script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/markdown/markdown.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js\"></script><script>Reveal.initialize();</script></body></html>";
+        const blob = new Blob([res], {type: "html"});
+        saveAs(blob, "output_reveal.html");
+    }
+
+    function exportPresentationAsHtml(js: string) {
+        let res: string = "<html><head>";
+        res += "<style>" + styles.content + "</style>";
+        res += "</head><body>";
+        lanes.forEach(lane => {
+            let visitor = new HtmlVisitor(false, images, metadata);
+            visitor.visitLaneNode(lane);
+            res += visitor.getResult();
+        });
+        res += "<script src=\"" + js + "\"></script>";
+        res += "</body></html>";
         const blob = new Blob([res], {type: "html"});
         saveAs(blob, "output.html");
     }
@@ -321,6 +362,7 @@ function EditorApp() {
                     importPresentation={importPresentation}
                     exportPresentationAsJson={exportPresentationAsJSON}
                     exportPresentationAsReveal={exportPresentationAsReveal}
+                    exportPresentationAsHtml={exportPresentationAsHtml}
                     metadata={metadata}
                     setMetadata={setMetadata}
                     constraints={constraints}
@@ -336,6 +378,7 @@ function EditorApp() {
                     exportCss={exportCss}
                     newStyle={importStyleFromFile}
                     setStyle={setStyles}
+                    exportPresentationToURL={exportPresentationToURL}
                 />
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>

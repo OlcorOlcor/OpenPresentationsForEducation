@@ -483,12 +483,9 @@
                     "properties": {
                         "name": {
                             "type": "string"
-                        },
-                        "compile": {
-                            "type": "boolean"
                         }
                     },
-                    "required": ["name", "compile"]
+                    "required": ["name"]
                 }
             },
             "required": ["type", "content", "attributes"]

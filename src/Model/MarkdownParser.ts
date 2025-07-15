@@ -645,7 +645,7 @@ export class MarkdownParser {
                     console.log("closing");
                     break;
                 default:
-                    // TODO handle default
+                    break;
             }
         });
 

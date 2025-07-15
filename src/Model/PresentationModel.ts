@@ -781,7 +781,6 @@ export class SlideElement extends BaseElement implements IVisitable {
 export class Lane implements IVisitable {
     private content: (SlideElement | null)[];
     private name: string;
-    private outputAsPresentation: boolean;
 
     /**
      * Constructs a Lane.
@@ -790,10 +789,9 @@ export class Lane implements IVisitable {
      * @param name - The name of the lane.
      * @param output - Whether to output as a presentation.
      */
-    constructor(content: (SlideElement | null)[], name: string, output: boolean = true) {
+    constructor(content: (SlideElement | null)[], name: string) {
         this.content = content;
         this.name = name;
-        this.outputAsPresentation = output;
     }
 
     /**
@@ -810,14 +808,6 @@ export class Lane implements IVisitable {
      */
     getName(): string {
         return this.name;
-    }
-
-    /**
-     * Check whether the lane outputs as presentation.
-     * @returns True if the lane should output as presentation, false if not.
-     */
-    outputsAsPresentation(): boolean {
-        return this.outputAsPresentation;
     }
 
     /**

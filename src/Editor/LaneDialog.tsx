@@ -16,12 +16,10 @@ interface LaneEditDialogProps {
 const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialogOpen, setLanes, addLane, deleteLane, selectLane}) => {
     const [selectedLaneIndex, setSelectedLaneIndex] = useState<number>(0);
     const [name, setName] = useState<string>("");
-    const [outputType, setOutputType] = useState<boolean>(true);
 
     useEffect(() => {
         if (lanes[selectedLaneIndex] !== undefined && lanes[selectedLaneIndex] !== null) {
             setName(lanes[selectedLaneIndex].getName());
-            setOutputType(lanes[selectedLaneIndex].outputsAsPresentation());
         }
     }, [selectedLaneIndex, lanes]);
 
@@ -35,7 +33,7 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
     function editCurrentLane() {
         setLanes(prev => {
             let newLanes = [...prev];
-            let newLane = new Lane(newLanes[selectedLaneIndex].getContent(), name, outputType);
+            let newLane = new Lane(newLanes[selectedLaneIndex].getContent(), name);
             newLanes[selectedLaneIndex] = newLane;
             return newLanes;
         });
@@ -59,7 +57,7 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
                     <List sx={{ pt: 0 }}>
                         {lanes.map((lane, i) => (
                         <ListItem disablePadding key={i} >
-                            <ListItemButton style={{textAlign: "center"}} onClick={() => handleListItemClick(i)}>
+                            <ListItemButton onClick={() => handleListItemClick(i)}>
                             <ListItemText primary={lane.getName()} />
                             </ListItemButton>
                         </ListItem>
@@ -85,13 +83,6 @@ const LaneDialog: React.FC<LaneEditDialogProps> = ({lanes, dialogOpen, setDialog
                         <Grid container direction={"column"} height={"100%"}>
                             <Grid item xs>
                                 <TextField required style={{marginBottom: "5%"}}margin="dense" id="name" name="name" label="Name" type="text" fullWidth variant="standard" value={name} onChange={(e) => setName(e.target.value)}/>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox checked={outputType} />
-                                    }
-                                    label="Output as presentation"
-                                    onChange={() => {setOutputType(!outputType)}}
-                                />
                             </Grid>
                             <Grid item style={{paddingLeft: "max", alignContent: "rigth"}}>
                                 <Box display="flex" justifyContent="flex-end" gap={4}>

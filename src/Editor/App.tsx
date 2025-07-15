@@ -9,7 +9,7 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/app" element={<ThemeModeProvider><EditorApp /></ThemeModeProvider>}/>
+        <Route path="/editor" element={<ThemeModeProvider><EditorApp /></ThemeModeProvider>}/>
       </Routes>
     </HashRouter>
   );
