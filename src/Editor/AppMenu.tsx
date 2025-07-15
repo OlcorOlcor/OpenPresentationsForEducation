@@ -41,6 +41,7 @@ interface AppMenuProps {
     newStyle(file: File): void;
     setStyle: React.Dispatch<React.SetStateAction<Styles>>;
     exportPresentationToURL(url: string): void;
+    loadTutorial(): void;
 }
 
 const AppMenu: React.FC<AppMenuProps> = ({
@@ -63,7 +64,8 @@ const AppMenu: React.FC<AppMenuProps> = ({
     exportCss,
     newStyle,
     setStyle,
-    exportPresentationToURL
+    exportPresentationToURL,
+    loadTutorial
 }) => {
     const [metadataDialogOpen, setMetadataDialogOpen] = useState<boolean>(false);
     const [constraintsDialogOpen, setConstraintsDialogOpen] = useState<boolean>(false);
@@ -75,6 +77,7 @@ const AppMenu: React.FC<AppMenuProps> = ({
     const [saveDialogOpen, setSaveDialogOpen] = useState(false);
     const [exportOpen, setExportOpen] = useState(false);
     const [anchorElSave, setAnchorElSave] = useState(null);
+    const [anchorElNew, setAnchorElNew] = useState(null);
     const [anchorElFile, setAnchorElFile] = useState(null);
     const [anchorElView, setAnchorElView] = useState(null);
     const [anchorElExport, setAnchorElExport] = useState(null);
@@ -238,6 +241,15 @@ const AppMenu: React.FC<AppMenuProps> = ({
         setAnchorElStyles(null);
     }
 
+    function handleNewClick(event: any) {
+        setAnchorElNew(event.currentTarget);
+    }
+    
+    function handleNewClose() {
+        setAnchorElNew(null);
+    }
+
+
     return (
         <AppBar position="static" style={{ padding: "0 1%" }}>
             <Toolbar disableGutters sx={{ justifyContent: "space-between", width: "100%" }}>
@@ -252,7 +264,11 @@ const AppMenu: React.FC<AppMenuProps> = ({
                         File
                     </Button>
                     <Menu id="file-menu" anchorEl={anchorElFile} open={Boolean(anchorElFile)} onClose={handleFileClose}>
-                        <MenuItem onClick={newFile}>New</MenuItem>
+                        <MenuItem onClick={handleNewClick}>New <KeyboardArrowRightIcon /></MenuItem>
+                        <Menu id="new-menu" anchorEl={anchorElNew} open={Boolean(anchorElNew)} onClose={handleNewClose} anchorOrigin={{ vertical: "top", horizontal: "right"}} transformOrigin={{ vertical: "top", horizontal: "left" }}>
+                            <MenuItem onClick={() => { newFile(); handleNewClose(); }}>Empty</MenuItem>
+                            <MenuItem onClick={() => { loadTutorial(); handleNewClose(); }}>Tutorial</MenuItem>
+                        </Menu>
                         <MenuItem onClick={handleOpenFileClick}>Open <KeyboardArrowRightIcon /></MenuItem>
                         <Menu id="open-menu" anchorEl={anchorElOpenFile} open={Boolean(anchorElOpenFile)} onClose={handleOpenFileClose} anchorOrigin={{ vertical: "top", horizontal: "right"}} transformOrigin={{ vertical: "top", horizontal: "left" }}>
                             <MenuItem onClick={handleImportClick}>From file</MenuItem>

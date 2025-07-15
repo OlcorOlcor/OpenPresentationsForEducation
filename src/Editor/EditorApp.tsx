@@ -19,10 +19,10 @@ import { useMediaQuery, useTheme } from "@mui/material";
 
 function EditorApp() {
 
-    const introSlide: string = "# Welcome to **Open Slides**\n\nYou can start working on your presentation right away, or you can click [here](.#/app?tutorial=true) for a tutorial presentation.";
+    const introSlide: string = "# Welcome to **Open Slides**\n\nYou can start working on your presentation right away, or you can click [here](.#/editor?tutorial=true) for a tutorial presentation.";
 
     const [lanes, setLanes] = useState<Lane[]>([
-        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement(".#/app?tutorial=true", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
+        new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you can click "), new LinkElement(".#/editor?tutorial=true", "here"), new TextElement(" for a tutorial presentation.")], [], {})], true)], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
     const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[introSlide]]);
@@ -79,27 +79,6 @@ function EditorApp() {
             setImported(false);
         }
     }, [imported]);
-
-    useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        if (params.get("tutorial") === "true") {
-            fetch("tutorial_presentation.json")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Tutorial file not found.");
-                }
-                return response.blob();
-            })
-            .then((blob) => {
-                const file = new File([blob], "tutorial_presentation.json", { type: "application/json" });
-                importPresentation(file);
-            })
-            .catch((err) => {
-                console.error("Failed to load tutorial:", err);
-                alert("Failed to load tutorial presentation.");
-            });
-        }
-    }, [location]);
 
     useEffect(() => {
         if (lanes.length >= 1 && selectedLeftLaneIndex === -1) {
@@ -232,6 +211,7 @@ function EditorApp() {
         reader.onload = (e) => {
             let content = e.target?.result as string;
             let parser = new PresentationParser();
+            console.log(content);
             let json: pt.Presentation = JSON.parse(content);
 
             const ajv = new Ajv();
@@ -355,6 +335,24 @@ function EditorApp() {
         setMetadata([]);
     }
 
+    function loadTutorial() {
+        fetch("/tutorial_presentation.json")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Tutorial file not found.");
+            }
+            return response.blob();
+        })
+        .then((blob) => {
+            const file = new File([blob], "tutorial_presentation.json", { type: "application/json" });
+            importPresentation(file);
+        })
+        .catch((err) => {
+            console.error("Failed to load tutorial:", err);
+            alert("Failed to load tutorial presentation.");
+        });
+    }
+
     return (
         <Grid container direction="column" style={{height: "100vh"}} spacing={2}>
             <Grid item>
@@ -379,6 +377,7 @@ function EditorApp() {
                     newStyle={importStyleFromFile}
                     setStyle={setStyles}
                     exportPresentationToURL={exportPresentationToURL}
+                    loadTutorial={loadTutorial}
                 />
             </Grid>
             <Grid item xs style={{height: "fit-content"}}>
