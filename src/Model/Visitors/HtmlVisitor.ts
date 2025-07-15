@@ -145,16 +145,17 @@ export class HtmlVisitor implements IVisitor {
     visitImageNode(element: pm.ImageElement): void {
         let src = element.getContent();
         if (element.getContent().substring(0, 4) === "img:") {
-            let name = element.getContent().substring(4)
+            let name = element.getContent().substring(4);
             this.images.forEach(img => {
                 if (img.name === name) {
                     src = img.fileBase64;
+                    console.log("HERE" + src);
                     return;
                 }
-            })
+            });
         }
-        this.result +=
-            '<img src="' + src + '" alt="' + element.getAlias() + '">';
+        console.log(src);
+        this.result += '<img src="' + src + '" alt="' + element.getAlias() + '">';
     }
 
     /**
@@ -251,16 +252,16 @@ export class HtmlVisitor implements IVisitor {
         if (this.revealOutput) {
             this.result += "<section>";
         }
-        element.getContent().forEach((c) => {
-            this.result += "<div style=\"height: 100%\" ";
-            const fm = element.getFrontMatter();
-            Object.keys(element.getFrontMatter()).forEach(k => {
-                this.result += " data-" + k + "=" + fm[k];
-            });
-            this.result += ">";
-            c.accept(this);
-            this.result += "</div>"
+        this.result += "<div";
+        const fm = element.getFrontMatter();
+        Object.keys(element.getFrontMatter()).forEach(k => {
+            this.result += " data-" + k + "=" + fm[k];
         });
+        this.result += ">";
+        element.getContent().forEach((c) => {
+            c.accept(this);
+        });
+        this.result += "</div>"
         if (this.revealOutput) {
             this.result += "</section>";
         }
@@ -275,12 +276,14 @@ export class HtmlVisitor implements IVisitor {
         if (this.revealOutput) {
             this.result += "<div class=\"reveal\"><div class=\"slides\">";
         }
+        this.result += "<div data-lane=" + element.getName() + ">";
         element.getContent().forEach((slide) => {
            if (slide == null) {
                 return;
            }
            slide.accept(this);
         });  
+        this.result += "</div>";
         if (this.revealOutput) {
             this.result += "</div></div>";
         }

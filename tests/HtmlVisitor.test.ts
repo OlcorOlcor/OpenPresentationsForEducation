@@ -168,16 +168,16 @@ test("slide", () => {
     let paragraph = getSimpleParagraph([getTextNode("text")]);
     let slide = new pm.SlideElement([paragraph], true, [], [], {}, {});
     visitor.visitSlideNode(slide);
-    expect(visitor.getResult()).toEqual("<p>text</p>");
+    expect(visitor.getResult()).toEqual("<div><p>text</p></div>");
 });
 
 test("lane", () => {
     let visitor = getSimpleVisitor();
     let paragraph = getSimpleParagraph([getTextNode("text")]);
     let slide = new pm.SlideElement([paragraph], true, [], [], {}, {});
-    let lane = new pm.Lane([slide], "lane", true);
+    let lane = new pm.Lane([slide], "lane");
     visitor.visitLaneNode(lane);
-    expect(visitor.getResult()).toEqual("<p>text</p>");
+    expect(visitor.getResult()).toEqual("<div data-lane=lane><div><p>text</p></div></div>");
 });
 
 test("paragraph metadata", () => {

@@ -60,9 +60,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
 }) => {
     const [editorView, setEditorView] = useState<boolean>(initialView);
     const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0, tables: 0});
-    const [slideMode, setSlideMode] = useState<boolean>(
-        lanes[selectedLaneIndex].outputsAsPresentation(),
-    );
     const [frontMatter, setFrontMatter] = useState<any>(lanes[selectedLaneIndex].getContent()[selectedSlideIndex]?.getFrontMatter())
     let ignoreSync = useRef<boolean>(true);
     useEffect(() => {
@@ -100,7 +97,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let resultLanes: Lane[] = [];
             updatedLanes.forEach((lane) => {
-                resultLanes.push(new Lane([...lane.getContent(), null], lane.getName(), lane.outputsAsPresentation()));
+                resultLanes.push(new Lane([...lane.getContent(), null], lane.getName()));
             });
             return resultLanes;
         });
@@ -111,7 +108,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let resultLanes: Lane[] = [];
             updatedLanes.forEach((lane) => {
-                resultLanes.push(new Lane([...lane.getContent().slice(0, index + 1), null, ...lane.getContent().slice(index + 1)], lane.getName(), lane.outputsAsPresentation()));
+                resultLanes.push(new Lane([...lane.getContent().slice(0, index + 1), null, ...lane.getContent().slice(index + 1)], lane.getName()));
             });
             return resultLanes;
         });
@@ -128,7 +125,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                 newCode[selectedLaneIndex] = arrayMove(rawCode, oldIndex, newIndex);
                 return newCode;
             }));
-            updatedLanes[selectedLaneIndex] = new Lane(newSlides, lane.getName(), lane.outputsAsPresentation());
+            updatedLanes[selectedLaneIndex] = new Lane(newSlides, lane.getName());
             setSelectedSlideIndex(newIndex);
             return updatedLanes;
         });
@@ -140,7 +137,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let returnLanes: Lane[] = [];
             updatedLanes.forEach((lane) => {
                 let updatedSlides = lane.getContent().filter((_, slideIndex) => slideIndex !== index);
-                returnLanes.push(new Lane(updatedSlides, lane.getName(), lane.outputsAsPresentation()));
+                returnLanes.push(new Lane(updatedSlides, lane.getName()));
             });
             if (selectedSlideIndex > 0) {
                 setSelectedSlideIndex(selectedSlideIndex - 1);
@@ -157,7 +154,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let active = (updatedSlides[index] == null) ? true : !updatedSlides[index]!.isActive();
             let updatedSlide = (updatedSlides[index] == null) ? new SlideElement([], active) : new SlideElement(updatedSlides[index]!.getContent(), active);
             updatedSlides[index] = updatedSlide;
-            updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName(), updatedLanes[selectedLaneIndex].outputsAsPresentation());
+            updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName());
             return updatedLanes;
         });
     }
@@ -177,7 +174,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                 setSlideAnalysis(analysisVisitor.getResult());
                 setFrontMatter(updatedSlide.getFrontMatter());
             }
-            updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName(), updatedLanes[selectedLaneIndex].outputsAsPresentation());
+            updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName());
             return updatedLanes;
         });
     }
@@ -199,7 +196,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     selectedLaneIndex={selectedLaneIndex}
                     selectLane={selectLane}
                     otherLaneIndex={otherLaneIndex}
-                    setSlideMode={setSlideMode}
                     setEditorData={setEditorData}
                     editorView={editorView}
                     setEditorView={setEditorView}
@@ -215,7 +211,6 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     selectedSlideIndex={selectedSlideIndex}
                     setSelectedSlideIndex={setSelectedSlideIndex}
                     editorView={editorView}
-                    slideMode={slideMode}
                     addSlide={addSlide}
                     addSlideAt={addSlideAt}
                     reorderSlides={reoderSlides}

@@ -8,7 +8,7 @@ import * as pt from "../PresentationTypes";
  * The class implements the IVisitor interface.
  */
 export class JsonVisitor implements IVisitor {
-    private lane: pt.Lane = {type: "lane", content: [], attributes: {name: "", compile: true} };
+    private lane: pt.Lane = {type: "lane", content: [], attributes: {name: ""} };
     private stack: any[] = [];
 
     /**
@@ -242,7 +242,7 @@ export class JsonVisitor implements IVisitor {
      * @param element - The lane element to visit.
      */
     visitLaneNode(element: pm.Lane): void {
-        this.lane = {type: "lane", content: [], attributes: {name: element.getName(), compile: element.outputsAsPresentation()} };
+        this.lane = {type: "lane", content: [], attributes: {name: element.getName()} };
         element.getContent().forEach(slide => {
             if (slide == null || slide.isActive() === false) {
                 this.lane.content.push(null);

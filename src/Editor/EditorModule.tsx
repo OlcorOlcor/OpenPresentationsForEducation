@@ -6,10 +6,6 @@ import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
 import { useEffect, useState } from "react";
-import "./css/preview_css/default.css";
-//import "./css/preview_css/column_1.css";
-import "./css/preview_css/column_2.css";
-import "./css/preview_css/column_3.css";
 
 interface EditorModuleProps {
     editorData: string;
@@ -18,7 +14,6 @@ interface EditorModuleProps {
     selectedSlideIndex: number;
     setSelectedSlideIndex: React.Dispatch<React.SetStateAction<number>>;
     editorView: boolean;
-    slideMode: boolean;
     addSlide(): void;
     addSlideAt(index: number): void;
     setSlideActive(index: number): void;
@@ -41,7 +36,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     selectedSlideIndex,
     setSelectedSlideIndex,
     editorView,
-    slideMode,
     addSlide,
     addSlideAt,
     reorderSlides,
@@ -123,8 +117,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                 ) : (
                     <div></div>
                 )
-            ) : !slideMode ? (
-                <Preview html={editorData} css={css} layout={previewStyleClass}/>
             ) : slides[selectedSlideIndex] == null ? (
                 <Preview html={""} css={""} layout={""}/>
             ) : (

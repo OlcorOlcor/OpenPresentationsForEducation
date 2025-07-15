@@ -290,8 +290,7 @@ export class PresentationParser {
             object_lanes.push(
                 new pm.Lane(
                     this.getSlides(lane.content),
-                    lane.attributes.name,
-                    lane.attributes.compile
+                    lane.attributes.name
                 )
             );
         });

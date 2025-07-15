@@ -5,12 +5,12 @@ import * as pt from "../src/Model/PresentationTypes";
 import { L } from 'vitest/dist/chunks/reporters.d.CfRkRKN2.js';
 
 function getExpected(content: pt.OuterElement[]): pt.Lane {
-    return {type: "lane", content: [{type: "slide", content: content, attributes: { refs: [], frontMatter: {}, globalMetadataTags: [], metadata: {}}}], attributes: {name: "name", compile: true} };
+    return {type: "lane", content: [{type: "slide", content: content, attributes: { refs: [], frontMatter: {}, globalMetadataTags: [], metadata: {}}}], attributes: {name: "name"} };
 }
 
 function getLane(content: pm.OuterElement[]): pm.Lane {
     let slide = new pm.SlideElement(content, true, [], [], {}, {});
-    let lane = new pm.Lane([slide], "name", true);
+    let lane = new pm.Lane([slide], "name");
     return lane;
 }
 

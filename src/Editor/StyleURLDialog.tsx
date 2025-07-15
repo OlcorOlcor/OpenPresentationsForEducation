@@ -44,12 +44,16 @@ const LaneFormDialog: React.FC<StyleURLDialogProps> = ({dialogOpen, setDialogOpe
                 <DialogContentText>
                     Enter a URL of your style sheet.
                 </DialogContentText>
-                <TextField autoFocus required margin="dense" id="UTL" name="UTL" label="Url" type="url" fullWidth variant="standard" value={URL} onChange={(e) => setURL(e.target.value)}/>
+                <TextField required margin="dense" id="style" name="Style" label="Style URL" type="url" fullWidth variant="standard" value={URL} onChange={(e) => setURL(e.target.value)} size="small" />
                 {correctURL ? (<></>) : (<p>Incorrect URL submitted!</p>)}
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit}>Submit</Button>
+                <Button color="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button color="primary" onClick={handleSubmit}>
+                    Submit
+                </Button>
             </DialogActions>
         </Dialog>
     )

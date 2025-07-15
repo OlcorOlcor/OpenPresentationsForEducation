@@ -9,7 +9,6 @@ interface LaneMenuProps {
     selectedLaneIndex: number;
     selectLane(index: number): void;
     otherLaneIndex: number;
-    setSlideMode: React.Dispatch<React.SetStateAction<boolean>>;
     setEditorData: React.Dispatch<React.SetStateAction<string>>;
     editorView: boolean;
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
