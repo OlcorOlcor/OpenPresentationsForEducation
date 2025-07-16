@@ -19,11 +19,12 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import CustomExportDialog from "./CustomExportDialog";
 import ImportPresentationURLDialog from "./ImportPresentationURLDialog";
 import SaveToURLDialog from "./ExportPresentationURLDialog";
+import RevealExportDialog from "./RevealExportDialog";
 
 interface AppMenuProps {
     importPresentation(file: File): void;
     exportPresentationAsJson(): void;
-    exportPresentationAsReveal(): void;
+    exportPresentationAsReveal(main: Lane, secondary: Lane): void;
     exportPresentationAsHtml(js: string): void;
     metadata: Metadata[];
     setMetadata: React.Dispatch<React.SetStateAction<Metadata[]>>;
@@ -73,6 +74,7 @@ const AppMenu: React.FC<AppMenuProps> = ({
     const [imageDialogOpen, setImageDialogOpen] = useState<boolean>(false);
     const [styleURLDialogOpen, setStyleURLDialogOpen] = useState<boolean>(false);
     const [customExportOpen, setCustomExportOpen] = useState(false);
+    const [exportRevealDialogOpen, setExportRevealDialogOpen] = useState(false);
     const [presentationURLDialogOpen, setPresentationURLDialogOpen] = useState(false);
     const [saveDialogOpen, setSaveDialogOpen] = useState(false);
     const [exportOpen, setExportOpen] = useState(false);
@@ -83,7 +85,6 @@ const AppMenu: React.FC<AppMenuProps> = ({
     const [anchorElExport, setAnchorElExport] = useState(null);
     const [anchorElStyles, setAnchorElStyles] = useState(null);
     const [anchorElOpenFile, setAnchorElOpenFile] = useState(null);
-    const [anchorElExportHtml, setAnchorElExportHtml] = useState(null);
     const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileSubmenuAnchorEl, setMobileSubmenuAnchorEl] = useState<{ [key: string]: HTMLElement | null }>({ file: null, view: null });
 
@@ -153,13 +154,13 @@ const AppMenu: React.FC<AppMenuProps> = ({
         setAnchorElOpenFile(event.currentTarget);
     }
 
-    function handleExportHtmlClick(event: any) {
-        setAnchorElExportHtml(event.currentTarget);
-    };
+    function handleOpenRevealExport() {
+        setExportRevealDialogOpen(true);
+    }
 
-    function handleExportHtmlClose() {
-        setAnchorElExportHtml(null);
-    };
+    function handleCloseRevealExport() {
+        setExportRevealDialogOpen(false);
+    }
 
     function handleFileChange(event: any) {
         const file = event.target.files[0];
@@ -196,11 +197,6 @@ const AppMenu: React.FC<AppMenuProps> = ({
 
     function exportJson() {
         exportPresentationAsJson();
-        setExportOpen(false);
-    }
-
-    function exportReveal() {
-        exportPresentationAsReveal();
         setExportOpen(false);
     }
 
@@ -286,11 +282,8 @@ const AppMenu: React.FC<AppMenuProps> = ({
                         </Menu>
                         <MenuItem onClick={handleExportClick}>Export <KeyboardArrowRightIcon /></MenuItem>
                         <Menu id="export-menu" anchorEl={anchorElExport} open={Boolean(anchorElExport)} onClose={handleExportClose} anchorOrigin={{ vertical: "top", horizontal: "right" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
-                            <MenuItem onClick={handleExportHtmlClick}>Export HTML <KeyboardArrowRightIcon /></MenuItem>
-                                <Menu id="export-html-menu" anchorEl={anchorElExportHtml} open={Boolean(anchorElExportHtml)} onClose={handleExportHtmlClose} anchorOrigin={{ vertical: "top", horizontal: "right" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
-                                <MenuItem onClick={exportReveal}>Reveal</MenuItem>
-                                <MenuItem onClick={() => { handleExportClose(); handleOpenCustomExport();}}>Custom</MenuItem>
-                            </Menu>
+                            <MenuItem onClick={() => {handleExportClose(); handleOpenRevealExport();}}>Reveal to Reveal</MenuItem>
+                            <MenuItem onClick={() => { handleExportClose(); handleOpenCustomExport();}}>Export to plain HTML</MenuItem>
                             <MenuItem onClick={exportCss}>Export styles</MenuItem>
                         </Menu>
                     </Menu>
@@ -329,11 +322,8 @@ const AppMenu: React.FC<AppMenuProps> = ({
                 </Menu>
                 <MenuItem onClick={handleSubmenuOpen("export")}>Export<KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} /> </MenuItem>
                 <Menu anchorEl={mobileSubmenuAnchorEl.export} open={Boolean(mobileSubmenuAnchorEl.export)} onClose={() => handleSubmenuClose("export")} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                    <MenuItem onClick={handleSubmenuOpen("exportHtml")}>Export HTML<KeyboardArrowLeftIcon style={{ marginLeft: "auto" }}/></MenuItem>
-                    <Menu anchorEl={mobileSubmenuAnchorEl.exportHtml} open={Boolean(mobileSubmenuAnchorEl.exportHtml)} onClose={() => handleSubmenuClose("exportHtml")} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                        <MenuItem onClick={() => { exportReveal(); handleMobileMenuClose(); }}>Reveal</MenuItem>
-                        <MenuItem onClick={() => { handleExportClose(); handleOpenCustomExport(); handleMobileMenuClose();}}>Custom</MenuItem>
-                    </Menu>
+                    <MenuItem onClick={() => {handleExportClose(); handleOpenRevealExport(); handleMobileMenuClose();}}>Reveal to Reveal</MenuItem>
+                    <MenuItem onClick={() => { handleExportClose(); handleOpenCustomExport(); handleMobileMenuClose();}}>Export to plain HTML</MenuItem>
                     <MenuItem onClick={() => { exportCss(); handleMobileMenuClose(); }}>Export styles</MenuItem>
                 </Menu>
             </Menu>
@@ -353,12 +343,13 @@ const AppMenu: React.FC<AppMenuProps> = ({
             <MetadataDialog dialogOpen={metadataDialogOpen} setDialogOpen={setMetadataDialogOpen} metadata={metadata} setMetadata={setMetadata} />
             <ConstraintsDialog dialogOpen={constraintsDialogOpen} setDialogOpen={setConstraintsDialogOpen} constraints={constraints} setConstraints={setConstraints} />
             <LaneDialog lanes={lanes} dialogOpen={lanesDialogOpen} setDialogOpen={setLanesDialogOpen} setLanes={setLanes} addLane={addLane} deleteLane={deleteLane} selectLane={(index: number) => { }} />
-            <ImageDialog dialogOpen={imageDialogOpen} setDialogOpen={setImageDialogOpen} images={images} setImages={setImages}></ImageDialog>
-            <StyleURLDialog dialogOpen={styleURLDialogOpen} setDialogOpen={setStyleURLDialogOpen} setStyle={setStyle}></StyleURLDialog>
-            <CustomExportDialog open={customExportOpen} onClose={handleCloseCustomExport} onExport={exportPresentationAsHtml}/>
+            <ImageDialog dialogOpen={imageDialogOpen} setDialogOpen={setImageDialogOpen} images={images} setImages={setImages} />
+            <StyleURLDialog dialogOpen={styleURLDialogOpen} setDialogOpen={setStyleURLDialogOpen} setStyle={setStyle} />
+            <CustomExportDialog open={customExportOpen} onClose={handleCloseCustomExport} onExport={exportPresentationAsHtml} />
             <ImportPresentationURLDialog dialogOpen={presentationURLDialogOpen} setDialogOpen={setPresentationURLDialogOpen} importPresentation={importPresentation}/>
             <SaveToURLDialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)} savePresentation={exportPresentationToURL} />
-
+            <RevealExportDialog lanes={lanes} open={exportRevealDialogOpen} onClose={handleCloseRevealExport} exportPresentationAsReveal={exportPresentationAsReveal} />
+            
             <input type="file" accept=".json" style={{ display: "none" }} ref={fileInputRef} onChange={handleFileChange} />
             <input type="file" accept=".css" style={{ display: "none" }} ref={styleInputRef} onChange={handleStyleFileChange} />
         </AppBar>

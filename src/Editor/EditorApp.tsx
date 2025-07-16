@@ -24,17 +24,17 @@ function EditorApp() {
         new Lane([new SlideElement([new HeadingElement(1, [new TextElement("Welcome to "), new BoldElement([new TextElement("Open Slides")])], [], {}), new ParagraphElement([new TextElement("You can start working on your presentation right away, or you load a new presentation or a tutorial in File > New!")], [], {})], true)], "first"),
         new Lane([new SlideElement([])], "second"),
     ]);
-    const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[introSlide]]);
+    const [rawCode, setRawCode] = useState<string[][]>([[introSlide],[""]]);
     const [metadata, setMetadata] = useState<pt.Metadata[]>([]);
     const [images, setImages] = useState<pt.ImageFile[]>([]);
     const [styles, setStyles] = useState<pt.Styles>({name: "", content: ""});
     const [constraints, setConstraints] = useState<pt.Constraints>({words: null, characters: null, images: null, links: null, headings: null, bullet_points: null, tables: null});
     const [selectedLeftLaneIndex, setSelectedLeftLaneIndex] = useState<number>(0);
-    const [selectedRightLaneIndex, setSelectedRightLaneIndex] = useState<number>(0);
+    const [selectedRightLaneIndex, setSelectedRightLaneIndex] = useState<number>(1);
     const [imported, setImported] = useState<boolean>(false);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.SPLIT);
     const [leftEditorData, setLeftEditorData] = useState<string>(introSlide);
-    const [rightEditorData, setRightEditorData] = useState<string>(introSlide);
+    const [rightEditorData, setRightEditorData] = useState<string>("");
     const [selectedLeftSlideIndex, setSelectedLeftSlideIndex] = useState<number>(0);
     const [selectedRightSlideIndex, setSelectedRightSlideIndex] = useState<number>(0);
     const location = useLocation();
@@ -291,14 +291,11 @@ function EditorApp() {
         saveAs(blob, fileName);
     }
 
-    function exportPresentationAsReveal() {
+    function exportPresentationAsReveal(main: Lane, secondary: Lane) {
         let visitor = new HtmlVisitor(true, images, metadata);
-        // TODO only works on the first lane for now
-        if (lanes.length === 0) {
-            return;
-        }
-        let lane = lanes[0];
-        visitor.visitLaneNode(lane);
+        // TODO only works on the main lane for now
+        
+        visitor.visitLaneNode(main);
         let res: string = "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css\" /><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css\" />";
         res += "<style>" + styles.content + "</style>"
         res += "</head><body>";
