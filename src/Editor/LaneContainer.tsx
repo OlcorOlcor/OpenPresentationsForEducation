@@ -65,6 +65,12 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     useEffect(() => {
         ignoreSync.current = true;
         updateEditor();
+        const visitor = new AnalysisVisitor();
+        let slide = lanes[selectedLaneIndex].getContent()[selectedSlideIndex];
+        if (slide) {
+            visitor.visitSlideNode(slide);
+            setSlideAnalysis(visitor.getResult());
+        }
     }, [selectedSlideIndex])
 
     useEffect(() => {
