@@ -245,7 +245,6 @@ const AppMenu: React.FC<AppMenuProps> = ({
         setAnchorElNew(null);
     }
 
-
     return (
         <AppBar position="static" style={{ padding: "0 1%" }}>
             <Toolbar disableGutters sx={{ justifyContent: "space-between", width: "100%" }}>
@@ -260,27 +259,27 @@ const AppMenu: React.FC<AppMenuProps> = ({
                         File
                     </Button>
                     <Menu id="file-menu" anchorEl={anchorElFile} open={Boolean(anchorElFile)} onClose={handleFileClose}>
-                        <MenuItem onClick={handleNewClick}>New <KeyboardArrowRightIcon /></MenuItem>
+                        <MenuItem onClick={handleNewClick}>New <KeyboardArrowRightIcon style={{ marginLeft: "auto" }}/></MenuItem>
                         <Menu id="new-menu" anchorEl={anchorElNew} open={Boolean(anchorElNew)} onClose={handleNewClose} anchorOrigin={{ vertical: "top", horizontal: "right"}} transformOrigin={{ vertical: "top", horizontal: "left" }}>
                             <MenuItem onClick={() => { newFile(); handleNewClose(); }}>Empty</MenuItem>
                             <MenuItem onClick={() => { loadTutorial(); handleNewClose(); }}>Tutorial</MenuItem>
                         </Menu>
-                        <MenuItem onClick={handleOpenFileClick}>Open <KeyboardArrowRightIcon /></MenuItem>
+                        <MenuItem onClick={handleOpenFileClick}>Open <KeyboardArrowRightIcon style={{ marginLeft: "auto" }}/></MenuItem>
                         <Menu id="open-menu" anchorEl={anchorElOpenFile} open={Boolean(anchorElOpenFile)} onClose={handleOpenFileClose} anchorOrigin={{ vertical: "top", horizontal: "right"}} transformOrigin={{ vertical: "top", horizontal: "left" }}>
                             <MenuItem onClick={handleImportClick}>From file</MenuItem>
                             <MenuItem onClick={() => { setPresentationURLDialogOpen(true); handleOpenFileClose(); }}>From URL</MenuItem>
                         </Menu>
-                        <MenuItem onClick={handleSaveClick}>Save <KeyboardArrowRightIcon /></MenuItem>
+                        <MenuItem onClick={handleSaveClick}>Save <KeyboardArrowRightIcon style={{ marginLeft: "auto" }}/></MenuItem>
                         <Menu id="save-menu" anchorEl={anchorElSave} open={Boolean(anchorElSave)} onClose={handleSaveClose} anchorOrigin={{ vertical: "top", horizontal: "right"}} transformOrigin={{ vertical: "top", horizontal: "left" }}>
                             <MenuItem onClick={exportJson}>Save as File</MenuItem>
                             <MenuItem onClick={handleSaveOpen}>Save to URL</MenuItem>
                         </Menu>
-                        <MenuItem onClick={handleStylesClick}>Import style <KeyboardArrowRightIcon /></MenuItem>
+                        <MenuItem onClick={handleStylesClick}>Import style <KeyboardArrowRightIcon style={{ marginLeft: "auto" }}/></MenuItem>
                         <Menu id="styles-menu" anchorEl={anchorElStyles} open={Boolean(anchorElStyles)} onClose={handleStylesClose} anchorOrigin={{ vertical: "top", horizontal: "right"}} transformOrigin={{ vertical: "top", horizontal: "left" }}>
                             <MenuItem onClick={handleStylesImportClick}>From file</MenuItem>
                             <MenuItem onClick={handleStylesImportURLClick}>From URL</MenuItem>
                         </Menu>
-                        <MenuItem onClick={handleExportClick}>Export <KeyboardArrowRightIcon /></MenuItem>
+                        <MenuItem onClick={handleExportClick}>Export <KeyboardArrowRightIcon style={{ marginLeft: "auto" }}/></MenuItem>
                         <Menu id="export-menu" anchorEl={anchorElExport} open={Boolean(anchorElExport)} onClose={handleExportClose} anchorOrigin={{ vertical: "top", horizontal: "right" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
                             <MenuItem onClick={() => {handleExportClose(); handleOpenRevealExport();}}>Reveal to Reveal</MenuItem>
                             <MenuItem onClick={() => { handleExportClose(); handleOpenCustomExport();}}>Export to plain HTML</MenuItem>
@@ -308,13 +307,21 @@ const AppMenu: React.FC<AppMenuProps> = ({
             <Menu anchorEl={mobileMenuAnchorEl} open={isMobileMenuOpen} onClose={handleMobileMenuClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }}>
             <MenuItem onClick={handleSubmenuOpen("file")}> File <KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} /></MenuItem>
             <Menu anchorEl={mobileSubmenuAnchorEl.file} open={Boolean(mobileSubmenuAnchorEl.file)} onClose={() => handleSubmenuClose("file")} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                <MenuItem onClick={() => { newFile(); handleMobileMenuClose(); }}>New</MenuItem>
-                <MenuItem onClick={handleOpenFileClick}>Open <KeyboardArrowLeftIcon /></MenuItem>
+                <MenuItem onClick={handleNewClick}>New <KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} /></MenuItem>
+                <Menu id="new-menu" anchorEl={anchorElNew} open={Boolean(anchorElNew)} onClose={handleNewClose} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                    <MenuItem onClick={() => { newFile(); handleNewClose(); handleMobileMenuClose(); }}>Empty</MenuItem>
+                    <MenuItem onClick={() => { loadTutorial(); handleNewClose(); handleMobileMenuClose(); }}>Tutorial</MenuItem>
+                </Menu>
+                <MenuItem onClick={handleOpenFileClick}>Open <KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} /></MenuItem>
                 <Menu id="open-menu" anchorEl={anchorElOpenFile} open={Boolean(anchorElOpenFile)} onClose={handleOpenFileClose} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
                     <MenuItem onClick={handleImportClick}>From file</MenuItem>
                     <MenuItem onClick={() => { setPresentationURLDialogOpen(true); handleOpenFileClose(); }}>From URL</MenuItem>
                 </Menu>
-                <MenuItem onClick={() => { exportJson(); handleMobileMenuClose(); }}>Save</MenuItem>
+                <MenuItem onClick={handleSaveClick}>Save <KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} /></MenuItem>
+                <Menu id="save-menu" anchorEl={anchorElSave} open={Boolean(anchorElSave)} onClose={handleSaveClose} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                    <MenuItem onClick={() => {exportJson(); handleMobileMenuClose();}}>Save as File</MenuItem>
+                    <MenuItem onClick={() => {handleSaveOpen(); handleMobileMenuClose();}}>Save to URL</MenuItem>
+                </Menu>
                 <MenuItem onClick={handleSubmenuOpen("style")}>Import style <KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} /></MenuItem>
                 <Menu anchorEl={mobileSubmenuAnchorEl.style} open={Boolean(mobileSubmenuAnchorEl.style)} onClose={() => handleSubmenuClose("style")} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
                     <MenuItem onClick={() => { handleStylesImportClick(); handleMobileMenuClose(); }}>From file</MenuItem>

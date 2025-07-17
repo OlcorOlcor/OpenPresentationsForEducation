@@ -27,10 +27,6 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     addLane,
     deleteLane
 }) => {
-    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-    function showSettings() {
-        setDialogOpen(true);
-    }
 
     function handleLaneChange(e: any) {
         selectLane(e.target.value as number);

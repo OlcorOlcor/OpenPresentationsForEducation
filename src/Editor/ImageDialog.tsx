@@ -122,8 +122,8 @@ const ImageDialog: React.FC<ImageDialogProps> = ({dialogOpen, setDialogOpen, ima
                             </Grid>
                             <Grid item>
                                 <Box display="flex" justifyContent="flex-end" gap={4}>
-                                    <Button onClick={handleClose} color="secondary">Cancel</Button>
-                                    <Button onClick={updateImage} color="primary">Submit</Button>
+                                    <Button onClick={handleClose} color="secondary">Close</Button>
+                                    <Button onClick={updateImage} color="primary">Save</Button>
                                 </Box>
                             </Grid>
                         </Grid>
