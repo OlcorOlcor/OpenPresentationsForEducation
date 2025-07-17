@@ -1,17 +1,12 @@
 import {
-    Button,
-    Checkbox,
     FormControl,
-    FormControlLabel,
-    FormGroup,
     Grid,
     InputLabel,
     MenuItem,
     Select,
 } from "@mui/material";
-import { Lane, SlideElement } from "../Model/PresentationModel";
-import React, { useState } from "react";
-import LaneDialog from "./LaneDialog";
+import { Lane } from "../Model/PresentationModel";
+import React from "react";
 
 interface LaneMenuProps {
     lanes: Lane[];

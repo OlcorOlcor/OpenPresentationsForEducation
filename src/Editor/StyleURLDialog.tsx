@@ -5,16 +5,9 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    FormControlLabel,
-    Grid,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
-    TextField,
+    TextField
 } from "@mui/material";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Styles } from "../Model/PresentationTypes";
 
 interface StyleURLDialogProps {

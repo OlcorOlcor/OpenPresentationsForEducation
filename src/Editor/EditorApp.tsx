@@ -1,11 +1,10 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import "./css/App.css";
 import {
     BoldElement,
     HeadingElement,
     Lane,
-    LinkElement,
     ParagraphElement,
     SlideElement,
     TextElement,
@@ -24,7 +23,6 @@ import Ajv from "ajv";
 import { ViewMode } from "./ViewMode";
 import { useLocation } from "react-router-dom";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { BreakfastDiningRounded } from "@mui/icons-material";
 
 function EditorApp() {
     const introSlide: string =

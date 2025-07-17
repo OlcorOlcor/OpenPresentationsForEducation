@@ -6,8 +6,6 @@ import {
     DialogActions,
     Button,
     TextField,
-    CircularProgress,
-    Typography,
 } from "@mui/material";
 
 interface SaveToURLDialogProps {

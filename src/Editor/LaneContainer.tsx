@@ -277,13 +277,11 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     reorderSlides={reoderSlides}
                     setSlideActive={setSlideActive}
                     deleteSlideAt={deleteSlideAt}
-                    regenerateSlide={regenerateSlide}
                     constraints={constraints}
                     slideAnalysis={slideAnalysis}
                     updateEditor={updateEditor}
                     images={images}
                     metadata={metadata}
-                    frontMatter={frontMatter}
                     css={css}
                 />
             </Grid>

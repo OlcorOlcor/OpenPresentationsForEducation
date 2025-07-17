@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { useColorMode } from "./ThemeContext";
 

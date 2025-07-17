@@ -5,7 +5,6 @@ import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
-import { useEffect, useState } from "react";
 
 interface EditorModuleProps {
     editorData: string;
@@ -19,13 +18,11 @@ interface EditorModuleProps {
     setSlideActive(index: number): void;
     reorderSlides(oldIndex: number, newIndex: number): void;
     deleteSlideAt(index: number): void;
-    regenerateSlide(index: number): void;
     constraints: Constraints;
     slideAnalysis: Constraints;
     updateEditor(): void;
     images: ImageFile[];
     metadata: Metadata[];
-    frontMatter: any;
     css: string;
 }
 
@@ -41,13 +38,11 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     reorderSlides,
     setSlideActive,
     deleteSlideAt,
-    regenerateSlide,
     constraints,
     slideAnalysis,
     updateEditor,
     images,
     metadata,
-    frontMatter,
     css,
 }) => {
     function deleteSlide(): void {
