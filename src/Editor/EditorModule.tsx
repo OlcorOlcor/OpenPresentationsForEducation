@@ -51,18 +51,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     css
 }) => {
 
-    // const [selectedView, setSelectedView] = useState<any>(null);
-
-    //useEffect(() => {
-    //getView();
-    //}, [editorView]);
-    /*
-    function updateEditor() {
-        const visitor = new MarkdownVisitor();
-        visitor.visitSlideNode(slides[selectedSlideIndex]);
-        setEditorData(visitor.getResult());
-    }
-    */
     function deleteSlide(): void {
         deleteSlideAt(selectedSlideIndex);
     }
@@ -74,7 +62,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({
 
     function editorChange(editorData: string): void {
         setEditorData(editorData);
-        //regenerateSlide(selectedSlideIndex);
     }
 
     function activateSlide() {

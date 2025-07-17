@@ -161,10 +161,16 @@ function EditorApp() {
     }
 
     function selectLeftLane(index: number) {
+        if (rawCode[index][selectedLeftSlideIndex]) {
+            setLeftEditorData(rawCode[index][selectedLeftSlideIndex]);
+        }
         setSelectedLeftLaneIndex(index);
     }
 
     function selectRightLane(index: number) {
+        if (rawCode[index][selectedRightSlideIndex]) {
+            setRightEditorData(rawCode[index][selectedRightSlideIndex]);
+        }
         setSelectedRightLaneIndex(index);
     }
 
@@ -293,7 +299,7 @@ function EditorApp() {
     }
 
     function exportPresentationAsReveal(main: Lane, secondary: Lane) {
-        let res: string = "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css\" /><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css\" />";
+        let res: string = "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css\" /><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css\" <style>" + styles.content + "</style>/>";
         res += "<div class=\"reveal\"><div class=\"slides\">";
         let index = 0;
         main.getContent().forEach(mainSlide => {

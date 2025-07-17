@@ -74,13 +74,12 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }, [selectedSlideIndex])
 
     useEffect(() => {
-        setSelectedSlideIndex(0);
         updateEditor();
-    }, [selectedLaneIndex]);
+    }, [selectedLaneIndex, rawCode]);
 
-    useEffect(() => {
-        updateEditor();
-    }, [rawCode])
+    // useEffect(() => {
+    //     updateEditor();
+    // }, [rawCode])
 
     useEffect(() => {
         if (!ignoreSync.current) {

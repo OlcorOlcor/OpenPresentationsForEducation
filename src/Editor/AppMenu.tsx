@@ -281,7 +281,7 @@ const AppMenu: React.FC<AppMenuProps> = ({
                         </Menu>
                         <MenuItem onClick={handleExportClick}>Export <KeyboardArrowRightIcon style={{ marginLeft: "auto" }}/></MenuItem>
                         <Menu id="export-menu" anchorEl={anchorElExport} open={Boolean(anchorElExport)} onClose={handleExportClose} anchorOrigin={{ vertical: "top", horizontal: "right" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
-                            <MenuItem onClick={() => {handleExportClose(); handleOpenRevealExport();}}>Reveal to Reveal</MenuItem>
+                            <MenuItem onClick={() => {handleExportClose(); handleOpenRevealExport();}}>Export to Reveal</MenuItem>
                             <MenuItem onClick={() => { handleExportClose(); handleOpenCustomExport();}}>Export to plain HTML</MenuItem>
                             <MenuItem onClick={exportCss}>Export styles</MenuItem>
                         </Menu>
@@ -329,7 +329,7 @@ const AppMenu: React.FC<AppMenuProps> = ({
                 </Menu>
                 <MenuItem onClick={handleSubmenuOpen("export")}>Export<KeyboardArrowLeftIcon style={{ marginLeft: "auto" }} /> </MenuItem>
                 <Menu anchorEl={mobileSubmenuAnchorEl.export} open={Boolean(mobileSubmenuAnchorEl.export)} onClose={() => handleSubmenuClose("export")} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                    <MenuItem onClick={() => {handleExportClose(); handleOpenRevealExport(); handleMobileMenuClose();}}>Reveal to Reveal</MenuItem>
+                    <MenuItem onClick={() => {handleExportClose(); handleOpenRevealExport(); handleMobileMenuClose();}}>Export to Reveal</MenuItem>
                     <MenuItem onClick={() => { handleExportClose(); handleOpenCustomExport(); handleMobileMenuClose();}}>Export to plain HTML</MenuItem>
                     <MenuItem onClick={() => { exportCss(); handleMobileMenuClose(); }}>Export styles</MenuItem>
                 </Menu>
