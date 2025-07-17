@@ -1,10 +1,4 @@
-import {
-    FormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Select,
-} from "@mui/material";
+import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { Lane } from "../Model/PresentationModel";
 import React from "react";
 
