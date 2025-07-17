@@ -299,7 +299,7 @@ function EditorApp() {
     }
 
     function exportPresentationAsReveal(main: Lane, secondary: Lane) {
-        let res: string = "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css\" /><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css\" <style>" + styles.content + "</style>/>";
+        let res: string = "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css\" /><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css\" /><style>"+ styles.content +"</style></head>";
         res += "<div class=\"reveal\"><div class=\"slides\">";
         let index = 0;
         main.getContent().forEach(mainSlide => {
@@ -323,8 +323,8 @@ function EditorApp() {
             ++index;
         });
         
-        res += "<script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/markdown/markdown.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js\"></script><script>Reveal.initialize();</script></body></html>";
-        res += "<script src=\"plugin/notes/notes.js\"></script><script>Reveal.initialize({plugins: [RevealNotes],});</script>";
+        res += "<script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/markdown/markdown.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js\"></script><script>Reveal.initialize();</script></body>";
+        res += "<script src=\"plugin/notes/notes.js\"></script><script>Reveal.initialize({plugins: [RevealNotes],});</script></html>";
         const blob = new Blob([res], {type: "html"});
         saveAs(blob, "output_reveal.html");
     }
