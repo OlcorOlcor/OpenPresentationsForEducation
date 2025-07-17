@@ -51,16 +51,6 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     css
 }) => {
 
-    const [previewStyleClass, setPreviewStyleClass] = useState<string>("");
-    
-    useEffect(() => {
-        console.log(frontMatter);
-        if (!frontMatter.layout) {
-            return;
-        }
-        setPreviewStyleClass(frontMatter.layout);
-    }, [frontMatter]);
-
     // const [selectedView, setSelectedView] = useState<any>(null);
 
     //useEffect(() => {
@@ -117,13 +107,16 @@ const EditorModule: React.FC<EditorModuleProps> = ({
                 ) : (
                     <div></div>
                 )
-            ) : slides[selectedSlideIndex] == null ? (
-                <Preview html={""} css={""} layout={""}/>
             ) : (
                 (() => {
-                    let visitor = new HtmlVisitor(false, images, metadata);
-                    visitor.visitSlideNode(slides[selectedSlideIndex]!);
-                    return <Preview html={visitor.getResult()} css={css} layout={previewStyleClass}/>;
+                    console.log("here");
+                    let html = "";
+                    if (slides[selectedSlideIndex]) {
+                        let visitor = new HtmlVisitor(images, metadata);
+                        visitor.visitSlideNode(slides[selectedSlideIndex]!);
+                        html = visitor.getResult();
+                    }
+                    return <Preview html={html} css={css} />;
                 })()
             )}
         </Grid>

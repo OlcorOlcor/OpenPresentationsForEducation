@@ -335,7 +335,7 @@
                                                 {
                                                     "type": "text",
                                                     "content": [
-                                                        "The file dropdown menu is used for creating new presentations, exporting your current presentation and importing your already existing presentations."
+                                                        "The file dropdown menu is used for creating new presentations, exporting your current presentation and importing your already existing presentations as well as adding styles."
                                                     ]
                                                 }
                                             ]
@@ -592,7 +592,7 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "Lastly slides can be selected on the left."
+                                        "Lastly slides can be selected on the left as well as reordered by dragging them."
                                     ]
                                 }
                             ],
@@ -618,7 +618,7 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "Contents of the persenation"
+                                        "Contents of the presenation"
                                     ]
                                 }
                             ],
@@ -767,22 +767,13 @@
                             }
                         },
                         {
-                            "type": "blockquote",
+                            "type": "paragraph",
                             "content": [
                                 {
-                                    "type": "paragraph",
+                                    "type": "text",
                                     "content": [
-                                        {
-                                            "type": "text",
-                                            "content": [
-                                                "blockquotes"
-                                            ]
-                                        }
-                                    ],
-                                    "attributes": {
-                                        "globalMetadataTags": [],
-                                        "metadata": {}
-                                    }
+                                        "blockquotes"
+                                    ]
                                 }
                             ],
                             "attributes": {
@@ -909,7 +900,19 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "You can export your presentation by going into File > Export > Export JSON. Behind the scenes, the presentation is stored in one large JSON file, you can download this file to your file system by clicking this button."
+                                        "You can export your presentation in various ways."
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "\n"
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "All of them can be found in the File menu."
                                     ]
                                 }
                             ],
@@ -924,7 +927,87 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "Later the same file can be imported with the File > Open button."
+                                        "First we have the Save option. This will export the presentation in JSON. You can either save it locally or to a URL of your choosing."
+                                    ]
+                                }
+                            ],
+                            "attributes": {
+                                "globalMetadataTags": [],
+                                "metadata": {}
+                            }
+                        },
+                        {
+                            "type": "paragraph",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "Secondly we have exporting to HTML."
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "\n"
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "Currently there are two options supported."
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "\n"
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "First is the Reveal option which will export two lanes of your choosing in a reveal.js presentation."
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "\n"
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "The second is the custom option, this allows you to add custom HTML code to the presentation including but not limited to the "
+                                    ]
+                                },
+                                {
+                                    "type": "code",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "content": [
+                                                "script"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        " tag."
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "\n"
+                                    ]
+                                },
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "This way you can modify the presentation to your hearts desire."
                                     ]
                                 }
                             ],
@@ -1013,7 +1096,7 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "There you can add an image from our file system and name it for referencing in our presentation."
+                                        "There you can add an image from your file system and name it for referencing in our presentation."
                                     ]
                                 }
                             ],
@@ -1294,7 +1377,7 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "In addition to glabal and local metadata, we can define sections."
+                                        "In addition to global and local metadata, we can define sections."
                                     ]
                                 }
                             ],
@@ -1476,7 +1559,7 @@
                     "attributes": {
                         "refs": [],
                         "frontMatter": {
-                            "slide_number": "13"
+                            "slide_number": "10"
                         },
                         "globalMetadataTags": [],
                         "metadata": {}
@@ -1713,7 +1796,7 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "You can check what your slide contains with the information button in lane menu."
+                                        "You can check what your slide contains with the information button in editor menu."
                                     ]
                                 }
                             ],
@@ -1804,6 +1887,21 @@
                                     "type": "text",
                                     "content": [
                                         "Lastly you can assign pointers to any other slide of the presentation to jump to."
+                                    ]
+                                }
+                            ],
+                            "attributes": {
+                                "globalMetadataTags": [],
+                                "metadata": {}
+                            }
+                        },
+                        {
+                            "type": "paragraph",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "content": [
+                                        "You can experiment with these in the custom code snippet in the custom export option."
                                     ]
                                 }
                             ],

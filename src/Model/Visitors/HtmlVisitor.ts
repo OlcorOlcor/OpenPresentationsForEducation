@@ -9,15 +9,12 @@ import * as pt from "../PresentationTypes";
  */
 export class HtmlVisitor implements IVisitor {
     private result: string = "";
-    private revealOutput: boolean;
     private images: pt.ImageFile[] = [];
     private globalMetadata: pt.Metadata[];
     /**
      * Constructor for HtmlVisitor
-     * @param reveal_output - Determines whether the output should be formatted as Reveal.js presentation.
      */
-    constructor(reveal_output: boolean = false, images: pt.ImageFile[] = [], globalMetadata: pt.Metadata[]) {
-        this.revealOutput = reveal_output;
+    constructor(images: pt.ImageFile[] = [], globalMetadata: pt.Metadata[]) {
         this.images = images;
         this.globalMetadata = globalMetadata;
     }
@@ -249,22 +246,21 @@ export class HtmlVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        if (this.revealOutput) {
-            this.result += "<section>";
-        }
         this.result += "<div";
         const fm = element.getFrontMatter();
         Object.keys(element.getFrontMatter()).forEach(k => {
             this.result += " data-" + k + "=" + fm[k];
         });
+
+        element.getRefs().forEach(ref => {
+            this.result += " data-points_to=" + ref;
+        });
+        
         this.result += ">";
         element.getContent().forEach((c) => {
             c.accept(this);
         });
-        this.result += "</div>"
-        if (this.revealOutput) {
-            this.result += "</section>";
-        }
+        this.result += "</div>";
     }
     
     /**
@@ -273,9 +269,6 @@ export class HtmlVisitor implements IVisitor {
      */
     visitLaneNode(element: pm.Lane): void {
         this.result = "";
-        if (this.revealOutput) {
-            this.result += "<div class=\"reveal\"><div class=\"slides\">";
-        }
         this.result += "<div data-lane=" + element.getName() + ">";
         element.getContent().forEach((slide) => {
            if (slide == null) {
@@ -284,9 +277,6 @@ export class HtmlVisitor implements IVisitor {
            slide.accept(this);
         });  
         this.result += "</div>";
-        if (this.revealOutput) {
-            this.result += "</div></div>";
-        }
     }
 
     /**
