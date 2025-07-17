@@ -3,7 +3,7 @@ import * as pm from "../PresentationModel";
 
 /**
  * Class that filters slides based on keywords and metadata tags.
- * 
+ *
  * The class implements the IVisitor interface.
  */
 export class ReductionVisitor implements IVisitor {
@@ -26,8 +26,8 @@ export class ReductionVisitor implements IVisitor {
      * @param elementMetadata - The metadata of the element.
      */
     private checkMetadata(elementMetadata: string[]) {
-        elementMetadata.forEach(elementMetadata => {
-            this.metadataTags.forEach(metadata => {
+        elementMetadata.forEach((elementMetadata) => {
+            this.metadataTags.forEach((metadata) => {
                 if (elementMetadata === metadata) {
                     this.isSlideCompliant = true;
                     return;
@@ -38,11 +38,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a text node, checking for keyword compliance.
-     * 
+     *
      * @param element - The text element to visit.
      */
     visitTextNode(element: pm.TextElement): void {
-        this.keywords.forEach(k => {
+        this.keywords.forEach((k) => {
             if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
                 return;
@@ -52,7 +52,7 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a horizontal line element, checking for metadata compliance.
-     * 
+     *
      * @param element - The horizontal line element to visit.
      */
     visitHorizontalLineNode(element: pm.HorizontalLineElement): void {
@@ -64,7 +64,7 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits table element and checks for compliance.
-     * 
+     *
      * @param element - The table element to visit.
      */
     visitTableNode(element: pm.TableElement): void {
@@ -72,7 +72,7 @@ export class ReductionVisitor implements IVisitor {
         if (this.isSlideCompliant) {
             return;
         }
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -82,11 +82,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits table row element and checks for compliance.
-     * 
+     *
      * @param element - The table row element to visit.
      */
     visitTableRowNode(element: pm.TableRowElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -96,11 +96,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits table heading element and checks for compliance.
-     * 
+     *
      * @param element - The table heading element to visit.
      */
     visitTableHeadingNode(element: pm.TableHeadingElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -110,11 +110,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits table data element and checks for compliance.
-     * 
+     *
      * @param element - The table data element to visit.
      */
     visitTableDataNode(element: pm.TableDataElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -124,11 +124,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a bold node, checking its content for compliance.
-     * 
+     *
      * @param element - The bold element to visit.
      */
     visitBoldNode(element: pm.BoldElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -138,11 +138,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits an italic node, checking its content for compliance.
-     * 
+     *
      * @param element - The italic element to visit.
      */
     visitItalicNode(element: pm.ItalicElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -152,11 +152,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a code node, checking its content for compliance.
-     * 
+     *
      * @param element - The code element to visit.
      */
     visitCodeNode(element: pm.CodeElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -166,11 +166,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits an image node, checking for keyword compliance.
-     * 
+     *
      * @param element - The image element to visit.
      */
     visitImageNode(element: pm.ImageElement): void {
-        this.keywords.forEach(k => {
+        this.keywords.forEach((k) => {
             if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
                 return;
@@ -180,11 +180,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a link node, checking for keyword compliance.
-     * 
+     *
      * @param element - The link element to visit.
      */
     visitLinkNode(element: pm.LinkElement): void {
-        this.keywords.forEach(k => {
+        this.keywords.forEach((k) => {
             if (element.getContent().includes(k)) {
                 this.isSlideCompliant = true;
                 return;
@@ -193,7 +193,7 @@ export class ReductionVisitor implements IVisitor {
     }
     /**
      * Visits a section node, checking its metadata and content for compliance.
-     * 
+     *
      * @param element - The section element to visit.
      */
     visitSectionNode(element: pm.Section): void {
@@ -201,7 +201,7 @@ export class ReductionVisitor implements IVisitor {
         if (this.isSlideCompliant) {
             return;
         }
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -211,7 +211,7 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a paragraph node, checking its metadata and content for compliance.
-     * 
+     *
      * @param element - The paragraph element to visit.
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
@@ -219,7 +219,7 @@ export class ReductionVisitor implements IVisitor {
         if (this.isSlideCompliant) {
             return;
         }
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -229,7 +229,7 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a heading node, checking its metadata and content for compliance.
-     * 
+     *
      * @param element - The heading element to visit.
      */
     visitHeadingNode(element: pm.HeadingElement): void {
@@ -237,7 +237,7 @@ export class ReductionVisitor implements IVisitor {
         if (this.isSlideCompliant) {
             return;
         }
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -247,7 +247,7 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a list node, checking its metadata and content for compliance.
-     * 
+     *
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
@@ -255,7 +255,7 @@ export class ReductionVisitor implements IVisitor {
         if (this.isSlideCompliant) {
             return;
         }
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -265,11 +265,11 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a list item node, checking its content for compliance.
-     * 
+     *
      * @param element - The list item element to visit.
      */
     visitListItemNode(element: pm.ListItemElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -279,7 +279,7 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a blockquote node, checking its metadata and content for compliance.
-     * 
+     *
      * @param element - The blockquote element to visit.
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
@@ -287,7 +287,7 @@ export class ReductionVisitor implements IVisitor {
         if (this.isSlideCompliant) {
             return;
         }
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 return;
@@ -297,26 +297,26 @@ export class ReductionVisitor implements IVisitor {
 
     /**
      * Visits a slide node, checking its content for compliance and adding it to the compliant lane if it is compliant.
-     * 
+     *
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
             if (this.isSlideCompliant) {
                 this.complientSlides.push(element);
                 return;
             }
-        })
+        });
     }
 
     /**
      * Visits a lane node, checking each slide for compliance.
-     * 
+     *
      * @param element - The lane element to visit.
      */
     visitLaneNode(element: pm.Lane): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             this.isSlideCompliant = false;
             c?.accept(this);
         });

@@ -1,4 +1,4 @@
 export enum ViewMode {
     SINGLE,
-    SPLIT
+    SPLIT,
 }

@@ -1,5 +1,8 @@
-import { expect, test } from 'vitest'
-import { AnalysisVisitor, AnalysisResult } from "../src/Model/Visitors/AnalysisVisitor";
+import { expect, test } from "vitest";
+import {
+    AnalysisVisitor,
+    AnalysisResult,
+} from "../src/Model/Visitors/AnalysisVisitor";
 import * as pm from "../src/Model/PresentationModel";
 
 function getSimpleVisitor(): AnalysisVisitor {
@@ -10,7 +13,15 @@ function getTextNode(text: string): pm.TextElement {
     return new pm.TextElement(text);
 }
 
-function getAnalysis(words: number, characters: number, images: number, links: number, headings: number, bullet_points: number, tables: number): AnalysisResult {
+function getAnalysis(
+    words: number,
+    characters: number,
+    images: number,
+    links: number,
+    headings: number,
+    bullet_points: number,
+    tables: number,
+): AnalysisResult {
     let analysis = new AnalysisResult();
     analysis.words = words;
     analysis.characters = characters;
@@ -36,9 +47,13 @@ test("multiple words", () => {
 
 test("paragraph", () => {
     let visitor = getSimpleVisitor();
-    let paragraph = new pm.ParagraphElement([getTextNode("First row\n"), getTextNode("Second row\n")], [], {});
+    let paragraph = new pm.ParagraphElement(
+        [getTextNode("First row\n"), getTextNode("Second row\n")],
+        [],
+        {},
+    );
     visitor.visitParagraphNode(paragraph);
-    expect(visitor.getResult()).toEqual(getAnalysis(4, 21, 0, 0, 0, 0, 0,));
+    expect(visitor.getResult()).toEqual(getAnalysis(4, 21, 0, 0, 0, 0, 0));
 });
 
 test("heading", () => {
@@ -57,22 +72,44 @@ test("heading 2", () => {
 
 test("ordered list", () => {
     let visitor = getSimpleVisitor();
-    let list = new pm.ListElement("ordered", [new pm.ListItemElement([getTextNode("1")]), new pm.ListItemElement([getTextNode("2")])], [], {});
+    let list = new pm.ListElement(
+        "ordered",
+        [
+            new pm.ListItemElement([getTextNode("1")]),
+            new pm.ListItemElement([getTextNode("2")]),
+        ],
+        [],
+        {},
+    );
     visitor.visitListNode(list);
     expect(visitor.getResult()).toEqual(getAnalysis(2, 2, 0, 0, 0, 2, 0));
 });
 
 test("unordered list", () => {
     let visitor = getSimpleVisitor();
-    let list = new pm.ListElement("unordered", [new pm.ListItemElement([getTextNode("1")]), new pm.ListItemElement([getTextNode("2")])], [], {});
+    let list = new pm.ListElement(
+        "unordered",
+        [
+            new pm.ListItemElement([getTextNode("1")]),
+            new pm.ListItemElement([getTextNode("2")]),
+        ],
+        [],
+        {},
+    );
     visitor.visitListNode(list);
     expect(visitor.getResult()).toEqual(getAnalysis(2, 2, 0, 0, 0, 2, 0));
 });
 
 test("table", () => {
     let visitor = getSimpleVisitor();
-    let row1 = new pm.TableRowElement([new pm.TableHeadingElement([getTextNode("11")]), new pm.TableHeadingElement([getTextNode("12")])]);
-    let row2 = new pm.TableRowElement([new pm.TableDataElement([getTextNode("21")]), new pm.TableDataElement([getTextNode("22")])]);
+    let row1 = new pm.TableRowElement([
+        new pm.TableHeadingElement([getTextNode("11")]),
+        new pm.TableHeadingElement([getTextNode("12")]),
+    ]);
+    let row2 = new pm.TableRowElement([
+        new pm.TableDataElement([getTextNode("21")]),
+        new pm.TableDataElement([getTextNode("22")]),
+    ]);
     let table = new pm.TableElement([row1, row2], [], {});
     visitor.visitTableNode(table);
     expect(visitor.getResult()).toEqual(getAnalysis(4, 8, 0, 0, 0, 0, 1));

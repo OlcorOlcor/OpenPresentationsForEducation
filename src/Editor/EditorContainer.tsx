@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { useColorMode } from "./ThemeContext"
+import { useColorMode } from "./ThemeContext";
 
 interface EditorProps {
     data: string;
@@ -29,7 +29,7 @@ const EditorContainer: React.FC<EditorProps> = ({ data, onEditorChange }) => {
             defaultLanguage="markdown"
             language="markdown"
             onMount={handleMount}
-            theme={(mode === "light") ? "vs-light" : "vs-dark"}
+            theme={mode === "light" ? "vs-light" : "vs-dark"}
             options={{
                 minimap: { enabled: false },
                 wordWrap: "on",
@@ -38,7 +38,7 @@ const EditorContainer: React.FC<EditorProps> = ({ data, onEditorChange }) => {
                     horizontal: "auto",
                     handleMouseWheel: true,
                     useShadows: false,
-                    alwaysConsumeMouseWheel: false
+                    alwaysConsumeMouseWheel: false,
                 },
                 scrollBeyondLastLine: false,
                 automaticLayout: true,

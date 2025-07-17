@@ -4,7 +4,7 @@ import * as pt from "../PresentationTypes";
 
 /**
  * Class that converts the node structure into an HTML format.
- * 
+ *
  * The class implements the IVisitor interface.
  */
 export class HtmlVisitor implements IVisitor {
@@ -18,24 +18,24 @@ export class HtmlVisitor implements IVisitor {
         this.images = images;
         this.globalMetadata = globalMetadata;
     }
-    
+
     private addMetadata(element: pm.OuterElement): void {
         let metadata = element.getMetadata();
-        Object.keys(metadata).forEach(k => {
+        Object.keys(metadata).forEach((k) => {
             this.result += " data-" + k + "=" + metadata[k];
         });
         let localGlobalMetadata = element.getGlobalMetadata();
         if (localGlobalMetadata.length === 0) {
             return;
         }
-        this.globalMetadata.forEach(gm => {
-            localGlobalMetadata.forEach(lgm => {
+        this.globalMetadata.forEach((gm) => {
+            localGlobalMetadata.forEach((lgm) => {
                 if (gm.name === lgm) {
-                    Object.keys(gm.attributes).forEach(k => {
+                    Object.keys(gm.attributes).forEach((k) => {
                         this.result += " data-" + k + "=" + gm.attributes[k];
                     });
                 }
-            })
+            });
         });
     }
 
@@ -47,7 +47,7 @@ export class HtmlVisitor implements IVisitor {
         this.result += "<table";
         this.addMetadata(element);
         this.result += ">";
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "</table>";
@@ -59,7 +59,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitTableRowNode(element: pm.TableRowElement): void {
         this.result += "<tr>";
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "</tr>";
@@ -71,7 +71,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitTableHeadingNode(element: pm.TableHeadingElement): void {
         this.result += "<th>";
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "</th>";
@@ -83,7 +83,7 @@ export class HtmlVisitor implements IVisitor {
      */
     visitTableDataNode(element: pm.TableDataElement): void {
         this.result += "<td>";
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "</td>";
@@ -143,7 +143,7 @@ export class HtmlVisitor implements IVisitor {
         let src = element.getContent();
         if (element.getContent().substring(0, 4) === "img:") {
             let name = element.getContent().substring(4);
-            this.images.forEach(img => {
+            this.images.forEach((img) => {
                 if (img.name === name) {
                     src = img.fileBase64;
                     console.log("HERE" + src);
@@ -152,7 +152,8 @@ export class HtmlVisitor implements IVisitor {
             });
         }
         console.log(src);
-        this.result += '<img src="' + src + '" alt="' + element.getAlias() + '">';
+        this.result +=
+            '<img src="' + src + '" alt="' + element.getAlias() + '">';
     }
 
     /**
@@ -223,7 +224,7 @@ export class HtmlVisitor implements IVisitor {
         this.result += `<div data-${element.getKey()}=${element.getValue()}`;
         this.addMetadata(element);
         this.result += ">";
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "</div>";
     }
 
@@ -248,21 +249,21 @@ export class HtmlVisitor implements IVisitor {
     visitSlideNode(element: pm.SlideElement): void {
         this.result += "<div";
         const fm = element.getFrontMatter();
-        Object.keys(element.getFrontMatter()).forEach(k => {
+        Object.keys(element.getFrontMatter()).forEach((k) => {
             this.result += " data-" + k + "=" + fm[k];
         });
 
-        element.getRefs().forEach(ref => {
+        element.getRefs().forEach((ref) => {
             this.result += " data-points_to=" + ref;
         });
-        
+
         this.result += ">";
         element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "</div>";
     }
-    
+
     /**
      * Visits a lane node and wraps its content in reveal.js structure if revealOutput is true.
      * @param element - The lane element to visit.
@@ -271,11 +272,11 @@ export class HtmlVisitor implements IVisitor {
         this.result = "";
         this.result += "<div data-lane=" + element.getName() + ">";
         element.getContent().forEach((slide) => {
-           if (slide == null) {
+            if (slide == null) {
                 return;
-           }
-           slide.accept(this);
-        });  
+            }
+            slide.accept(this);
+        });
         this.result += "</div>";
     }
 

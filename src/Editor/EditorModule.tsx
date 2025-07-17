@@ -48,9 +48,8 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     images,
     metadata,
     frontMatter,
-    css
+    css,
 }) => {
-
     function deleteSlide(): void {
         deleteSlideAt(selectedSlideIndex);
     }
@@ -69,45 +68,55 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     }
 
     return (
-    <Grid container direction="column" style={{ height: "100%" }}>
-        <Grid item>
-            <SelectContainer
-                selectedSlideIndex={selectedSlideIndex}
-                onAdd={addSlide}
-                onAddAfter={() => addSlideAt(selectedSlideIndex)}
-                onDelete={deleteSlide}
-                elements={slides}
-                onSelect={selectSlide}
-                onActivate={activateSlide}
-                reorderSlides={reorderSlides}
-                constraints={constraints}
-                slideAnalysis={slideAnalysis}
-            />
-        </Grid>
-        <Grid item xs style={{ height: "100%", width: "95%", resize: "vertical", overflow: "auto" }}>
-            {editorView ? (
-                slides[selectedSlideIndex] != null && slides[selectedSlideIndex]!.isActive() ? (
-                    <EditorContainer
-                        data={editorData}
-                        onEditorChange={editorChange}
-                    />
+        <Grid container direction="column" style={{ height: "100%" }}>
+            <Grid item>
+                <SelectContainer
+                    selectedSlideIndex={selectedSlideIndex}
+                    onAdd={addSlide}
+                    onAddAfter={() => addSlideAt(selectedSlideIndex)}
+                    onDelete={deleteSlide}
+                    elements={slides}
+                    onSelect={selectSlide}
+                    onActivate={activateSlide}
+                    reorderSlides={reorderSlides}
+                    constraints={constraints}
+                    slideAnalysis={slideAnalysis}
+                />
+            </Grid>
+            <Grid
+                item
+                xs
+                style={{
+                    height: "100%",
+                    width: "95%",
+                    resize: "vertical",
+                    overflow: "auto",
+                }}
+            >
+                {editorView ? (
+                    slides[selectedSlideIndex] != null &&
+                    slides[selectedSlideIndex]!.isActive() ? (
+                        <EditorContainer
+                            data={editorData}
+                            onEditorChange={editorChange}
+                        />
+                    ) : (
+                        <div></div>
+                    )
                 ) : (
-                    <div></div>
-                )
-            ) : (
-                (() => {
-                    console.log("here");
-                    let html = "";
-                    if (slides[selectedSlideIndex]) {
-                        let visitor = new HtmlVisitor(images, metadata);
-                        visitor.visitSlideNode(slides[selectedSlideIndex]!);
-                        html = visitor.getResult();
-                    }
-                    return <Preview html={html} css={css} />;
-                })()
-            )}
+                    (() => {
+                        console.log("here");
+                        let html = "";
+                        if (slides[selectedSlideIndex]) {
+                            let visitor = new HtmlVisitor(images, metadata);
+                            visitor.visitSlideNode(slides[selectedSlideIndex]!);
+                            html = visitor.getResult();
+                        }
+                        return <Preview html={html} css={css} />;
+                    })()
+                )}
+            </Grid>
         </Grid>
-    </Grid>
     );
 };
 

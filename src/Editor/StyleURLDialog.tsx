@@ -1,4 +1,19 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, TextField } from "@mui/material";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControlLabel,
+    Grid,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemText,
+    TextField,
+} from "@mui/material";
 import React, { FormEvent, useEffect, useState } from "react";
 import { Styles } from "../Model/PresentationTypes";
 
@@ -8,7 +23,11 @@ interface StyleURLDialogProps {
     setStyle: React.Dispatch<React.SetStateAction<Styles>>;
 }
 
-const LaneFormDialog: React.FC<StyleURLDialogProps> = ({dialogOpen, setDialogOpen, setStyle}) => {
+const LaneFormDialog: React.FC<StyleURLDialogProps> = ({
+    dialogOpen,
+    setDialogOpen,
+    setStyle,
+}) => {
     const [URL, setURL] = useState<string>("");
     const [correctURL, setCorrectURL] = useState<boolean>(true);
     function handleClose() {
@@ -18,23 +37,23 @@ const LaneFormDialog: React.FC<StyleURLDialogProps> = ({dialogOpen, setDialogOpe
     function handleSubmit() {
         console.log(URL);
         fetch(URL)
-        .then(res => {
-            const contentType = res.headers.get("Content-Type");
-            if (!res.ok || !contentType?.includes("text/css")) {
-                throw new Error(`Unexpected content type: ${contentType}`);
-            }
-            return res.text();
-        })
-        .then(text => {
-            setStyle({ name: "styleFromURL.css", content: text });
-            setCorrectURL(true);
-            setURL("");
-            setDialogOpen(false);
-        })
-        .catch(err => {
-            setCorrectURL(false);
-            console.error("Failed to fetch CSS:", err);
-        });
+            .then((res) => {
+                const contentType = res.headers.get("Content-Type");
+                if (!res.ok || !contentType?.includes("text/css")) {
+                    throw new Error(`Unexpected content type: ${contentType}`);
+                }
+                return res.text();
+            })
+            .then((text) => {
+                setStyle({ name: "styleFromURL.css", content: text });
+                setCorrectURL(true);
+                setURL("");
+                setDialogOpen(false);
+            })
+            .catch((err) => {
+                setCorrectURL(false);
+                console.error("Failed to fetch CSS:", err);
+            });
     }
 
     return (
@@ -44,8 +63,20 @@ const LaneFormDialog: React.FC<StyleURLDialogProps> = ({dialogOpen, setDialogOpe
                 <DialogContentText>
                     Enter a URL of your style sheet.
                 </DialogContentText>
-                <TextField required margin="dense" id="style" name="Style" label="Style URL" type="url" fullWidth variant="standard" value={URL} onChange={(e) => setURL(e.target.value)} size="small" />
-                {correctURL ? (<></>) : (<p>Incorrect URL submitted!</p>)}
+                <TextField
+                    required
+                    margin="dense"
+                    id="style"
+                    name="Style"
+                    label="Style URL"
+                    type="url"
+                    fullWidth
+                    variant="standard"
+                    value={URL}
+                    onChange={(e) => setURL(e.target.value)}
+                    size="small"
+                />
+                {correctURL ? <></> : <p>Incorrect URL submitted!</p>}
             </DialogContent>
             <DialogActions>
                 <Button color="secondary" onClick={handleClose}>
@@ -56,7 +87,7 @@ const LaneFormDialog: React.FC<StyleURLDialogProps> = ({dialogOpen, setDialogOpe
                 </Button>
             </DialogActions>
         </Dialog>
-    )
-}
+    );
+};
 
 export default LaneFormDialog;

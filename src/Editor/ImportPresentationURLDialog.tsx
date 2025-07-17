@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+} from "@mui/material";
 
 interface ImportPresentationURLDialogProps {
     dialogOpen: boolean;
@@ -7,7 +14,9 @@ interface ImportPresentationURLDialogProps {
     importPresentation: (file: File) => void;
 }
 
-const ImportPresentationURLDialog: React.FC<ImportPresentationURLDialogProps> = ({ dialogOpen, setDialogOpen, importPresentation }) => {
+const ImportPresentationURLDialog: React.FC<
+    ImportPresentationURLDialogProps
+> = ({ dialogOpen, setDialogOpen, importPresentation }) => {
     const [url, setUrl] = useState("");
 
     const handleClose = () => {
@@ -26,13 +35,17 @@ const ImportPresentationURLDialog: React.FC<ImportPresentationURLDialogProps> = 
                 return res.json();
             })
             .then((blob) => {
-                const file = new File([blob], "imported_presentation.json", { type: "application/json" });
+                const file = new File([blob], "imported_presentation.json", {
+                    type: "application/json",
+                });
                 importPresentation(file);
                 handleClose();
             })
             .catch((err) => {
                 console.error("Error importing from URL:", err);
-                alert("Failed to load presentation from URL. Make sure it is a valid JSON file.");
+                alert(
+                    "Failed to load presentation from URL. Make sure it is a valid JSON file.",
+                );
             });
     };
 
@@ -40,7 +53,19 @@ const ImportPresentationURLDialog: React.FC<ImportPresentationURLDialogProps> = 
         <Dialog open={dialogOpen} onClose={handleClose}>
             <DialogTitle>Import Presentation from URL</DialogTitle>
             <DialogContent>
-                <TextField required margin="dense" id="name" name="name" label="Presentation URL" type="text" fullWidth variant="standard" value={url} onChange={(e) => setUrl(e.target.value)} size="small"/>
+                <TextField
+                    required
+                    margin="dense"
+                    id="name"
+                    name="name"
+                    label="Presentation URL"
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    size="small"
+                />
             </DialogContent>
             <DialogActions>
                 <Button color="secondary" onClick={handleClose}>

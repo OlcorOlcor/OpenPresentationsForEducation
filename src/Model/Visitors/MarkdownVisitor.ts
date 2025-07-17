@@ -3,7 +3,7 @@ import * as pm from "../PresentationModel";
 
 /**
  * Class that converts the node structure into a markdown format.
- * 
+ *
  * The class implements the IVisitor interface.
  */
 export class MarkdownVisitor implements IVisitor {
@@ -11,20 +11,23 @@ export class MarkdownVisitor implements IVisitor {
     private listLevel: number = 0;
     private blockQuoteLevel: number = 0;
     private paragraphNewLine: boolean = true;
-    
+
     /**
      * Adds metadata to the result string for wrapper elements and the slide element.
      * @param element - The element for which metadata is added.
      */
     private addMetadata(element: pm.OuterElement): void {
-        if (element.getGlobalMetadata().length === 0 && Object.keys(element.getMetadata()).length === 0) {
+        if (
+            element.getGlobalMetadata().length === 0 &&
+            Object.keys(element.getMetadata()).length === 0
+        ) {
             return;
         }
-        element.getGlobalMetadata().forEach(m => {
+        element.getGlobalMetadata().forEach((m) => {
             this.result += "<!-- " + m + " -->\n";
         });
         let metadata = element.getMetadata();
-        Object.keys(metadata).forEach(k => {
+        Object.keys(metadata).forEach((k) => {
             this.result += "<!-- " + k + ": " + metadata[k] + " -->\n";
         });
     }
@@ -35,7 +38,7 @@ export class MarkdownVisitor implements IVisitor {
      */
     visitTableNode(element: pm.TableElement): void {
         this.addMetadata(element);
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
         this.result += "\n";
@@ -46,9 +49,10 @@ export class MarkdownVisitor implements IVisitor {
      * @param element The table row element to visit.
      */
     visitTableRowNode(element: pm.TableRowElement): void {
-        let headingRow = element.getContent()[0] instanceof pm.TableHeadingElement;
+        let headingRow =
+            element.getContent()[0] instanceof pm.TableHeadingElement;
         this.result += "|";
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             this.result += " ";
             c.accept(this);
             this.result += " |";
@@ -65,13 +69,13 @@ export class MarkdownVisitor implements IVisitor {
     }
 
     visitTableHeadingNode(element: pm.TableHeadingElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
 
     visitTableDataNode(element: pm.TableDataElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
@@ -130,7 +134,8 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The image element to visit.
      */
     visitImageNode(element: pm.ImageElement): void {
-        this.result += "![" + element.getAlias() + "](" + element.getContent() + ")";
+        this.result +=
+            "![" + element.getAlias() + "](" + element.getContent() + ")";
     }
 
     /**
@@ -138,7 +143,8 @@ export class MarkdownVisitor implements IVisitor {
      * @param element - The link element to visit.
      */
     visitLinkNode(element: pm.LinkElement): void {
-        this.result += "[" + element.getAlias()+ "](" + element.getContent()+ ")";
+        this.result +=
+            "[" + element.getAlias() + "](" + element.getContent() + ")";
     }
 
     /**
@@ -148,7 +154,7 @@ export class MarkdownVisitor implements IVisitor {
     visitSectionNode(element: pm.Section): void {
         this.addMetadata(element);
         this.result += `<!-- +${element.getKey()}: ${element.getValue()} -->\n\n`;
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
         this.result += "<!-- / -->\n\n";
     }
 
@@ -158,9 +164,13 @@ export class MarkdownVisitor implements IVisitor {
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
         this.addMetadata(element);
-        element.getContent().forEach((c) => { 
+        element.getContent().forEach((c) => {
             if (this.paragraphNewLine) {
-                for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+                for (
+                    let blockQuoteCounter = 0;
+                    blockQuoteCounter < this.blockQuoteLevel;
+                    blockQuoteCounter++
+                ) {
                     this.result += "> ";
                 }
                 this.paragraphNewLine = false;
@@ -170,16 +180,19 @@ export class MarkdownVisitor implements IVisitor {
         this.result += "\n\n";
     }
 
-
     /**
      * Visits a heading node and wraps its content in Markdown heading syntax.
-     * 
+     *
      * Also adds blockquote tags, if blockQouteLevel is above 0.
      * @param element - The heading element to visit.
      */
     visitHeadingNode(element: pm.HeadingElement): void {
         this.addMetadata(element);
-        for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+        for (
+            let blockQuoteCounter = 0;
+            blockQuoteCounter < this.blockQuoteLevel;
+            blockQuoteCounter++
+        ) {
             this.result += "> ";
         }
         for (let i = 0; i < element.getLevel(); ++i) {
@@ -192,7 +205,7 @@ export class MarkdownVisitor implements IVisitor {
 
     /**
      * Visits a list node and wraps its content in Markdown list syntax.
-     * 
+     *
      * Also adds blockquote tags, if blockQouteLevel is above 0.
      * @param element - The list element to visit.
      */
@@ -201,10 +214,18 @@ export class MarkdownVisitor implements IVisitor {
         let counter = 1;
         this.listLevel++;
         element.getContent().forEach((c) => {
-            for (let blockQuoteCounter = 0; blockQuoteCounter < this.blockQuoteLevel; blockQuoteCounter++) {
+            for (
+                let blockQuoteCounter = 0;
+                blockQuoteCounter < this.blockQuoteLevel;
+                blockQuoteCounter++
+            ) {
                 this.result += "> ";
             }
-            for (let indentCounter = 0; indentCounter < this.listLevel - 1; indentCounter++) {
+            for (
+                let indentCounter = 0;
+                indentCounter < this.listLevel - 1;
+                indentCounter++
+            ) {
                 this.result += "\t";
             }
             if (c instanceof pm.ListItemElement) {
@@ -231,7 +252,7 @@ export class MarkdownVisitor implements IVisitor {
 
     /**
      * Visits a blockquote node and adds its metadata tags to the result.
-     * 
+     *
      * Increases blockQuoteLevel which is used in other methods to add blockquote tags.
      * @param element - The blockquote element to visit.
      */
@@ -246,28 +267,27 @@ export class MarkdownVisitor implements IVisitor {
 
     /**
      * Visits a slide node and processes its content.
-     * 
+     *
      * Adds reference tags if there are any.
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
         const frontMatter = element.getFrontMatter();
         if (Object.keys(frontMatter).length !== 0) {
-
             this.result += "---\n";
-            Object.keys(frontMatter).forEach(key => {
+            Object.keys(frontMatter).forEach((key) => {
                 this.result += key + ": " + frontMatter[key] + "\n";
-            })
+            });
             this.result += "---\n\n";
         }
-        
+
         if (element.getGlobalMetadata().length !== 0) {
             //this.addMetadata(element);
         }
         element.getContent().forEach((c) => c.accept(this));
         if (element.getRefs().length > 0) {
             this.result += "\n";
-            element.getRefs().forEach(ref => {
+            element.getRefs().forEach((ref) => {
                 this.result += "->[" + ref + "]";
                 this.result += "\n";
             });
@@ -280,11 +300,11 @@ export class MarkdownVisitor implements IVisitor {
      */
     visitLaneNode(element: pm.Lane): void {
         element.getContent().forEach((slide) => {
-           if (slide == null) {
+            if (slide == null) {
                 return;
-           }
-           slide.accept(this);
-        });  
+            }
+            slide.accept(this);
+        });
     }
 
     /**

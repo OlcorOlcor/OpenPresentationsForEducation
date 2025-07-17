@@ -8,7 +8,7 @@ class BaseElement {}
 
 /**
  * Class representing a list item element.
- * 
+ *
  * The class implements the IVisitable interface.
  */
 export class ListItemElement extends BaseElement implements IVisitable {
@@ -16,7 +16,7 @@ export class ListItemElement extends BaseElement implements IVisitable {
 
     /**
      * ListItemElement constructor.
-     * 
+     *
      * @param content - The content of the list item.
      */
     public constructor(content: (TextElement | InlineElement)[]) {
@@ -34,7 +34,7 @@ export class ListItemElement extends BaseElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -44,15 +44,15 @@ export class ListItemElement extends BaseElement implements IVisitable {
 
 /**
  * Class representing a heading cell in a table
- * 
+ *
  * The class implements the IVisitable interface.
  */
 export class TableHeadingElement extends BaseElement implements IVisitable {
     private content: (TextElement | InlineElement)[];
-    
+
     /**
      * TableHeadingElement constructor.
-     * 
+     *
      * @param content - content of the table heading.
      */
     constructor(content: (TextElement | InlineElement)[]) {
@@ -70,7 +70,7 @@ export class TableHeadingElement extends BaseElement implements IVisitable {
 
     /**
      * Accepts the visitor to process this element.
-     * 
+     *
      * @param visitor - the visitor processing the element.
      */
     accept(visitor: IVisitor): void {
@@ -80,15 +80,15 @@ export class TableHeadingElement extends BaseElement implements IVisitable {
 
 /**
  * Class representing a data cell in a table.
- * 
+ *
  * The class implements the IVisitable interface.
  */
 export class TableDataElement extends BaseElement implements IVisitable {
     private content: (TextElement | InlineElement)[];
-    
+
     /**
      * TableDataElement constructor.
-     * 
+     *
      * @param content - content of the table data.
      */
     constructor(content: (TextElement | InlineElement)[]) {
@@ -106,7 +106,7 @@ export class TableDataElement extends BaseElement implements IVisitable {
 
     /**
      * Accepts the visitor to process this element.
-     * 
+     *
      * @param visitor - the visitor processing the element.
      */
     accept(visitor: IVisitor): void {
@@ -116,15 +116,15 @@ export class TableDataElement extends BaseElement implements IVisitable {
 
 /**
  * Class representing a table row.
- * 
+ *
  * The class implements the IVisitable interface.
  */
 export class TableRowElement extends BaseElement implements IVisitable {
     private content: (TableDataElement | TableHeadingElement)[];
-    
+
     /**
      * TableRowElement constructor.
-     * 
+     *
      * @param content - content of the table row.
      */
     constructor(content: (TableDataElement | TableHeadingElement)[]) {
@@ -142,7 +142,7 @@ export class TableRowElement extends BaseElement implements IVisitable {
 
     /**
      * Accepts the visitor to process this element.
-     * 
+     *
      * @param visitor - the visitor processing the element.
      */
     accept(visitor: IVisitor): void {
@@ -152,7 +152,7 @@ export class TableRowElement extends BaseElement implements IVisitable {
 
 /**
  * Class Representing a text element.
- * 
+ *
  * The class implements the IVisitable interface.
  */
 export class TextElement extends BaseElement implements IVisitable {
@@ -160,7 +160,7 @@ export class TextElement extends BaseElement implements IVisitable {
 
     /**
      * TextElement constructor.
-     * 
+     *
      * @param content - The text content.
      */
     public constructor(content: string) {
@@ -178,7 +178,7 @@ export class TextElement extends BaseElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -188,7 +188,7 @@ export class TextElement extends BaseElement implements IVisitable {
 
 /**
  * Abstract class for inline elements.
- * 
+ *
  * The class implements the IVisitable interface.
  */
 export abstract class InlineElement extends BaseElement implements IVisitable {
@@ -202,7 +202,7 @@ export abstract class InlineWrapperElement extends InlineElement {
     private content: (TextElement | InlineElement)[];
     /**
      * Constructs an InlineWrapperElement.
-     * 
+     *
      * @param content - The content of the element.
      */
     public constructor(content: (TextElement | InlineElement)[]) {
@@ -230,13 +230,13 @@ export abstract class InlineLeafElement extends InlineElement {
 
 /**
  * Represents a bold element.
- * 
+ *
  * This class implements the IVisitable interface.
  */
 export class BoldElement extends InlineWrapperElement implements IVisitable {
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -246,13 +246,13 @@ export class BoldElement extends InlineWrapperElement implements IVisitable {
 
 /**
  * Represents an italic element.
- * 
+ *
  * This class implements the IVisitable interface.
  */
 export class ItalicElement extends InlineWrapperElement implements IVisitable {
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -266,7 +266,7 @@ export class ItalicElement extends InlineWrapperElement implements IVisitable {
 export class CodeElement extends InlineWrapperElement implements IVisitable {
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -276,7 +276,7 @@ export class CodeElement extends InlineWrapperElement implements IVisitable {
 
 /**
  * Represents a link element.
- * 
+ *
  * This class implements the IVistable interface.
  */
 export class LinkElement extends InlineLeafElement implements IVisitable {
@@ -284,7 +284,7 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
     private alias: string;
     /**
      * Constructs a LinkElement.
-     * 
+     *
      * @param content - The link text.
      * @param alias - The alias for the link.
      * @parama metadata
@@ -310,10 +310,10 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
     getAlias(): string {
         return this.alias;
     }
-    
+
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -323,15 +323,15 @@ export class LinkElement extends InlineLeafElement implements IVisitable {
 
 /**
  * Represents an image element.
- * 
+ *
  * This class implements the IVisitable interface.
- */  
+ */
 export class ImageElement extends InlineLeafElement implements IVisitable {
     private content: string;
     private alias: string;
     /**
      * Constructs an ImageElement.
-     * 
+     *
      * @param content - The image source URL.
      * @param alias - The alias for the image.
      * @param metadata - The metadata of the image.
@@ -349,7 +349,7 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
     getContent(): string {
         return this.content;
     }
-    
+
     /**
      * Retrieves alias of the element.
      * @returns Alias of the element.
@@ -360,7 +360,7 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -370,12 +370,12 @@ export class ImageElement extends InlineLeafElement implements IVisitable {
 
 /**
  * Abstract class for outer elements.
- * 
+ *
  * Outer elements can be contained directly within a slide element.
  */
 export abstract class OuterElement extends BaseElement implements IVisitable {
     protected globalMetadataTags: string[] = [];
-    protected metadata: {[key: string]: string} = {};
+    protected metadata: { [key: string]: string } = {};
 
     /**
      * Retrieves global metadata tags of the element.
@@ -403,11 +403,17 @@ export class Section extends OuterElement implements IVisitable {
 
     /**
      * Section constructor.
-     * 
+     *
      * @param content - content of the section.
      * @param globalMetadataTags - metadata tags fo the section.
      */
-    constructor(key: string, value: string, content: OuterElement[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
+    constructor(
+        key: string,
+        value: string,
+        content: OuterElement[],
+        globalMetadataTags: string[],
+        metadata: { [key: string]: string },
+    ) {
         super();
         this.key = key;
         this.value = value;
@@ -442,7 +448,7 @@ export class Section extends OuterElement implements IVisitable {
 
     /**
      * Accepts the visitor to process this element.
-     * 
+     *
      * @param visitor - the visitor processing the element.
      */
     accept(visitor: IVisitor): void {
@@ -452,7 +458,7 @@ export class Section extends OuterElement implements IVisitable {
 
 /**
  * Class representing a table.
- * 
+ *
  * The class implements the IVisitable interface.
  */
 export class TableElement extends OuterElement implements IVisitable {
@@ -460,10 +466,14 @@ export class TableElement extends OuterElement implements IVisitable {
 
     /**
      * TableElement constructor.
-     * 
+     *
      * @param content - content of the table.
      */
-    constructor(content: TableRowElement[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
+    constructor(
+        content: TableRowElement[],
+        globalMetadataTags: string[],
+        metadata: { [key: string]: string },
+    ) {
         super();
         this.content = content;
         this.globalMetadataTags = globalMetadataTags;
@@ -480,7 +490,7 @@ export class TableElement extends OuterElement implements IVisitable {
 
     /**
      * Accepts the visitor to process this element.
-     * 
+     *
      * @param visitor - the visitor processing the element.
      */
     accept(visitor: IVisitor): void {
@@ -490,12 +500,14 @@ export class TableElement extends OuterElement implements IVisitable {
 
 /**
  * Class for horizontal line elements.
- * 
+ *
  * The class implements the IVisitable interface
  */
 export class HorizontalLineElement extends OuterElement implements IVisitable {
-
-    constructor(globalMetadataTags: string[], metadata: {[key: string]: string}) {
+    constructor(
+        globalMetadataTags: string[],
+        metadata: { [key: string]: string },
+    ) {
         super();
         this.globalMetadataTags = globalMetadataTags;
         this.metadata = metadata;
@@ -503,17 +515,17 @@ export class HorizontalLineElement extends OuterElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
-        visitor.visitHorizontalLineNode(this);   
+        visitor.visitHorizontalLineNode(this);
     }
 }
 
 /**
  * Represents a paragraph element.
- * 
+ *
  * This class implements the IVisitable interface.
  */
 export class ParagraphElement extends OuterElement implements IVisitable {
@@ -521,11 +533,15 @@ export class ParagraphElement extends OuterElement implements IVisitable {
 
     /**
      * Constructs a ParagraphElement.
-     * 
+     *
      * @param content - The content of the paragraph.
      * @param globalMetadataTags - The metadata tags for the paragraph.
      */
-    public constructor(content: (TextElement | InlineElement)[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
+    public constructor(
+        content: (TextElement | InlineElement)[],
+        globalMetadataTags: string[],
+        metadata: { [key: string]: string },
+    ) {
         super();
         this.content = content;
         this.globalMetadataTags = globalMetadataTags;
@@ -542,7 +558,7 @@ export class ParagraphElement extends OuterElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -552,7 +568,7 @@ export class ParagraphElement extends OuterElement implements IVisitable {
 
 /**
  * Represents a heading element.
- * 
+ *
  * This class implements the IVistable interface.
  */
 export class HeadingElement extends OuterElement implements IVisitable {
@@ -561,12 +577,17 @@ export class HeadingElement extends OuterElement implements IVisitable {
 
     /**
      * Constructs a HeadingElement.
-     * 
+     *
      * @param level - The level of the heading.
      * @param content - The content of the heading.
      * @param globalMetadataTags - The metadata tags for the heading.
      */
-    public constructor(level: number, content: (TextElement | InlineElement)[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
+    public constructor(
+        level: number,
+        content: (TextElement | InlineElement)[],
+        globalMetadataTags: string[],
+        metadata: { [key: string]: string },
+    ) {
         super();
         this.content = content;
         this.level = level;
@@ -592,7 +613,7 @@ export class HeadingElement extends OuterElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -602,7 +623,7 @@ export class HeadingElement extends OuterElement implements IVisitable {
 
 /**
  * Represents a list element.
- * 
+ *
  * This class implements the IVisitable interface.
  */
 export class ListElement extends OuterElement implements IVisitable {
@@ -611,12 +632,17 @@ export class ListElement extends OuterElement implements IVisitable {
 
     /**
      * Constructs a ListElement.
-     * 
+     *
      * @param listType - The type of the list ("ordered" or "unordered").
      * @param content - The content of the list.
      * @param globalMetadataTags - The metadata tags for the list.
      */
-    public constructor(listType: string, content: (ListItemElement | ListElement)[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
+    public constructor(
+        listType: string,
+        content: (ListItemElement | ListElement)[],
+        globalMetadataTags: string[],
+        metadata: { [key: string]: string },
+    ) {
         super();
         this.content = content;
         this.listType = listType;
@@ -642,7 +668,7 @@ export class ListElement extends OuterElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -652,7 +678,7 @@ export class ListElement extends OuterElement implements IVisitable {
 
 /**
  * Represents a blockquote element.
- * 
+ *
  * This class implements the IVisitable interface.
  */
 export class BlockQuoteElement extends OuterElement implements IVisitable {
@@ -660,11 +686,15 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
 
     /**
      * Constructs a BlockQuoteElement.
-     * 
+     *
      * @param content - The content of the blockquote.
      * @param globalMetadataTags - The metadata tags for the blockquote.
      */
-    public constructor(content: OuterElement[], globalMetadataTags: string[], metadata: {[key: string]: string}) {
+    public constructor(
+        content: OuterElement[],
+        globalMetadataTags: string[],
+        metadata: { [key: string]: string },
+    ) {
         super();
         this.content = content;
         this.globalMetadataTags = globalMetadataTags;
@@ -681,7 +711,7 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -691,23 +721,30 @@ export class BlockQuoteElement extends OuterElement implements IVisitable {
 
 /**
  * Represents a slide element.
- * 
+ *
  * This class implements the IVisitable interface.
  */
 export class SlideElement extends BaseElement implements IVisitable {
     private content: OuterElement[];
     private active: boolean = false;
     private globalMetadataTags: string[] = [];
-    private metadata: {[key: string]: string};
+    private metadata: { [key: string]: string };
     private refs: string[] = [];
-    private frontMatter: {[key: string]: any};
+    private frontMatter: { [key: string]: any };
 
     /**
      * Constructs a SlideElement.
-     * 
+     *
      * @param content - The content of the slide.
      */
-    public constructor(content: OuterElement[], active: boolean = false, globalMetadataTags: string[] = [], refs: string[] = [], frontMatter: {[key: string]: string} = {}, metadata: {[key: string]: string} = {}) {
+    public constructor(
+        content: OuterElement[],
+        active: boolean = false,
+        globalMetadataTags: string[] = [],
+        refs: string[] = [],
+        frontMatter: { [key: string]: string } = {},
+        metadata: { [key: string]: string } = {},
+    ) {
         super();
         this.content = content;
         this.active = active;
@@ -745,7 +782,7 @@ export class SlideElement extends BaseElement implements IVisitable {
      * Retrieves the front matter of the slide.
      * @returns The front matter of the slide.
      */
-    getFrontMatter(): {[key: string]: any} {
+    getFrontMatter(): { [key: string]: any } {
         return this.frontMatter;
     }
 
@@ -767,7 +804,7 @@ export class SlideElement extends BaseElement implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
@@ -784,7 +821,7 @@ export class Lane implements IVisitable {
 
     /**
      * Constructs a Lane.
-     * 
+     *
      * @param content - The slides in the lane.
      * @param name - The name of the lane.
      * @param output - Whether to output as a presentation.
@@ -801,7 +838,7 @@ export class Lane implements IVisitable {
     getContent(): (SlideElement | null)[] {
         return this.content;
     }
-    
+
     /**
      * Retrieves the name of the lane.
      * @returns Name of the lane.
@@ -812,7 +849,7 @@ export class Lane implements IVisitable {
 
     /**
      * Accepts a visitor to process this element.
-     * 
+     *
      * @param visitor - The visitor processing this element.
      */
     accept(visitor: IVisitor): void {
