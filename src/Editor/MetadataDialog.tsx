@@ -1,5 +1,19 @@
-import {Avatar, Box, Button, Dialog, DialogTitle, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, TextField} from "@mui/material";
-import React, {useEffect, useState} from "react";
+import {
+    Avatar,
+    Box,
+    Button,
+    Dialog,
+    DialogTitle,
+    Grid,
+    IconButton,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemText,
+    TextField,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { Metadata } from "../Model/PresentationTypes";
 import { Add, Delete } from "@mui/icons-material";
 
@@ -10,19 +24,35 @@ interface MetadataDialogProps {
     setMetadata: React.Dispatch<React.SetStateAction<Metadata[]>>;
 }
 
-const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpen, metadata, setMetadata}) => {
-    const [selectedMetadataIndex, setSelectedMetadataIndex] = useState<number>(-1);
-    const [name, setName] = useState<string>(metadata[selectedMetadataIndex]?.name);
-    const [localAttributes, setLocalAttributes] = useState<[string, string][]>([]);
+const MetadataDialog: React.FC<MetadataDialogProps> = ({
+    dialogOpen,
+    setDialogOpen,
+    metadata,
+    setMetadata,
+}) => {
+    const [selectedMetadataIndex, setSelectedMetadataIndex] =
+        useState<number>(-1);
+    const [name, setName] = useState<string>(
+        metadata[selectedMetadataIndex]?.name,
+    );
+    const [localAttributes, setLocalAttributes] = useState<[string, string][]>(
+        [],
+    );
     const [attributes, setAttributes] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
-        if (metadata[selectedMetadataIndex] != undefined && metadata[selectedMetadataIndex] != null) {
+        if (
+            metadata[selectedMetadataIndex] != undefined &&
+            metadata[selectedMetadataIndex] != null
+        ) {
             setName(metadata[selectedMetadataIndex].name);
             setAttributes(metadata[selectedMetadataIndex].attributes);
             let attrs: [string, string][] = [];
             for (const attr in metadata[selectedMetadataIndex].attributes) {
-                attrs.push([attr, metadata[selectedMetadataIndex].attributes[attr]]);
+                attrs.push([
+                    attr,
+                    metadata[selectedMetadataIndex].attributes[attr],
+                ]);
             }
             setLocalAttributes(attrs);
         }
@@ -39,16 +69,18 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
     }
 
     function addMetadata() {
-        setMetadata(old => {
+        setMetadata((old) => {
             let newMetadata = [...old];
-            newMetadata.push({name: "New tag", attributes: {}});
+            newMetadata.push({ name: "New tag", attributes: {} });
             return newMetadata;
         });
     }
 
     function deleteMetadata() {
-       setMetadata(old => {
-            let newMetadata = old.filter((_, index) => selectedMetadataIndex !== index);
+        setMetadata((old) => {
+            let newMetadata = old.filter(
+                (_, index) => selectedMetadataIndex !== index,
+            );
             if (selectedMetadataIndex > 0) {
                 setSelectedMetadataIndex(selectedMetadataIndex - 1);
             }
@@ -56,37 +88,36 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
                 setSelectedMetadataIndex(-1);
             }
             return newMetadata;
-       });
+        });
     }
 
     function addAttribute() {
-        setLocalAttributes(oldAttributes => {
+        setLocalAttributes((oldAttributes) => {
             const newAttributes = [...oldAttributes];
             newAttributes.push(["attribute" + (newAttributes.length + 1), ""]);
-            return newAttributes
+            return newAttributes;
         });
     }
 
     function handleFormSubmit(callback?: () => void) {
-        let attributes: {[key: string]: any} = {};
+        let attributes: { [key: string]: any } = {};
         localAttributes.forEach(([attribute, value]) => {
             attributes[attribute] = value;
         });
-        setMetadata(old => {
+        setMetadata((old) => {
             let newMetadata = [...old];
-            let newMetadataObject = {name: name, attributes: attributes};
-            newMetadata[selectedMetadataIndex] = newMetadataObject;   
+            let newMetadataObject = { name: name, attributes: attributes };
+            newMetadata[selectedMetadataIndex] = newMetadataObject;
             return newMetadata;
-
         });
-        
+
         if (callback) {
             callback();
         }
     }
 
     function deleteAttribute(index: number) {
-        setLocalAttributes(oldAttributes => {
+        setLocalAttributes((oldAttributes) => {
             const newAttributes = [...oldAttributes];
             newAttributes.splice(index, 1);
             return newAttributes;
@@ -94,7 +125,7 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
     }
 
     function handleAttributeChange(index: number, newAttribute: string) {
-        setLocalAttributes(oldAttributes => {
+        setLocalAttributes((oldAttributes) => {
             const newAttributes = [...oldAttributes];
             newAttributes[index][0] = newAttribute;
             return newAttributes;
@@ -102,7 +133,7 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
     }
 
     function handleAttributeValueChange(index: number, newValue: string) {
-        setLocalAttributes(oldAttributes => {
+        setLocalAttributes((oldAttributes) => {
             const newAttributes = [...oldAttributes];
             newAttributes[index][1] = newValue;
             return newAttributes;
@@ -111,69 +142,146 @@ const MetadataDialog: React.FC<MetadataDialogProps> = ({dialogOpen, setDialogOpe
 
     function deleteTag() {
         deleteMetadata();
-        setDialogOpen(false)
+        setDialogOpen(false);
     }
 
     return (
-            <Dialog onClose={handleClose} open={dialogOpen} fullWidth maxWidth="md">
+        <Dialog onClose={handleClose} open={dialogOpen} fullWidth maxWidth="md">
             <DialogTitle>Global metadata</DialogTitle>
-                <Grid container sx={{ minHeight: 450, padding: 2}}>
-                    <Grid item xs={4}>
+            <Grid container sx={{ minHeight: 450, padding: 2 }}>
+                <Grid item xs={4}>
                     <List sx={{ pt: 0 }}>
                         {metadata.map((meta, i) => (
-                        <ListItem disablePadding key={i}>
-                            <ListItemButton onClick={() => handleListItemClick(i)}>
-                            <ListItemText primary={meta.name} />
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding key={i}>
+                                <ListItemButton
+                                    onClick={() => handleListItemClick(i)}
+                                >
+                                    <ListItemText primary={meta.name} />
+                                </ListItemButton>
+                            </ListItem>
                         ))}
                         <ListItem disablePadding>
-                        <ListItemButton autoFocus onClick={() => addMetadata()}>
-                            <ListItemAvatar>
-                            <Avatar>
-                                <Add />
-                            </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Add tag" />
-                        </ListItemButton>
+                            <ListItemButton
+                                autoFocus
+                                onClick={() => addMetadata()}
+                            >
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <Add />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Add tag" />
+                            </ListItemButton>
                         </ListItem>
                     </List>
-                    </Grid>
-                    <Grid item xs={8}>
-                    { metadata[selectedMetadataIndex] !== undefined &&  metadata[selectedMetadataIndex] !== null ? (
+                </Grid>
+                <Grid item xs={8}>
+                    {metadata[selectedMetadataIndex] !== undefined &&
+                    metadata[selectedMetadataIndex] !== null ? (
                         <Grid container direction={"column"} height={"100%"}>
                             <Grid item xs>
-                                <TextField required margin="dense" id="name" name="name" label="Name" type="text" fullWidth variant="standard" value={name} onChange={(e) => setName(e.target.value)}/>
-                                {localAttributes.map(([attribute, value], i) => (
-                                    <Box display="flex" gap={2} alignItems="center" mb={2}>
-                                        <TextField required label="Attribute" value={attribute} onChange={(e) => handleAttributeChange(i, e.target.value) } margin="dense" variant="standard" fullWidth size="small" />
-                                        <TextField label="Value" value={value} onChange={(e) => handleAttributeValueChange(i, e.target.value) } margin="dense" variant="standard" fullWidth size="small" />
-                                        <IconButton onClick={() => deleteAttribute(i)} color="secondary">
-                                            <Delete />
-                                        </IconButton>
-                                    </Box>
-                                ))}
-                                <Button onClick={addAttribute}>Add attribute</Button>
+                                <TextField
+                                    required
+                                    margin="dense"
+                                    id="name"
+                                    name="name"
+                                    label="Name"
+                                    type="text"
+                                    fullWidth
+                                    variant="standard"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                                {localAttributes.map(
+                                    ([attribute, value], i) => (
+                                        <Box
+                                            display="flex"
+                                            gap={2}
+                                            alignItems="center"
+                                            mb={2}
+                                        >
+                                            <TextField
+                                                required
+                                                label="Attribute"
+                                                value={attribute}
+                                                onChange={(e) =>
+                                                    handleAttributeChange(
+                                                        i,
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                margin="dense"
+                                                variant="standard"
+                                                fullWidth
+                                                size="small"
+                                            />
+                                            <TextField
+                                                label="Value"
+                                                value={value}
+                                                onChange={(e) =>
+                                                    handleAttributeValueChange(
+                                                        i,
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                margin="dense"
+                                                variant="standard"
+                                                fullWidth
+                                                size="small"
+                                            />
+                                            <IconButton
+                                                onClick={() =>
+                                                    deleteAttribute(i)
+                                                }
+                                                color="secondary"
+                                            >
+                                                <Delete />
+                                            </IconButton>
+                                        </Box>
+                                    ),
+                                )}
+                                <Button onClick={addAttribute}>
+                                    Add attribute
+                                </Button>
                                 <hr />
-                                <Button onClick={deleteTag} color="error">Delete tag</Button>
+                                <Button onClick={deleteTag} color="error">
+                                    Delete tag
+                                </Button>
                             </Grid>
-                            <Grid item style={{paddingLeft: "max", alignContent: "rigth"}}>
-                                <Box display="flex" justifyContent="flex-end" gap={4}>
-                                    <Button color="secondary" onClick={handleClose}>
+                            <Grid
+                                item
+                                style={{
+                                    paddingLeft: "max",
+                                    alignContent: "rigth",
+                                }}
+                            >
+                                <Box
+                                    display="flex"
+                                    justifyContent="flex-end"
+                                    gap={4}
+                                >
+                                    <Button
+                                        color="secondary"
+                                        onClick={handleClose}
+                                    >
                                         Close
                                     </Button>
-                                    <Button color="primary" onClick={() => handleFormSubmit()}>
+                                    <Button
+                                        color="primary"
+                                        onClick={() => handleFormSubmit()}
+                                    >
                                         Save
                                     </Button>
                                 </Box>
                             </Grid>
                         </Grid>
-                    ) 
-                    : (<p>Select a metadata tag to edit</p>)}
-                    </Grid>
+                    ) : (
+                        <p>Select a metadata tag to edit</p>
+                    )}
                 </Grid>
-            </Dialog>
-        )
-} 
+            </Grid>
+        </Dialog>
+    );
+};
 
 export default MetadataDialog;

@@ -6,12 +6,19 @@ export type Element = InlineElement | OuterElement | Slide | Text;
 /**
  * Represents elements that can exist at the outermost level of a presentation.
  */
-export type OuterElement = Paragraph | HeadingElement | List | BlockQuote | HorizontalLine | Table | Section;
+export type OuterElement =
+    | Paragraph
+    | HeadingElement
+    | List
+    | BlockQuote
+    | HorizontalLine
+    | Table
+    | Section;
 
 /**
  * Represents elements that can exist inline within other elements.
  */
-export type InlineElement = TextAnnotation | Link | Image ;
+export type InlineElement = TextAnnotation | Link | Image;
 
 /**
  * Represents a block of text.
@@ -35,10 +42,9 @@ export type TextAnnotation = {
 export type Link = {
     type: string;
     content: string[];
-    attributes: { 
-        alias: string 
+    attributes: {
+        alias: string;
     };
-    
 };
 
 /**
@@ -47,7 +53,7 @@ export type Link = {
 export type Image = {
     type: string;
     content: string[];
-    attributes: { 
+    attributes: {
         alias: string;
     };
 };
@@ -60,8 +66,8 @@ export type HorizontalLine = {
     attributes: {
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
-    }
-}
+    };
+};
 
 /**
  * Represents an item within a list.
@@ -77,7 +83,7 @@ export type ListItem = {
 export type List = {
     type: string;
     content: (List | ListItem)[];
-    attributes: { 
+    attributes: {
         listType: string;
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
@@ -90,12 +96,11 @@ export type List = {
 export type Paragraph = {
     type: string;
     content: (Text | InlineElement)[];
-    attributes: { 
+    attributes: {
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
-    }
+    };
 };
-
 
 /**
  * Represent a table.
@@ -103,11 +108,11 @@ export type Paragraph = {
 export type Table = {
     type: string;
     content: TableRow[];
-    attributes: { 
+    attributes: {
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
-    }
-}
+    };
+};
 
 /**
  * Represents a table row.
@@ -115,8 +120,7 @@ export type Table = {
 export type TableRow = {
     type: string;
     content: (TableData | TableHeading)[];
-}
-
+};
 
 /**
  * Represents table data cell.
@@ -124,7 +128,7 @@ export type TableRow = {
 export type TableData = {
     type: string;
     content: (Text | InlineElement)[];
-}
+};
 
 /**
  * Represents table heading cell.
@@ -132,7 +136,7 @@ export type TableData = {
 export type TableHeading = {
     type: string;
     content: (Text | InlineElement)[];
-}
+};
 
 /**
  * Represents a heading element.
@@ -140,14 +144,12 @@ export type TableHeading = {
 export type HeadingElement = {
     type: string;
     content: (Text | InlineElement)[];
-    attributes: { 
+    attributes: {
         level: number;
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
     };
-    
 };
-
 
 /**
  * Represents a section element.
@@ -160,8 +162,8 @@ export type Section = {
         value: string;
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
-    }
-}
+    };
+};
 
 /**
  * Represents a block quote element.
@@ -169,10 +171,10 @@ export type Section = {
 export type BlockQuote = {
     type: string;
     content: OuterElement[];
-    attributes: { 
+    attributes: {
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
-    }
+    };
 };
 
 /**
@@ -181,9 +183,9 @@ export type BlockQuote = {
 export type Slide = {
     type: string;
     content: OuterElement[];
-    attributes: { 
+    attributes: {
         refs: string[];
-        frontMatter: { [key: string]: any }
+        frontMatter: { [key: string]: any };
         globalMetadataTags: string[];
         metadata: { [key: string]: string };
     };
@@ -195,8 +197,8 @@ export type Slide = {
 export type Lane = {
     type: string;
     content: (Slide | null)[];
-    attributes: { 
-        name: string; 
+    attributes: {
+        name: string;
     };
 };
 
@@ -205,8 +207,8 @@ export type Lane = {
  */
 export type Metadata = {
     name: string;
-    attributes: {[key: string]: any};
-}
+    attributes: { [key: string]: any };
+};
 
 /**
  * Represents styles used in the presentation.
@@ -214,7 +216,7 @@ export type Metadata = {
 export type Styles = {
     name: string;
     content: string;
-}
+};
 
 /**
  * Represents constraints that apply to each slide.
@@ -227,12 +229,12 @@ export type Constraints = {
     headings: number | null;
     bullet_points: number | null;
     tables: number | null;
-}
+};
 
 export type ImageFile = {
     name: string;
     fileBase64: string;
-}
+};
 
 /**
  * Represents the whole presentation.
@@ -243,4 +245,4 @@ export type Presentation = {
     constraints: Constraints;
     imageFiles: ImageFile[];
     styles: Styles;
-}
+};

@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest'
-import { MarkdownVisitor } from '../src/Model/Visitors/MarkdownVisitor';
+import { expect, test } from "vitest";
+import { MarkdownVisitor } from "../src/Model/Visitors/MarkdownVisitor";
 import * as pm from "../src/Model/PresentationModel";
 function getSimpleVisitor(): MarkdownVisitor {
     return new MarkdownVisitor();
@@ -51,36 +51,54 @@ test("horizontal line", () => {
 
 test("table data", () => {
     let visitor = getSimpleVisitor();
-    visitor.visitTableDataNode(new pm.TableDataElement([getTextNode("simple")]));
+    visitor.visitTableDataNode(
+        new pm.TableDataElement([getTextNode("simple")]),
+    );
     expect(visitor.getResult()).toEqual("simple");
 });
 
 test("table heading", () => {
     let visitor = getSimpleVisitor();
-    visitor.visitTableHeadingNode(new pm.TableHeadingElement([getTextNode("simple")]));
+    visitor.visitTableHeadingNode(
+        new pm.TableHeadingElement([getTextNode("simple")]),
+    );
     expect(visitor.getResult()).toEqual("simple");
 });
 
 test("table row data", () => {
     let visitor = getSimpleVisitor();
-    let row = new pm.TableRowElement([new pm.TableDataElement([getTextNode("first")]), new pm.TableDataElement([getTextNode("second")])]);
+    let row = new pm.TableRowElement([
+        new pm.TableDataElement([getTextNode("first")]),
+        new pm.TableDataElement([getTextNode("second")]),
+    ]);
     visitor.visitTableRowNode(row);
     expect(visitor.getResult()).toEqual("| first | second |\n");
 });
 
 test("table row heading", () => {
     let visitor = getSimpleVisitor();
-    let row = new pm.TableRowElement([new pm.TableHeadingElement([getTextNode("first")]), new pm.TableHeadingElement([getTextNode("second")])]);
+    let row = new pm.TableRowElement([
+        new pm.TableHeadingElement([getTextNode("first")]),
+        new pm.TableHeadingElement([getTextNode("second")]),
+    ]);
     visitor.visitTableRowNode(row);
     expect(visitor.getResult()).toEqual("| first | second |\n| --- | --- |\n");
 });
 
 test("table", () => {
     let visitor = getSimpleVisitor();
-    let row1 = new pm.TableRowElement([new pm.TableHeadingElement([getTextNode("11")]), new pm.TableHeadingElement([getTextNode("12")])]);
-    let row2 = new pm.TableRowElement([new pm.TableDataElement([getTextNode("21")]), new pm.TableDataElement([getTextNode("22")])]);
+    let row1 = new pm.TableRowElement([
+        new pm.TableHeadingElement([getTextNode("11")]),
+        new pm.TableHeadingElement([getTextNode("12")]),
+    ]);
+    let row2 = new pm.TableRowElement([
+        new pm.TableDataElement([getTextNode("21")]),
+        new pm.TableDataElement([getTextNode("22")]),
+    ]);
     visitor.visitTableNode(new pm.TableElement([row1, row2], [], {}));
-    expect(visitor.getResult()).toEqual("| 11 | 12 |\n| --- | --- |\n| 21 | 22 |\n\n");
+    expect(visitor.getResult()).toEqual(
+        "| 11 | 12 |\n| --- | --- |\n| 21 | 22 |\n\n",
+    );
 });
 
 test("image", () => {
@@ -153,7 +171,9 @@ test("section", () => {
     let paragraph = getSimpleParagraph([getTextNode("text")]);
     let section = new pm.Section("name", "value", [paragraph], [], {});
     visitor.visitSectionNode(section);
-    expect(visitor.getResult()).toEqual("<!-- +name: value -->\n\ntext\n\n<!-- / -->\n\n")
+    expect(visitor.getResult()).toEqual(
+        "<!-- +name: value -->\n\ntext\n\n<!-- / -->\n\n",
+    );
 });
 
 test("slide", () => {
@@ -175,22 +195,28 @@ test("lane", () => {
 
 test("paragraph metadata", () => {
     let visitor = getSimpleVisitor();
-    let paragraph = new pm.ParagraphElement([getTextNode("text")], [], {"meta": "data"});
+    let paragraph = new pm.ParagraphElement([getTextNode("text")], [], {
+        meta: "data",
+    });
     visitor.visitParagraphNode(paragraph);
-    expect(visitor.getResult()).toEqual("<!-- meta: data -->\ntext\n\n")
+    expect(visitor.getResult()).toEqual("<!-- meta: data -->\ntext\n\n");
 });
 
 test("heading metadata", () => {
     let visitor = getSimpleVisitor();
-    let heading = new pm.HeadingElement(1, [getTextNode("text")], [], {"meta": "data"});
+    let heading = new pm.HeadingElement(1, [getTextNode("text")], [], {
+        meta: "data",
+    });
     visitor.visitHeadingNode(heading);
-    expect(visitor.getResult()).toEqual("<!-- meta: data -->\n# text\n")
+    expect(visitor.getResult()).toEqual("<!-- meta: data -->\n# text\n");
 });
 
 test("blockquote metadata", () => {
     let visitor = getSimpleVisitor();
     let paragraph = getSimpleParagraph([getTextNode("text")]);
-    let blockquote = new pm.BlockQuoteElement([paragraph], [], {"meta": "data"});
+    let blockquote = new pm.BlockQuoteElement([paragraph], [], {
+        meta: "data",
+    });
     visitor.visitBlockQuoteNode(blockquote);
     expect(visitor.getResult()).toEqual("<!-- meta: data -->\n> text\n\n");
 });
@@ -198,33 +224,55 @@ test("blockquote metadata", () => {
 test("section", () => {
     let visitor = getSimpleVisitor();
     let paragraph = getSimpleParagraph([getTextNode("text")]);
-    let section = new pm.Section("name", "value", [paragraph], [], {"meta": "data"});
+    let section = new pm.Section("name", "value", [paragraph], [], {
+        meta: "data",
+    });
     visitor.visitSectionNode(section);
-    expect(visitor.getResult()).toEqual("<!-- meta: data -->\n<!-- +name: value -->\n\ntext\n\n<!-- / -->\n\n")
+    expect(visitor.getResult()).toEqual(
+        "<!-- meta: data -->\n<!-- +name: value -->\n\ntext\n\n<!-- / -->\n\n",
+    );
 });
 
 test("ordered list metadata", () => {
     let visitor = getSimpleVisitor();
     let item1 = new pm.ListItemElement([getTextNode("item1")]);
     let item2 = new pm.ListItemElement([getTextNode("item2")]);
-    let list = new pm.ListElement("ordered", [item1, item2], [], {"meta": "data"});
+    let list = new pm.ListElement("ordered", [item1, item2], [], {
+        meta: "data",
+    });
     visitor.visitListNode(list);
-    expect(visitor.getResult()).toEqual("<!-- meta: data -->\n1. item1\n2. item2\n\n");
+    expect(visitor.getResult()).toEqual(
+        "<!-- meta: data -->\n1. item1\n2. item2\n\n",
+    );
 });
 
 test("unordered list metadata", () => {
     let visitor = getSimpleVisitor();
     let item1 = new pm.ListItemElement([getTextNode("item1")]);
     let item2 = new pm.ListItemElement([getTextNode("item2")]);
-    let list = new pm.ListElement("unordered", [item1, item2], [], {"meta": "data"});
+    let list = new pm.ListElement("unordered", [item1, item2], [], {
+        meta: "data",
+    });
     visitor.visitListNode(list);
-    expect(visitor.getResult()).toEqual("<!-- meta: data -->\n- item1\n- item2\n\n");
+    expect(visitor.getResult()).toEqual(
+        "<!-- meta: data -->\n- item1\n- item2\n\n",
+    );
 });
 
 test("table metadata", () => {
     let visitor = getSimpleVisitor();
-    let row1 = new pm.TableRowElement([new pm.TableHeadingElement([getTextNode("11")]), new pm.TableHeadingElement([getTextNode("12")])]);
-    let row2 = new pm.TableRowElement([new pm.TableDataElement([getTextNode("21")]), new pm.TableDataElement([getTextNode("22")])]);
-    visitor.visitTableNode(new pm.TableElement([row1, row2], [], {"meta": "data"}));
-    expect(visitor.getResult()).toEqual("<!-- meta: data -->\n| 11 | 12 |\n| --- | --- |\n| 21 | 22 |\n\n");
+    let row1 = new pm.TableRowElement([
+        new pm.TableHeadingElement([getTextNode("11")]),
+        new pm.TableHeadingElement([getTextNode("12")]),
+    ]);
+    let row2 = new pm.TableRowElement([
+        new pm.TableDataElement([getTextNode("21")]),
+        new pm.TableDataElement([getTextNode("22")]),
+    ]);
+    visitor.visitTableNode(
+        new pm.TableElement([row1, row2], [], { meta: "data" }),
+    );
+    expect(visitor.getResult()).toEqual(
+        "<!-- meta: data -->\n| 11 | 12 |\n| --- | --- |\n| 21 | 22 |\n\n",
+    );
 });

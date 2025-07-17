@@ -5,7 +5,6 @@ import { SlideElement } from "../Model/PresentationModel";
 import SelectContainer from "./SelectContainer";
 import Preview from "./Preview";
 import { Constraints, ImageFile, Metadata } from "../Model/PresentationTypes";
-import { useEffect, useState } from "react";
 
 interface EditorModuleProps {
     editorData: string;
@@ -19,13 +18,11 @@ interface EditorModuleProps {
     setSlideActive(index: number): void;
     reorderSlides(oldIndex: number, newIndex: number): void;
     deleteSlideAt(index: number): void;
-    regenerateSlide(index: number): void;
     constraints: Constraints;
     slideAnalysis: Constraints;
     updateEditor(): void;
     images: ImageFile[];
     metadata: Metadata[];
-    frontMatter: any;
     css: string;
 }
 
@@ -41,16 +38,13 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     reorderSlides,
     setSlideActive,
     deleteSlideAt,
-    regenerateSlide,
     constraints,
     slideAnalysis,
     updateEditor,
     images,
     metadata,
-    frontMatter,
-    css
+    css,
 }) => {
-
     function deleteSlide(): void {
         deleteSlideAt(selectedSlideIndex);
     }
@@ -69,45 +63,55 @@ const EditorModule: React.FC<EditorModuleProps> = ({
     }
 
     return (
-    <Grid container direction="column" style={{ height: "100%" }}>
-        <Grid item>
-            <SelectContainer
-                selectedSlideIndex={selectedSlideIndex}
-                onAdd={addSlide}
-                onAddAfter={() => addSlideAt(selectedSlideIndex)}
-                onDelete={deleteSlide}
-                elements={slides}
-                onSelect={selectSlide}
-                onActivate={activateSlide}
-                reorderSlides={reorderSlides}
-                constraints={constraints}
-                slideAnalysis={slideAnalysis}
-            />
-        </Grid>
-        <Grid item xs style={{ height: "100%", width: "95%", resize: "vertical", overflow: "auto" }}>
-            {editorView ? (
-                slides[selectedSlideIndex] != null && slides[selectedSlideIndex]!.isActive() ? (
-                    <EditorContainer
-                        data={editorData}
-                        onEditorChange={editorChange}
-                    />
+        <Grid container direction="column" style={{ height: "100%" }}>
+            <Grid item>
+                <SelectContainer
+                    selectedSlideIndex={selectedSlideIndex}
+                    onAdd={addSlide}
+                    onAddAfter={() => addSlideAt(selectedSlideIndex)}
+                    onDelete={deleteSlide}
+                    elements={slides}
+                    onSelect={selectSlide}
+                    onActivate={activateSlide}
+                    reorderSlides={reorderSlides}
+                    constraints={constraints}
+                    slideAnalysis={slideAnalysis}
+                />
+            </Grid>
+            <Grid
+                item
+                xs
+                style={{
+                    height: "100%",
+                    width: "95%",
+                    resize: "vertical",
+                    overflow: "auto",
+                }}
+            >
+                {editorView ? (
+                    slides[selectedSlideIndex] != null &&
+                    slides[selectedSlideIndex]!.isActive() ? (
+                        <EditorContainer
+                            data={editorData}
+                            onEditorChange={editorChange}
+                        />
+                    ) : (
+                        <div></div>
+                    )
                 ) : (
-                    <div></div>
-                )
-            ) : (
-                (() => {
-                    console.log("here");
-                    let html = "";
-                    if (slides[selectedSlideIndex]) {
-                        let visitor = new HtmlVisitor(images, metadata);
-                        visitor.visitSlideNode(slides[selectedSlideIndex]!);
-                        html = visitor.getResult();
-                    }
-                    return <Preview html={html} css={css} />;
-                })()
-            )}
+                    (() => {
+                        console.log("here");
+                        let html = "";
+                        if (slides[selectedSlideIndex]) {
+                            let visitor = new HtmlVisitor(images, metadata);
+                            visitor.visitSlideNode(slides[selectedSlideIndex]!);
+                            html = visitor.getResult();
+                        }
+                        return <Preview html={html} css={css} />;
+                    })()
+                )}
+            </Grid>
         </Grid>
-    </Grid>
     );
 };
 

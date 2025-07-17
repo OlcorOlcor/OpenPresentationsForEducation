@@ -25,7 +25,12 @@ export class MarkdownParser {
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    metadataRule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    metadataRule(
+        state: any,
+        startLine: any,
+        endLine: any,
+        silent: any,
+    ): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
         if (state.src.slice(startPos, startPos + 4) !== "<!--") {
@@ -34,7 +39,9 @@ export class MarkdownParser {
         if (state.src.slice(startPos, endLine).indexOf(":") >= 0) {
             return false;
         }
-        const match: string[] = state.src.slice(startPos, max).match(/^<!-- ([^:]+) -->$/);
+        const match: string[] = state.src
+            .slice(startPos, max)
+            .match(/^<!-- ([^:]+) -->$/);
         if (!match) {
             return false;
         }
@@ -42,9 +49,9 @@ export class MarkdownParser {
             return true;
         }
         state.line = startLine + 1;
-        let token = state.push("global_metadata", '', 0);
+        let token = state.push("global_metadata", "", 0);
         token.hidden = true;
-        token.meta = {...token.meta, name: match[1]}
+        token.meta = { ...token.meta, name: match[1] };
         return true;
     }
 
@@ -56,7 +63,12 @@ export class MarkdownParser {
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    metadataTagRule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    metadataTagRule(
+        state: any,
+        startLine: any,
+        endLine: any,
+        silent: any,
+    ): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
 
@@ -64,8 +76,10 @@ export class MarkdownParser {
             return false;
         }
 
-        const match: string[] = state.src.slice(startPos, max).match(/^<!--(.*): +(.*)-->$/);
-        
+        const match: string[] = state.src
+            .slice(startPos, max)
+            .match(/^<!--(.*): +(.*)-->$/);
+
         if (!match) {
             return false;
         }
@@ -75,9 +89,13 @@ export class MarkdownParser {
         }
 
         state.line = startLine + 1;
-        let token = state.push("metadata_tag", '', 0);
+        let token = state.push("metadata_tag", "", 0);
         token.hidden = true;
-        token.meta = {...token.meta, key: match[1].trim(), val: match[2].trim()}
+        token.meta = {
+            ...token.meta,
+            key: match[1].trim(),
+            val: match[2].trim(),
+        };
         return true;
     }
     /**
@@ -88,7 +106,12 @@ export class MarkdownParser {
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    sectionTagRule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    sectionTagRule(
+        state: any,
+        startLine: any,
+        endLine: any,
+        silent: any,
+    ): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
 
@@ -96,8 +119,10 @@ export class MarkdownParser {
             return false;
         }
 
-        const match: string[] = state.src.slice(startPos, max).match(/^<!-- \+(.*): +(.*)-->$/);
-        
+        const match: string[] = state.src
+            .slice(startPos, max)
+            .match(/^<!-- \+(.*): +(.*)-->$/);
+
         if (!match) {
             return false;
         }
@@ -108,9 +133,9 @@ export class MarkdownParser {
 
         state.line = startLine + 1;
         let comment = { key: match[1].trim(), val: match[2].trim() };
-        let token = state.push("section_tag", '', 0);
+        let token = state.push("section_tag", "", 0);
         token.hidden = true;
-        token.meta = {...token.meta, section_tag: comment}
+        token.meta = { ...token.meta, section_tag: comment };
         return true;
     }
 
@@ -122,12 +147,19 @@ export class MarkdownParser {
      * @param silent - If true, the rule will be applied silently.
      * @returns True if the rule was successfully applied, false otherwise.
      */
-    sectionCloseTagRule(state: any, startLine: any, endLine: any, silent: any): boolean {
+    sectionCloseTagRule(
+        state: any,
+        startLine: any,
+        endLine: any,
+        silent: any,
+    ): boolean {
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
         const max = state.eMarks[startLine];
-        
-        const match: string[] = state.src.slice(startPos, max).match(/^<!-- \/ -->$/);
-        
+
+        const match: string[] = state.src
+            .slice(startPos, max)
+            .match(/^<!-- \/ -->$/);
+
         if (!match) {
             return false;
         }
@@ -137,11 +169,10 @@ export class MarkdownParser {
         }
 
         state.line = startLine + 1;
-        let token = state.push("section_close_tag", '', 0);
+        let token = state.push("section_close_tag", "", 0);
         token.hidden = true;
         return true;
     }
-
 
     /**
      * Custom rule to handle front matter in markdown.
@@ -152,17 +183,16 @@ export class MarkdownParser {
      * @returns True if the rule was successfully applied, false otherwise.
      */
     frontMatterRule(state: any, startLine: any, endLine: any, silent: any) {
-        
         if (startLine !== 0) {
             return false;
         }
 
         const startPos = state.bMarks[startLine] + state.tShift[startLine];
-        const frontMatterBorder = "---"
+        const frontMatterBorder = "---";
         if (state.src.slice(startPos, startPos + 3) !== frontMatterBorder) {
             return false;
         }
-        
+
         let line = startLine + 1;
         let content: string[] = [];
 
@@ -179,7 +209,13 @@ export class MarkdownParser {
             ++line;
         }
 
-        if (line >= endLine || state.src.slice(state.bMarks[line] + state.tShift[line], state.eMarks[line]) !== '---') {
+        if (
+            line >= endLine ||
+            state.src.slice(
+                state.bMarks[line] + state.tShift[line],
+                state.eMarks[line],
+            ) !== "---"
+        ) {
             return false;
         }
 
@@ -188,7 +224,7 @@ export class MarkdownParser {
         }
 
         let frontMatter: { [key: string]: string } = {};
-        content.forEach(line => {
+        content.forEach((line) => {
             const match = line.match(/^([A-Za-z0-9_-]+):\s(.*)$/);
             if (match) {
                 frontMatter[match[1].trim()] = match[2].trim();
@@ -198,7 +234,7 @@ export class MarkdownParser {
         state.line = line + 1;
         const token = state.push("front_matter", "", 0);
         token.hidden = true;
-        token.meta = {...token.meta, front_matter: frontMatter};
+        token.meta = { ...token.meta, front_matter: frontMatter };
         return true;
     }
 
@@ -210,10 +246,26 @@ export class MarkdownParser {
      */
     public parseMarkdown(markdown: string): pt.Slide {
         let mdit = markdownit();
-        mdit.block.ruler.before("paragraph", "global_metadata", this.metadataRule);
-        mdit.block.ruler.before("paragraph", "metadata_tag", this.metadataTagRule);
-        mdit.block.ruler.before("metadata_tag", "section_tag", this.sectionTagRule);
-        mdit.block.ruler.before("global_metadata", "section_close_tag", this.sectionCloseTagRule);
+        mdit.block.ruler.before(
+            "paragraph",
+            "global_metadata",
+            this.metadataRule,
+        );
+        mdit.block.ruler.before(
+            "paragraph",
+            "metadata_tag",
+            this.metadataTagRule,
+        );
+        mdit.block.ruler.before(
+            "metadata_tag",
+            "section_tag",
+            this.sectionTagRule,
+        );
+        mdit.block.ruler.before(
+            "global_metadata",
+            "section_close_tag",
+            this.sectionCloseTagRule,
+        );
         mdit.block.ruler.before("hr", "front_matter", this.frontMatterRule);
         let array = mdit.parse(markdown, {});
         let slide = this.handleArray(array);
@@ -230,7 +282,10 @@ export class MarkdownParser {
      * @param index - Index within the array.
      * @returns The createed outer element.
      */
-    private getOuterElement(array: Token[], index: RefIndex, ): pt.OuterElement | null {
+    private getOuterElement(
+        array: Token[],
+        index: RefIndex,
+    ): pt.OuterElement | null {
         switch (array[index.index].type) {
             case "bullet_list_open":
                 index.index += 1;
@@ -245,7 +300,11 @@ export class MarkdownParser {
                 }
                 return paragraph;
             case "heading_open":
-                return this.handleHeading(array, index, array[index.index].markup.length);
+                return this.handleHeading(
+                    array,
+                    index,
+                    array[index.index].markup.length,
+                );
             case "blockquote_open":
                 index.index += 1;
                 return this.handleBlockQuote(array, index);
@@ -256,12 +315,19 @@ export class MarkdownParser {
                 this.globalMetadataTags.push(tag_name);
                 break;
             case "metadata_tag":
-                this.metadataTags[array[index.index].meta["key"]] = array[index.index].meta["val"];
+                this.metadataTags[array[index.index].meta["key"]] =
+                    array[index.index].meta["val"];
                 break;
             case "section_tag":
                 return this.handleSection(array, index);
             case "hr":
-                const hr: pt.HorizontalLine = { type: "horizontal_line", attributes: { globalMetadataTags: this.globalMetadataTags, metadata: {} } }
+                const hr: pt.HorizontalLine = {
+                    type: "horizontal_line",
+                    attributes: {
+                        globalMetadataTags: this.globalMetadataTags,
+                        metadata: {},
+                    },
+                };
                 this.globalMetadataTags = [];
                 return hr;
             default:
@@ -276,8 +342,21 @@ export class MarkdownParser {
      * @returns The parsed slide.
      */
     private handleArray(array: Token[]): pt.Slide {
-        let slide: pt.Slide = {type: "slide", content: [], attributes: { globalMetadataTags: [], metadata: {}, refs: [], frontMatter: {}}};
-        for (let index: RefIndex = new RefIndex(); index.index < array.length; ++index.index) {
+        let slide: pt.Slide = {
+            type: "slide",
+            content: [],
+            attributes: {
+                globalMetadataTags: [],
+                metadata: {},
+                refs: [],
+                frontMatter: {},
+            },
+        };
+        for (
+            let index: RefIndex = new RefIndex();
+            index.index < array.length;
+            ++index.index
+        ) {
             if (array[index.index].type === "front_matter") {
                 const pairs = array[index.index].meta.front_matter;
                 slide.attributes.frontMatter = pairs;
@@ -299,13 +378,27 @@ export class MarkdownParser {
      * @returns section element.
      */
     private handleSection(array: Token[], index: RefIndex): pt.Section {
-        let section: pt.Section = { type: "section", content: [], attributes: {key: array[index.index].meta["section_tag"].key, value: array[index.index].meta["section_tag"].val, globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags}}
+        let section: pt.Section = {
+            type: "section",
+            content: [],
+            attributes: {
+                key: array[index.index].meta["section_tag"].key,
+                value: array[index.index].meta["section_tag"].val,
+                globalMetadataTags: this.globalMetadataTags,
+                metadata: this.metadataTags,
+            },
+        };
         this.globalMetadataTags = [];
         this.metadataTags = {};
         index.index += 1;
         for (index.index + 1; index.index < array.length; ++index.index) {
             if (array[index.index].type === "section_tag") {
-                if (array[index.index].meta["section_tag"].key === this.sectionStack[this.sectionStack.length - 1] || array[index.index].meta["section_tag"].key === section.attributes.key) {
+                if (
+                    array[index.index].meta["section_tag"].key ===
+                        this.sectionStack[this.sectionStack.length - 1] ||
+                    array[index.index].meta["section_tag"].key ===
+                        section.attributes.key
+                ) {
                     this.sectionStack.pop();
                     index.index -= 1;
                     return section;
@@ -332,7 +425,14 @@ export class MarkdownParser {
      * @returns The parsed table element.
      */
     private handleTable(array: Token[], index: RefIndex): pt.Table {
-        let table: pt.Table = { type: "table", content: [], attributes: { globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags } }
+        let table: pt.Table = {
+            type: "table",
+            content: [],
+            attributes: {
+                globalMetadataTags: this.globalMetadataTags,
+                metadata: this.metadataTags,
+            },
+        };
         this.globalMetadataTags = [];
         this.metadataTags = {};
         let row = -1;
@@ -343,20 +443,26 @@ export class MarkdownParser {
                 case "tr_open":
                     row++;
                     col = -1;
-                    table.content.push({type: "tableRow", content: []});
+                    table.content.push({ type: "tableRow", content: [] });
                     break;
                 case "th_open":
                     col++;
-                    table.content[row].content.push({type: "tableHeading", content: []});
+                    table.content[row].content.push({
+                        type: "tableHeading",
+                        content: [],
+                    });
                     break;
                 case "td_open":
                     col++;
-                    table.content[row].content.push({type: "tableData", content: []});
+                    table.content[row].content.push({
+                        type: "tableData",
+                        content: [],
+                    });
                     break;
                 case "inline":
                     const currentCell = table.content[row].content[col];
-                    this.getInline(array[index.index]).forEach(inline => {
-                        currentCell.content.push(inline); 
+                    this.getInline(array[index.index]).forEach((inline) => {
+                        currentCell.content.push(inline);
                     });
                     break;
                 case "table_close":
@@ -379,7 +485,14 @@ export class MarkdownParser {
      * @returns The parsed BlockQuote element.
      */
     private handleBlockQuote(array: Token[], index: RefIndex): pt.BlockQuote {
-        let blockQuote: pt.BlockQuote = { type: "blockquote", content: [], attributes: { globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags }};
+        let blockQuote: pt.BlockQuote = {
+            type: "blockquote",
+            content: [],
+            attributes: {
+                globalMetadataTags: this.globalMetadataTags,
+                metadata: this.metadataTags,
+            },
+        };
         this.globalMetadataTags = [];
         this.metadataTags = {};
         let done: boolean = false;
@@ -433,7 +546,14 @@ export class MarkdownParser {
      * @returns The parsed Paragraph element.
      */
     private handleParagraph(array: Token[], index: RefIndex): pt.Paragraph {
-        let paragraph: pt.Paragraph = { type: "paragraph", content: [], attributes: { globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags }};
+        let paragraph: pt.Paragraph = {
+            type: "paragraph",
+            content: [],
+            attributes: {
+                globalMetadataTags: this.globalMetadataTags,
+                metadata: this.metadataTags,
+            },
+        };
         this.globalMetadataTags = [];
         this.metadataTags = {};
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -446,25 +566,33 @@ export class MarkdownParser {
                     if (this.firstParagraph) {
                         if (item.type === "text") {
                             let content: string = "";
-                            (item as pt.Text).content.forEach(s => content += s);
+                            (item as pt.Text).content.forEach(
+                                (s) => (content += s),
+                            );
                             if (/^\[.*\]$/.test(content)) {
-                                this.slideTag = content.slice(1, content.length - 1);
+                                this.slideTag = content.slice(
+                                    1,
+                                    content.length - 1,
+                                );
                                 return;
                             }
                         }
                     }
                     if (item.type === "text") {
                         let content: string = "";
-                        (item as pt.Text).content.forEach(s => content += s);
+                        (item as pt.Text).content.forEach(
+                            (s) => (content += s),
+                        );
                         if (/^->\[.*\]$/.test(content)) {
-                            this.slideRefs.push(content.slice(3, content.length - 1));
+                            this.slideRefs.push(
+                                content.slice(3, content.length - 1),
+                            );
                             return;
                         }
                     }
                     paragraph.content.push(item);
                     this.firstParagraph = false;
-                }
-                );
+                });
             }
         }
         return paragraph;
@@ -477,8 +605,20 @@ export class MarkdownParser {
      * @param level - The heading level.
      * @returns The parsed Heading element.
      */
-    private handleHeading(array: Token[], index: RefIndex, level: number): pt.HeadingElement {
-        let heading: pt.HeadingElement = { type: "heading", content: [], attributes: { level: level, globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags }};
+    private handleHeading(
+        array: Token[],
+        index: RefIndex,
+        level: number,
+    ): pt.HeadingElement {
+        let heading: pt.HeadingElement = {
+            type: "heading",
+            content: [],
+            attributes: {
+                level: level,
+                globalMetadataTags: this.globalMetadataTags,
+                metadata: this.metadataTags,
+            },
+        };
         this.globalMetadataTags = [];
         this.metadataTags = {};
         for (index.index + 1; index.index < array.length; ++index.index) {
@@ -501,8 +641,20 @@ export class MarkdownParser {
      * @param ordered - Boolean indicating if the list is ordered.
      * @returns The parsed List element.
      */
-    private handleList(array: Token[], index: RefIndex, ordered: boolean): pt.List {
-        let list: pt.List = { type: "list", content: [], attributes: { listType: ordered ? "ordered" : "unordered", globalMetadataTags: this.globalMetadataTags, metadata: this.metadataTags}};
+    private handleList(
+        array: Token[],
+        index: RefIndex,
+        ordered: boolean,
+    ): pt.List {
+        let list: pt.List = {
+            type: "list",
+            content: [],
+            attributes: {
+                listType: ordered ? "ordered" : "unordered",
+                globalMetadataTags: this.globalMetadataTags,
+                metadata: this.metadataTags,
+            },
+        };
         this.globalMetadataTags = [];
         this.metadataTags = {};
         let done: boolean = false;
@@ -560,10 +712,18 @@ export class MarkdownParser {
                     if (isLinkAlias) {
                         isLinkAlias = false;
                         if (stack.length === 0) {
-                            (inlineElements[inlineElements.length - 1] as pt.Link).attributes.alias = child.content;
+                            (
+                                inlineElements[
+                                    inlineElements.length - 1
+                                ] as pt.Link
+                            ).attributes.alias = child.content;
                             break;
                         }
-                        (stack[stack.length - 1].content[stack[stack.length - 1].content.length - 1] as pt.Link).attributes.alias = child.content;
+                        (
+                            stack[stack.length - 1].content[
+                                stack[stack.length - 1].content.length - 1
+                            ] as pt.Link
+                        ).attributes.alias = child.content;
                         break;
                     }
                     if (child.content === "") {
@@ -598,7 +758,7 @@ export class MarkdownParser {
                         let link: pt.Link = {
                             type: "link",
                             content: [link_href],
-                            attributes: { alias: child.content }
+                            attributes: { alias: child.content },
                         };
                         this.globalMetadataTags = [];
                         if (stack.length === 0) {
@@ -614,7 +774,7 @@ export class MarkdownParser {
                         let image: pt.Image = {
                             type: "image",
                             content: [img_href],
-                            attributes: { alias: child.content }
+                            attributes: { alias: child.content },
                         };
                         this.globalMetadataTags = [];
                         if (stack.length === 0) {
@@ -625,7 +785,10 @@ export class MarkdownParser {
                     }
                     break;
                 case "code_inline":
-                    let code = { type: "code", content: [{type: "text", content: [child.content]}] };
+                    let code = {
+                        type: "code",
+                        content: [{ type: "text", content: [child.content] }],
+                    };
                     if (stack.length === 0) {
                         inlineElements.push(code);
                         break;

@@ -966,7 +966,7 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "First is the Reveal option which will export two lanes of your choosing in a reveal.js presentation."
+                                        "First is the Reveal option which will export two lanes of your choosing in a Reveal.js presentation."
                                     ]
                                 },
                                 {
@@ -978,24 +978,7 @@
                                 {
                                     "type": "text",
                                     "content": [
-                                        "The second is the custom option, this allows you to add custom HTML code to the presentation including but not limited to the "
-                                    ]
-                                },
-                                {
-                                    "type": "code",
-                                    "content": [
-                                        {
-                                            "type": "text",
-                                            "content": [
-                                                "script"
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "text",
-                                    "content": [
-                                        " tag."
+                                        "The second is the plain HTML option, this allows you to add a custom JavaScript script that gets appended to the exported file."
                                     ]
                                 },
                                 {

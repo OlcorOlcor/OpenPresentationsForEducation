@@ -1,7 +1,6 @@
-import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select} from "@mui/material";
-import { Lane, SlideElement } from "../Model/PresentationModel";
-import React, { useState } from "react";
-import LaneDialog from "./LaneDialog";
+import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import { Lane } from "../Model/PresentationModel";
+import React from "react";
 
 interface LaneMenuProps {
     lanes: Lane[];
@@ -13,7 +12,7 @@ interface LaneMenuProps {
     editorView: boolean;
     setEditorView: React.Dispatch<React.SetStateAction<boolean>>;
     addLane(): void;
-    deleteLane(index: number): void; 
+    deleteLane(index: number): void;
 }
 
 const LaneMenu: React.FC<LaneMenuProps> = ({
@@ -25,9 +24,8 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
     editorView,
     setEditorView,
     addLane,
-    deleteLane
+    deleteLane,
 }) => {
-
     function handleLaneChange(e: any) {
         selectLane(e.target.value as number);
     }
@@ -72,7 +70,6 @@ const LaneMenu: React.FC<LaneMenuProps> = ({
                 </FormControl>
             </Grid>
         </Grid>
-
     );
 };
 

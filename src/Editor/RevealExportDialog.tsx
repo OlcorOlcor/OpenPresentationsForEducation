@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
-import { Lane } from '../Model/PresentationModel';
+import React, { useState } from "react";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    FormControl,
+    Select,
+    MenuItem,
+    InputLabel,
+} from "@mui/material";
+import { Lane } from "../Model/PresentationModel";
 
 interface RevealExportDialogProps {
     lanes: Lane[];
@@ -9,10 +19,17 @@ interface RevealExportDialogProps {
     exportPresentationAsReveal(main: Lane, secondary: Lane): void;
 }
 
-const RevealExportDialog: React.FC<RevealExportDialogProps> = ({ lanes, open, onClose, exportPresentationAsReveal }) => {
-    const [selectedMainLaneIndex, setSelectedMainLaneIndex] = useState<number>(0);
-    const [selectedSecondLaneIndex, setSelectedSecondLaneIndex] = useState<number>(0);
-    
+const RevealExportDialog: React.FC<RevealExportDialogProps> = ({
+    lanes,
+    open,
+    onClose,
+    exportPresentationAsReveal,
+}) => {
+    const [selectedMainLaneIndex, setSelectedMainLaneIndex] =
+        useState<number>(0);
+    const [selectedSecondLaneIndex, setSelectedSecondLaneIndex] =
+        useState<number>(0);
+
     function handleMainLaneChange(e: any) {
         setSelectedMainLaneIndex(e.target.value as number);
     }
@@ -22,16 +39,29 @@ const RevealExportDialog: React.FC<RevealExportDialogProps> = ({ lanes, open, on
     }
 
     function submit() {
-        exportPresentationAsReveal(lanes[selectedMainLaneIndex], lanes[selectedSecondLaneIndex]);
+        exportPresentationAsReveal(
+            lanes[selectedMainLaneIndex],
+            lanes[selectedSecondLaneIndex],
+        );
     }
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>Reveal Export</DialogTitle>
             <DialogContent>
-                <FormControl fullWidth size="small" style={{marginTop: "1%", marginBottom: "5%"}}>
+                <FormControl
+                    fullWidth
+                    size="small"
+                    style={{ marginTop: "1%", marginBottom: "5%" }}
+                >
                     <InputLabel id="laneSelectLabel">Main lane:</InputLabel>
-                    <Select labelId="laneSelectLabel" id="mainLaneSelect" value={selectedMainLaneIndex} label="Main lane:" onChange={handleMainLaneChange}>
+                    <Select
+                        labelId="laneSelectLabel"
+                        id="mainLaneSelect"
+                        value={selectedMainLaneIndex}
+                        label="Main lane:"
+                        onChange={handleMainLaneChange}
+                    >
                         {lanes.map((lane, index) => (
                             <MenuItem key={index} value={index}>
                                 {lane.getName()}
@@ -40,8 +70,16 @@ const RevealExportDialog: React.FC<RevealExportDialogProps> = ({ lanes, open, on
                     </Select>
                 </FormControl>
                 <FormControl fullWidth size="small">
-                    <InputLabel id="laneSelectLabel">Secondary lane (Speaker notes):</InputLabel>
-                    <Select labelId="laneSelectLabel" id="secondaryLaneSelect" value={selectedSecondLaneIndex} label="Secondary lane (Speaker notes)" onChange={handleSecondLaneChange}>
+                    <InputLabel id="laneSelectLabel">
+                        Secondary lane (Speaker notes):
+                    </InputLabel>
+                    <Select
+                        labelId="laneSelectLabel"
+                        id="secondaryLaneSelect"
+                        value={selectedSecondLaneIndex}
+                        label="Secondary lane (Speaker notes)"
+                        onChange={handleSecondLaneChange}
+                    >
                         {lanes.map((lane, index) => (
                             <MenuItem key={index} value={index}>
                                 {lane.getName()}
@@ -54,7 +92,13 @@ const RevealExportDialog: React.FC<RevealExportDialogProps> = ({ lanes, open, on
                 <Button color="secondary" onClick={onClose}>
                     Close
                 </Button>
-                <Button color="primary" onClick={() => {submit(); onClose();}}>
+                <Button
+                    color="primary"
+                    onClick={() => {
+                        submit();
+                        onClose();
+                    }}
+                >
                     Submit
                 </Button>
             </DialogActions>

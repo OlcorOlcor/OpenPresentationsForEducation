@@ -5,7 +5,6 @@ import * as pm from "./PresentationModel";
  * Class designed for converting JSON representation of the presentation data model into its class representation.
  */
 export class PresentationParser {
-
     /**
      * Converts a Text JSON object to a TextElement.
      * @param textJson - The Text JSON object.
@@ -103,9 +102,15 @@ export class PresentationParser {
      * @param paragraphJson - The Paragraph JSON object.
      * @returns The corresponding ParagraphElement.
      */
-    private getParagraphElement(paragraphJson: pt.Paragraph): pm.ParagraphElement {
+    private getParagraphElement(
+        paragraphJson: pt.Paragraph,
+    ): pm.ParagraphElement {
         let elements = this.getInlineContent(paragraphJson.content);
-        return new pm.ParagraphElement(elements, paragraphJson.attributes.globalMetadataTags, paragraphJson.attributes.metadata);
+        return new pm.ParagraphElement(
+            elements,
+            paragraphJson.attributes.globalMetadataTags,
+            paragraphJson.attributes.metadata,
+        );
     }
 
     /**
@@ -113,10 +118,17 @@ export class PresentationParser {
      * @param headingJson - The Heading JSON object.
      * @returns The corresponding HeadingElement.
      */
-    private getHeadingElement(headingJson: pt.HeadingElement): pm.HeadingElement {
+    private getHeadingElement(
+        headingJson: pt.HeadingElement,
+    ): pm.HeadingElement {
         let level: number = headingJson.attributes.level;
         let content = this.getInlineContent(headingJson.content);
-        return new pm.HeadingElement(level, content, headingJson.attributes.globalMetadataTags, headingJson.attributes.metadata);
+        return new pm.HeadingElement(
+            level,
+            content,
+            headingJson.attributes.globalMetadataTags,
+            headingJson.attributes.metadata,
+        );
     }
 
     /**
@@ -148,23 +160,38 @@ export class PresentationParser {
                     break;
             }
         });
-        return new pm.ListElement(listType, content, listJson.attributes.globalMetadataTags, listJson.attributes.metadata);
+        return new pm.ListElement(
+            listType,
+            content,
+            listJson.attributes.globalMetadataTags,
+            listJson.attributes.metadata,
+        );
     }
 
-    private getTableHeadingElement(tableHeadingElement: pt.TableHeading): pm.TableHeadingElement {
-        return new pm.TableHeadingElement(this.getInlineContent(tableHeadingElement.content));
+    private getTableHeadingElement(
+        tableHeadingElement: pt.TableHeading,
+    ): pm.TableHeadingElement {
+        return new pm.TableHeadingElement(
+            this.getInlineContent(tableHeadingElement.content),
+        );
     }
 
-    private getTableDataElement(tableDataElement: pt.TableData): pm.TableDataElement {
-        return new pm.TableDataElement(this.getInlineContent(tableDataElement.content));
+    private getTableDataElement(
+        tableDataElement: pt.TableData,
+    ): pm.TableDataElement {
+        return new pm.TableDataElement(
+            this.getInlineContent(tableDataElement.content),
+        );
     }
 
-    private getTableRow(tableRowJson: pt.TableRow) : pm.TableRowElement {
+    private getTableRow(tableRowJson: pt.TableRow): pm.TableRowElement {
         let content: (pm.TableDataElement | pm.TableHeadingElement)[] = [];
-        tableRowJson.content.forEach(c => {
+        tableRowJson.content.forEach((c) => {
             switch (c.type) {
                 case "tableHeading":
-                    content.push(this.getTableHeadingElement(c as pt.TableHeading));
+                    content.push(
+                        this.getTableHeadingElement(c as pt.TableHeading),
+                    );
                     break;
                 case "tableData":
                     content.push(this.getTableDataElement(c as pt.TableData));
@@ -176,10 +203,14 @@ export class PresentationParser {
 
     private getTableElement(tableJson: pt.Table): pm.TableElement {
         let content: pm.TableRowElement[] = [];
-        tableJson.content.forEach(c => {
+        tableJson.content.forEach((c) => {
             content.push(this.getTableRow(c));
         });
-        return new pm.TableElement(content, tableJson.attributes.globalMetadataTags, tableJson.attributes.metadata);
+        return new pm.TableElement(
+            content,
+            tableJson.attributes.globalMetadataTags,
+            tableJson.attributes.metadata,
+        );
     }
 
     /**
@@ -187,7 +218,9 @@ export class PresentationParser {
      * @param contentJson - The array of OuterElement JSON objects.
      * @returns The corresponding array of OuterElement objects.
      */
-    private getOuterElementContent(contentJson: pt.OuterElement[]): pm.OuterElement[] {
+    private getOuterElementContent(
+        contentJson: pt.OuterElement[],
+    ): pm.OuterElement[] {
         let content: pm.OuterElement[] = [];
         contentJson.forEach((jsonElement) => {
             switch (jsonElement.type) {
@@ -212,10 +245,21 @@ export class PresentationParser {
                     );
                     break;
                 case "horizontal_line":
-                    content.push(new pm.HorizontalLineElement((jsonElement as pt.HorizontalLine).attributes.globalMetadataTags, (jsonElement as pt.HorizontalLine).attributes.metadata));
+                    content.push(
+                        new pm.HorizontalLineElement(
+                            (
+                                jsonElement as pt.HorizontalLine
+                            ).attributes.globalMetadataTags,
+                            (
+                                jsonElement as pt.HorizontalLine
+                            ).attributes.metadata,
+                        ),
+                    );
                     break;
                 case "section":
-                    content.push(this.getSectionElement(jsonElement as pt.Section));
+                    content.push(
+                        this.getSectionElement(jsonElement as pt.Section),
+                    );
                     break;
                 case "table":
                     content.push(this.getTableElement(jsonElement as pt.Table));
@@ -232,7 +276,13 @@ export class PresentationParser {
      */
     private getSectionElement(sectionJson: pt.Section): pm.Section {
         let content = this.getOuterElementContent(sectionJson.content);
-        return new pm.Section(sectionJson.attributes.key, sectionJson.attributes.value, content, sectionJson.attributes.globalMetadataTags, sectionJson.attributes.metadata);
+        return new pm.Section(
+            sectionJson.attributes.key,
+            sectionJson.attributes.value,
+            content,
+            sectionJson.attributes.globalMetadataTags,
+            sectionJson.attributes.metadata,
+        );
     }
 
     /**
@@ -240,9 +290,15 @@ export class PresentationParser {
      * @param blockQuoteJson - The BlockQuote JSON object.
      * @returns The corresponding BlockQuoteElement.
      */
-    private getBlockQuoteElement(blockQuoteJson: pt.BlockQuote): pm.BlockQuoteElement {
+    private getBlockQuoteElement(
+        blockQuoteJson: pt.BlockQuote,
+    ): pm.BlockQuoteElement {
         let content = this.getOuterElementContent(blockQuoteJson.content);
-        return new pm.BlockQuoteElement(content, blockQuoteJson.attributes.globalMetadataTags, blockQuoteJson.attributes.metadata);
+        return new pm.BlockQuoteElement(
+            content,
+            blockQuoteJson.attributes.globalMetadataTags,
+            blockQuoteJson.attributes.metadata,
+        );
     }
 
     /**
@@ -252,7 +308,13 @@ export class PresentationParser {
      */
     private createSlide(jsonSlide: pt.Slide): pm.SlideElement {
         let elements = this.getOuterElementContent(jsonSlide.content);
-        let slide = new pm.SlideElement(elements, true, jsonSlide.attributes.globalMetadataTags, jsonSlide.attributes.refs, jsonSlide.attributes.frontMatter);
+        let slide = new pm.SlideElement(
+            elements,
+            true,
+            jsonSlide.attributes.globalMetadataTags,
+            jsonSlide.attributes.refs,
+            jsonSlide.attributes.frontMatter,
+        );
         return slide;
     }
 
@@ -288,10 +350,7 @@ export class PresentationParser {
         let object_lanes: pm.Lane[] = [];
         lanes.forEach((lane) => {
             object_lanes.push(
-                new pm.Lane(
-                    this.getSlides(lane.content),
-                    lane.attributes.name
-                )
+                new pm.Lane(this.getSlides(lane.content), lane.attributes.name),
             );
         });
         return object_lanes;

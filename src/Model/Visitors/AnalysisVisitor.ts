@@ -16,7 +16,7 @@ export class AnalysisResult {
 
 /**
  * Class that analyzes the node structure and counts each element.
- * 
+ *
  * The class implements the IVisitor interface.
  */
 export class AnalysisVisitor implements IVisitor {
@@ -28,9 +28,9 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitTextNode(element: pm.TextElement): void {
         this.result.characters += element.getContent().length;
-        this.result.words += element.getContent().split(' ').length;
+        this.result.words += element.getContent().split(" ").length;
     }
-    
+
     /**
      * Visits a horizontal line element. No analysis is performed.
      * @param element - The horizontal line element to visit.
@@ -45,7 +45,7 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitTableNode(element: pm.TableElement): void {
         this.result.tables++;
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -53,7 +53,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The table row element to visit.
      */
     visitTableRowNode(element: pm.TableRowElement): void {
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -61,7 +61,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The table heading element to visit.
      */
     visitTableHeadingNode(element: pm.TableHeadingElement): void {
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -69,7 +69,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The table data element to visit.
      */
     visitTableDataNode(element: pm.TableDataElement): void {
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -77,7 +77,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The bold element to visit.
      */
     visitBoldNode(element: pm.BoldElement): void {
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -85,7 +85,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The italic element to visit.
      */
     visitItalicNode(element: pm.ItalicElement): void {
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -93,7 +93,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The code element to visit.
      */
     visitCodeNode(element: pm.CodeElement): void {
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -111,7 +111,7 @@ export class AnalysisVisitor implements IVisitor {
     visitLinkNode(element: pm.LinkElement): void {
         this.result.links++;
         this.result.characters += element.getAlias().length;
-        this.result.words += element.getAlias().split(' ').length;
+        this.result.words += element.getAlias().split(" ").length;
     }
 
     /**
@@ -119,7 +119,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The section element to visit.
      */
     visitSectionNode(element: pm.Section): void {
-        element.getContent().forEach(c => c.accept(this));
+        element.getContent().forEach((c) => c.accept(this));
     }
 
     /**
@@ -127,7 +127,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The paragraph element to visit.
      */
     visitParagraphNode(element: pm.ParagraphElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
@@ -138,17 +138,17 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitHeadingNode(element: pm.HeadingElement): void {
         this.result.headings++;
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
-    
+
     /**
      * Visits a list node, recursively analyzing its content.
      * @param element - The list element to visit.
      */
     visitListNode(element: pm.ListElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
@@ -159,7 +159,7 @@ export class AnalysisVisitor implements IVisitor {
      */
     visitListItemNode(element: pm.ListItemElement): void {
         this.result.bullet_points++;
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
@@ -169,7 +169,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The blockquote element to visit.
      */
     visitBlockQuoteNode(element: pm.BlockQuoteElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
@@ -179,7 +179,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The slide element to visit.
      */
     visitSlideNode(element: pm.SlideElement): void {
-        element.getContent().forEach(c => {
+        element.getContent().forEach((c) => {
             c.accept(this);
         });
     }
@@ -189,7 +189,7 @@ export class AnalysisVisitor implements IVisitor {
      * @param element - The lane element to visit.
      */
     visitLaneNode(element: pm.Lane): void {
-        element.getContent().forEach(slide => {
+        element.getContent().forEach((slide) => {
             slide?.accept(this);
         });
     }
@@ -201,5 +201,4 @@ export class AnalysisVisitor implements IVisitor {
     getResult(): AnalysisResult {
         return this.result;
     }
-
 }

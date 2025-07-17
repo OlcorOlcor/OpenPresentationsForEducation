@@ -56,11 +56,23 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     images,
     metadata,
     initialView,
-    css
+    css,
 }) => {
     const [editorView, setEditorView] = useState<boolean>(initialView);
-    const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({words: 0, characters: 0, images: 0, links: 0, headings: 0, bullet_points: 0, tables: 0});
-    const [frontMatter, setFrontMatter] = useState<any>(lanes[selectedLaneIndex].getContent()[selectedSlideIndex]?.getFrontMatter())
+    const [slideAnalysis, setSlideAnalysis] = useState<Constraints>({
+        words: 0,
+        characters: 0,
+        images: 0,
+        links: 0,
+        headings: 0,
+        bullet_points: 0,
+        tables: 0,
+    });
+    const [frontMatter, setFrontMatter] = useState<any>(
+        lanes[selectedLaneIndex]
+            .getContent()
+            [selectedSlideIndex]?.getFrontMatter(),
+    );
     let ignoreSync = useRef<boolean>(true);
     useEffect(() => {
         ignoreSync.current = true;
@@ -71,7 +83,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             visitor.visitSlideNode(slide);
             setSlideAnalysis(visitor.getResult());
         }
-    }, [selectedSlideIndex])
+    }, [selectedSlideIndex]);
 
     useEffect(() => {
         updateEditor();
@@ -102,7 +114,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let resultLanes: Lane[] = [];
             updatedLanes.forEach((lane) => {
-                resultLanes.push(new Lane([...lane.getContent(), null], lane.getName()));
+                resultLanes.push(
+                    new Lane([...lane.getContent(), null], lane.getName()),
+                );
             });
             return resultLanes;
         });
@@ -113,24 +127,40 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let resultLanes: Lane[] = [];
             updatedLanes.forEach((lane) => {
-                resultLanes.push(new Lane([...lane.getContent().slice(0, index + 1), null, ...lane.getContent().slice(index + 1)], lane.getName()));
+                resultLanes.push(
+                    new Lane(
+                        [
+                            ...lane.getContent().slice(0, index + 1),
+                            null,
+                            ...lane.getContent().slice(index + 1),
+                        ],
+                        lane.getName(),
+                    ),
+                );
             });
             return resultLanes;
         });
     }
 
     function reoderSlides(oldIndex: number, newIndex: number) {
-        setLanes(oldLanes => {
+        setLanes((oldLanes) => {
             const updatedLanes = [...oldLanes];
             const lane = updatedLanes[selectedLaneIndex];
             const slides = lane.getContent();
             const newSlides = arrayMove(slides, oldIndex, newIndex);
-            setRawCode((oldCode => {
+            setRawCode((oldCode) => {
                 const newCode = [...oldCode];
-                newCode[selectedLaneIndex] = arrayMove(rawCode, oldIndex, newIndex);
+                newCode[selectedLaneIndex] = arrayMove(
+                    rawCode,
+                    oldIndex,
+                    newIndex,
+                );
                 return newCode;
-            }));
-            updatedLanes[selectedLaneIndex] = new Lane(newSlides, lane.getName());
+            });
+            updatedLanes[selectedLaneIndex] = new Lane(
+                newSlides,
+                lane.getName(),
+            );
             setSelectedSlideIndex(newIndex);
             return updatedLanes;
         });
@@ -141,7 +171,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
             let updatedLanes = [...oldLanes];
             let returnLanes: Lane[] = [];
             updatedLanes.forEach((lane) => {
-                let updatedSlides = lane.getContent().filter((_, slideIndex) => slideIndex !== index);
+                let updatedSlides = lane
+                    .getContent()
+                    .filter((_, slideIndex) => slideIndex !== index);
                 returnLanes.push(new Lane(updatedSlides, lane.getName()));
             });
             if (selectedSlideIndex > 0) {
@@ -155,11 +187,25 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     function setSlideActive(index: number) {
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
-            let updatedSlides = [...updatedLanes[selectedLaneIndex].getContent()];
-            let active = (updatedSlides[index] == null) ? true : !updatedSlides[index]!.isActive();
-            let updatedSlide = (updatedSlides[index] == null) ? new SlideElement([], active) : new SlideElement(updatedSlides[index]!.getContent(), active);
+            let updatedSlides = [
+                ...updatedLanes[selectedLaneIndex].getContent(),
+            ];
+            let active =
+                updatedSlides[index] == null
+                    ? true
+                    : !updatedSlides[index]!.isActive();
+            let updatedSlide =
+                updatedSlides[index] == null
+                    ? new SlideElement([], active)
+                    : new SlideElement(
+                          updatedSlides[index]!.getContent(),
+                          active,
+                      );
             updatedSlides[index] = updatedSlide;
-            updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName());
+            updatedLanes[selectedLaneIndex] = new Lane(
+                updatedSlides,
+                updatedLanes[selectedLaneIndex].getName(),
+            );
             return updatedLanes;
         });
     }
@@ -170,7 +216,9 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
         let presentationParser = new PresentationParser();
         setLanes((oldLanes) => {
             let updatedLanes = [...oldLanes];
-            let updatedSlides = [...updatedLanes[selectedLaneIndex].getContent()];
+            let updatedSlides = [
+                ...updatedLanes[selectedLaneIndex].getContent(),
+            ];
             let updatedSlide = presentationParser.getSlides([jsonSlide])[0];
             updatedSlides[index] = updatedSlide;
             if (updatedSlide) {
@@ -179,7 +227,10 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                 setSlideAnalysis(analysisVisitor.getResult());
                 setFrontMatter(updatedSlide.getFrontMatter());
             }
-            updatedLanes[selectedLaneIndex] = new Lane(updatedSlides, updatedLanes[selectedLaneIndex].getName());
+            updatedLanes[selectedLaneIndex] = new Lane(
+                updatedSlides,
+                updatedLanes[selectedLaneIndex].getName(),
+            );
             return updatedLanes;
         });
     }
@@ -193,7 +244,12 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
     }
 
     return (
-        <Grid container direction="column" style={{ height: "100%", padding: "0 2%"}} spacing={2}>
+        <Grid
+            container
+            direction="column"
+            style={{ height: "100%", padding: "0 2%" }}
+            spacing={2}
+        >
             <Grid item>
                 <LaneMenu
                     lanes={lanes}
@@ -208,7 +264,7 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     deleteLane={deleteLane}
                 />
             </Grid>
-            <Grid item xs style={{height: "fit-content"}}>
+            <Grid item xs style={{ height: "fit-content" }}>
                 <EditorModule
                     editorData={editorData}
                     setEditorData={setEditorData}
@@ -221,13 +277,11 @@ const LaneContainer: React.FC<LaneContainerProps> = ({
                     reorderSlides={reoderSlides}
                     setSlideActive={setSlideActive}
                     deleteSlideAt={deleteSlideAt}
-                    regenerateSlide={regenerateSlide}
                     constraints={constraints}
                     slideAnalysis={slideAnalysis}
                     updateEditor={updateEditor}
                     images={images}
                     metadata={metadata}
-                    frontMatter={frontMatter}
                     css={css}
                 />
             </Grid>
