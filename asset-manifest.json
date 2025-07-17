@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/OpenPresentationsForEducation/static/css/main.2134e346.css",
-    "main.js": "/OpenPresentationsForEducation/static/js/main.426e704e.js",
+    "main.js": "/OpenPresentationsForEducation/static/js/main.4a865933.js",
     "index.html": "/OpenPresentationsForEducation/index.html",
     "main.2134e346.css.map": "/OpenPresentationsForEducation/static/css/main.2134e346.css.map",
-    "main.426e704e.js.map": "/OpenPresentationsForEducation/static/js/main.426e704e.js.map"
+    "main.4a865933.js.map": "/OpenPresentationsForEducation/static/js/main.4a865933.js.map"
   },
   "entrypoints": [
     "static/css/main.2134e346.css",
-    "static/js/main.426e704e.js"
+    "static/js/main.4a865933.js"
   ]
 }
